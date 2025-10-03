@@ -371,7 +371,7 @@ export default function Dashboard({
                                             />
                                             <div>
                                                 <div className="text-sm font-medium">
-                                                    {absensi.nama ||
+                                                    {absensi.user?.nama ||
                                                         'Tidak Diketahui'}
                                                 </div>
                                                 <div className="text-xs text-muted-foreground">

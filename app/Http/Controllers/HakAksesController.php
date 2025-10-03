@@ -94,7 +94,7 @@ class HakAksesController extends Controller
 
     public function create()
     {
-        $ruangans = Ruangan::all();
+        $ruangans = Ruangan::whereNot('type', 'umum')->get();
         $mahasiswas = Mahasiswa::aktif()->with('user')->get();
 
         return Inertia::render('HakAkses/Create', [
@@ -145,7 +145,7 @@ class HakAksesController extends Controller
 
     public function edit(HakAkses $hakAkses)
     {
-        $ruangans = Ruangan::all();
+        $ruangans = Ruangan::whereNot('type', 'umum')->get();
         $mahasiswas = Mahasiswa::aktif()->with('user')->get();
         $hakAkses->load('mahasiswas');
 

@@ -253,15 +253,39 @@ export default function RuanganPenjagaIndex({
                                                         {ruangan.jam_tutup}
                                                     </span>
                                                 </div>
-                                                {ruangan.penanggung_jawab && (
-                                                    <div className="flex items-center gap-1">
-                                                        <span>👤</span>
-                                                        <span>
-                                                            {
-                                                                ruangan.penanggung_jawab
-                                                            }
-                                                        </span>
+                                                {ruangan.penanggung_jawab ? (
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {Array.isArray(
+                                                            ruangan.penanggung_jawab,
+                                                        ) ? (
+                                                            ruangan.penanggung_jawab.map(
+                                                                (pj, index) => (
+                                                                    <Badge
+                                                                        key={
+                                                                            index
+                                                                        }
+                                                                        variant="outline"
+                                                                        className="text-xs"
+                                                                    >
+                                                                        {
+                                                                            pj.label
+                                                                        }
+                                                                    </Badge>
+                                                                ),
+                                                            )
+                                                        ) : (
+                                                            <Badge
+                                                                variant="outline"
+                                                                className="text-xs"
+                                                            >
+                                                                {
+                                                                    ruangan.penanggung_jawab
+                                                                }
+                                                            </Badge>
+                                                        )}
                                                     </div>
+                                                ) : (
+                                                    '-'
                                                 )}
                                             </div>
                                         </div>

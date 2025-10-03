@@ -239,30 +239,6 @@ export default function HakAksesMahasiswaForm({
                             )}
                         </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="max_register">
-                                Kuota Maksimal *
-                            </Label>
-                            <Input
-                                id="max_register"
-                                type="number"
-                                min="1"
-                                max="20"
-                                value={data.max_register}
-                                onChange={(e) =>
-                                    setData(
-                                        'max_register',
-                                        parseInt(e.target.value),
-                                    )
-                                }
-                            />
-                            {errors.max_register && (
-                                <p className="text-sm text-red-600">
-                                    {errors.max_register}
-                                </p>
-                            )}
-                        </div>
-
                         <div className="space-y-4 pt-2">
                             <div className="flex items-center gap-2 rounded-lg bg-blue-50 p-2">
                                 <UserCheck className="h-4 w-4 text-blue-600" />

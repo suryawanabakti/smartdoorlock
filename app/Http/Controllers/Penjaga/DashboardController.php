@@ -61,7 +61,7 @@ class DashboardController extends Controller
             ->get();
 
         // Aktivitas Terkini (10 absensi terbaru di ruangan penjaga)
-        $aktivitasTerkini = Absensi::with(['ruangan'])
+        $aktivitasTerkini = Absensi::with(['ruangan', 'user'])
             ->whereIn('ruangan_id', $ruanganIds)
             ->latest('waktu_masuk')
             ->take(10)

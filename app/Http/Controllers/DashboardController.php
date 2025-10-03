@@ -15,6 +15,12 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        if (auth()->user()->role == 'mahasiswa') {
+            return redirect('/mahasiswa/dashboard');
+        }
+        if (auth()->user()->role == 'penjaga') {
+            return redirect('/penjaga/dashboard');
+        }
         // Statistik Hari Ini
         $absensiHariIni = Absensi::whereDate('waktu_masuk', today())->count();
         $sedangAkses = Absensi::whereDate('waktu_masuk', today())
@@ -64,7 +70,7 @@ class DashboardController extends Controller
         ];
 
         // Aktivitas Terkini (10 absensi terbaru)
-        $aktivitasTerkini = Absensi::with('ruangan')
+        $aktivitasTerkini = Absensi::with('ruangan', 'user')
             ->latest('waktu_masuk')
             ->take(10)
             ->get();

@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Penjaga;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendEmailJamPulangToMahasiswa;
+use App\Jobs\SendEmailToMahasiswa;
 use App\Models\HakAkses;
 use App\Models\Mahasiswa;
 use App\Models\Ruangan;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -191,10 +194,34 @@ class HakAksesPenjagaController extends Controller
         $user = auth()->user();
         $this->authorizeAccess($hakAkses, $user);
 
+        $timezone = 'Asia/Makassar';
+
+        // Gabungkan tanggal & jam keluar menjadi Carbon
+        $tanggal = $hakAkses->tanggal->format('Y-m-d');
+
+        $jamPulangCarbon = Carbon::createFromFormat(
+            'Y-m-d H:i:s',
+            "{$tanggal} {$hakAkses->jam_keluar}",
+            $timezone
+        );
+
+        // Hitung delay (detik dari sekarang ke jam pulang)
+        $delay = now($timezone)->diffInSeconds($jamPulangCarbon, false);
+        $hakAkses->mahasiswas->each(function ($mahasiswa) use ($hakAkses, $delay, $timezone) {
+
+            SendEmailToMahasiswa::dispatch($mahasiswa, $hakAkses, 'approve');
+
+            if ($delay > 0) {
+                SendEmailJamPulangToMahasiswa::dispatch($mahasiswa, $hakAkses)
+                    ->delay(now($timezone)->addSeconds($delay)->subMinutes(10));
+            }
+        });
+        // Tandai approve terlebih dahulu
         $hakAkses->update(['is_approve' => true]);
 
-        return redirect()->back()
-            ->with('success', 'Hak akses berhasil disetujui.');
+        // Kirim email ke setiap mahasiswa terkait
+
+        return back()->with('success', 'Hak akses berhasil disetujui.');
     }
 
     public function reject(HakAkses $hakAkses)

@@ -329,12 +329,6 @@ export default function HakAksesIndex({
                                                             {item.mahasiswas
                                                                 ?.length || 0}
                                                         </span>
-                                                        <span className="text-muted-foreground">
-                                                            /
-                                                        </span>
-                                                        <span>
-                                                            {item.max_register}
-                                                        </span>
                                                     </div>
 
                                                     {item.mahasiswas &&

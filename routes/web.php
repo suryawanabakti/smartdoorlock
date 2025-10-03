@@ -17,11 +17,9 @@ use App\Http\Controllers\RuanganController;
 use App\Http\Controllers\ScanerStatusController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('welcome');
-})->name('home');
+Route::redirect('/', '/login')->name('home');
+
 Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
 Route::get('/hak-akses/{hakAkses}', [HakAksesController::class, 'show'])->name('hak-akses.show');
 Route::delete('/hak-akses/destroy-by-date', [HakAksesController::class, 'destroyByDate'])->name('hak-akses.destroy-by-date');
@@ -29,6 +27,7 @@ Route::delete('/hak-akses/destroy-by-date', [HakAksesController::class, 'destroy
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    Route::get('/ruangans/reset-api', [RuanganController::class, 'resetApi']);
     Route::resource('ruangans', RuanganController::class);
 
     Route::post('users/{user}', [UserController::class, 'update']);

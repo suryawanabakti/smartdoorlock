@@ -262,16 +262,39 @@ export default function RuanganPenjagaShow({
                                             : '❌ Nonaktif'}
                                     </p>
                                 </div>
-                                {ruangan.penanggung_jawab && (
-                                    <div className="md:col-span-2">
-                                        <label className="text-sm font-medium text-muted-foreground">
-                                            Penanggung Jawab
-                                        </label>
-                                        <p className="font-semibold">
-                                            {ruangan.penanggung_jawab}
-                                        </p>
-                                    </div>
-                                )}
+                                <div>
+                                    <label className="text-sm font-medium text-muted-foreground">
+                                        Penanggung Jawab
+                                    </label>
+                                    {ruangan.penanggung_jawab ? (
+                                        <div className="flex flex-wrap gap-1">
+                                            {Array.isArray(
+                                                ruangan.penanggung_jawab,
+                                            ) ? (
+                                                ruangan.penanggung_jawab.map(
+                                                    (pj, index) => (
+                                                        <Badge
+                                                            key={index}
+                                                            variant="outline"
+                                                            className="text-xs"
+                                                        >
+                                                            {pj.label}
+                                                        </Badge>
+                                                    ),
+                                                )
+                                            ) : (
+                                                <Badge
+                                                    variant="outline"
+                                                    className="text-xs"
+                                                >
+                                                    {ruangan.penanggung_jawab}
+                                                </Badge>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        '-'
+                                    )}
+                                </div>
                             </div>
                         </CardContent>
                     </Card>

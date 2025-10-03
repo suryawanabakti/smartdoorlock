@@ -10,6 +10,13 @@ use Inertia\Inertia;
 
 class RuanganController extends Controller
 {
+    public function resetApi()
+    {
+        Ruangan::query()->update(['open_api' => true]);
+
+        return back();
+    }
+
     public function index(Request $request)
     {
         $query = Ruangan::with(['parent', 'mahasiswa'])

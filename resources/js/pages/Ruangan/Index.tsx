@@ -27,7 +27,7 @@ import AppLayout from '@/layouts/app-layout';
 import { PaginatedResponse, type BreadcrumbItem } from '@/types';
 import { type Ruangan } from '@/types/ruangan';
 import { Head, Link, router } from '@inertiajs/react';
-import { Edit, Eye, Plus, Search, Trash2 } from 'lucide-react';
+import { Edit, Eye, Plus, RefreshCcw, Search, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -101,12 +101,20 @@ export default function RuanganIndex({ ruangans, filters }: Props) {
                             Kelola data ruangan dan aksesnya
                         </p>
                     </div>
-                    <Link href="/ruangans/create">
-                        <Button>
-                            <Plus className="mr-2 h-4 w-4" />
-                            Tambah Ruangan
-                        </Button>
-                    </Link>
+                    <div className="flex gap-2">
+                        <Link href="/ruangans/reset-api">
+                            <Button>
+                                <RefreshCcw className="mr-2 h-4 w-4" />
+                                Reset API
+                            </Button>
+                        </Link>
+                        <Link href="/ruangans/create">
+                            <Button>
+                                <Plus className="mr-2 h-4 w-4" />
+                                Tambah Ruangan
+                            </Button>
+                        </Link>
+                    </div>
                 </div>
 
                 {/* Filters */}

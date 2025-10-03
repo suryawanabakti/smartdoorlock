@@ -98,7 +98,7 @@ const Calendar: React.FC<CalendarProps> = ({
             <Card className="w-full">
                 <CardHeader className="flex flex-row items-center justify-between pb-4">
                     <CardTitle className="text-2xl font-bold text-foreground">
-                        {monthName} {year}
+                        {monthName}
                     </CardTitle>
                     <div className="flex items-center gap-2">
                         <Button variant="outline" size="sm" asChild>

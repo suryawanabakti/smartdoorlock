@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendEmailToAdminJob;
 use App\Models\HakAkses;
 use App\Models\Mahasiswa;
+use App\Models\PenjagaRuangan;
 use App\Models\Ruangan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -71,13 +73,14 @@ class HakAksesMahasiswaController extends Controller
     public function create()
     {
         $user = auth()->user();
-        $mahasiswa = $user->mahasiswa;
+
+        $mahasiswa = $user->mahasiswa->load('ruangan');
 
         // Get all ruangan yang available
-        $ruangans = Ruangan::where('open_api', true)->get();
+        $ruangans = Ruangan::whereNot('type', 'umum')->get();
 
         // Get teman kelas (same ruangan_id and tahun_masuk) + semua mahasiswa
-        $temanKelas = Mahasiswa::where(function ($query) use ($mahasiswa) {
+        $temanKelas = Mahasiswa::with('ruangan')->where(function ($query) use ($mahasiswa) {
             $query->where('ruangan_id', $mahasiswa->ruangan_id)
                 ->where('tahun_masuk', $mahasiswa->tahun_masuk)
                 ->where('id', '!=', $mahasiswa->id);
@@ -107,7 +110,6 @@ class HakAksesMahasiswaController extends Controller
             'tujuan' => 'required|string|max:1000',
             'skill' => 'nullable|string|max:1000',
             'additional_participant' => 'nullable|string|max:1000',
-            'max_register' => 'required|integer|min:1|max:20',
             'mahasiswa_ids' => 'nullable|array',
             'mahasiswa_ids.*' => 'exists:mahasiswa,id',
         ]);
@@ -116,17 +118,26 @@ class HakAksesMahasiswaController extends Controller
         $validated['is_approve'] = false;
         $validated['is_by_admin'] = false;
 
-        DB::transaction(function () use ($validated, $mahasiswa) {
-            $hakAkses = HakAkses::create($validated);
+        // DB::transaction(function () use ($validated, $mahasiswa) {
+        $hakAkses = HakAkses::create($validated);
 
-            // Tambahkan mahasiswa pembuat sebagai peserta pertama
-            $mahasiswaIds = [$mahasiswa->id];
-            if (! empty($validated['mahasiswa_ids'])) {
-                $mahasiswaIds = array_merge($mahasiswaIds, $validated['mahasiswa_ids']);
-            }
+        // Tambahkan mahasiswa pembuat sebagai peserta pertama
+        $mahasiswaIds = [$mahasiswa->id];
+        if (! empty($validated['mahasiswa_ids'])) {
+            $mahasiswaIds = array_merge($mahasiswaIds, $validated['mahasiswa_ids']);
+        }
 
-            $hakAkses->mahasiswas()->sync($mahasiswaIds);
-        });
+        $penjagaRuangan = PenjagaRuangan::with(['user:id,email_notifikasi', 'ruangan'])
+            ->where('ruangan_id', $validated['ruangan_id'])
+            ->get();
+
+        $penjagaRuangan->filter(fn ($data) => $data->user && $data->user->email_notifikasi)
+            ->each(function ($data) use ($hakAkses) {
+                SendEmailToAdminJob::dispatch($data->user, $hakAkses->load('ruangan', 'mahasiswas'));
+            });
+
+        $hakAkses->mahasiswas()->sync($mahasiswaIds);
+        // });
 
         return redirect()->route('mahasiswa.hak-akses.index')
             ->with('success', 'Permohonan hak akses berhasil diajukan. Menunggu persetujuan penjaga.');
@@ -159,7 +170,8 @@ class HakAksesMahasiswaController extends Controller
             abort(403, 'Tidak dapat mengedit hak akses yang sudah disetujui.');
         }
 
-        $ruangans = Ruangan::where('open_api', true)->get();
+        $ruangans = Ruangan::whereNot('type', 'umum')->get();
+
         $temanKelas = Mahasiswa::where(function ($query) use ($mahasiswa) {
             $query->where('ruangan_id', $mahasiswa->ruangan_id)
                 ->where('tahun_masuk', $mahasiswa->tahun_masuk)
@@ -203,7 +215,7 @@ class HakAksesMahasiswaController extends Controller
             'additional_participant' => 'nullable|string|max:1000',
             'max_register' => 'required|integer|min:1|max:20',
             'mahasiswa_ids' => 'nullable|array',
-            'mahasiswa_ids.*' => 'exists:mahasiswas,id',
+            'mahasiswa_ids.*' => 'exists:mahasiswa,id',
         ]);
 
         DB::transaction(function () use ($hakAkses, $validated, $mahasiswa) {

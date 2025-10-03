@@ -28,8 +28,6 @@ class HakAkses extends Model
 
     protected $casts = [
         'tanggal' => 'date',
-        'jam_masuk' => 'datetime:H:i',
-        'jam_keluar' => 'datetime:H:i',
         'is_approve' => 'boolean',
         'is_by_admin' => 'boolean',
     ];
