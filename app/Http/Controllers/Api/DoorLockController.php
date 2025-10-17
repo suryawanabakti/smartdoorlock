@@ -201,23 +201,23 @@ class DoorLockController extends Controller
             ->whereHas('scanerStatuses', fn ($query) => $query->where('kode', $request->kode))
             ->first();
 
-        if (! $ruangan || $currentTime < $ruangan->jam_buka || $currentTime > $ruangan->jam_tutup) {
-            echo json_encode(['noid'], JSON_UNESCAPED_UNICODE);
+        // if (! $ruangan || $currentTime < $ruangan->jam_buka || $currentTime > $ruangan->jam_tutup) {
+        //     echo json_encode(['noid'], JSON_UNESCAPED_UNICODE);
 
-            return;
-        }
+        //     return;
+        // }
 
         $scanner = ScanerStatus::where('kode', $request->kode)->first();
 
         // Validasi akses mahasiswa
-        if ($mahasiswa && $mahasiswa->ket === 'mhs' && $scanner->type == 'luar' && $ruangan->type !== 'umum') {
-            if (! $this->hasAccess($mahasiswa, $ruangan, $currentTime, $currentDate)) {
-                $this->createHistoriAndBroadcast($mahasiswa, $request->id, $request->kode, 3, $ruangan);
-                echo json_encode(['noid'], JSON_UNESCAPED_UNICODE);
+        // if ($mahasiswa && $mahasiswa->ket === 'mhs' && $scanner->type == 'luar' && $ruangan->type !== 'umum') {
+        //     if (! $this->hasAccess($mahasiswa, $ruangan, $currentTime, $currentDate)) {
+        //         $this->createHistoriAndBroadcast($mahasiswa, $request->id, $request->kode, 3, $ruangan);
+        //         echo json_encode(['noid'], JSON_UNESCAPED_UNICODE);
 
-                return;
-            }
-        }
+        //         return;
+        //     }
+        // }
 
         // Validasi akses dosen
         if ($mahasiswa && $mahasiswa->ket === 'dsn' && $scanner->type == 'luar' && $ruangan->type !== 'umum') {
@@ -244,11 +244,11 @@ class DoorLockController extends Controller
         if ($mahasiswa) {
             ScanerStatus::where('kode', $request->kode)->update(['last' => $now->format('Y-m-d H:i:s')]);
 
-            if ($mahasiswa->status == 0) {
-                echo json_encode(['noid'], JSON_UNESCAPED_UNICODE);
+            // if ($mahasiswa->status == 0) {
+            //     echo json_encode(['noid'], JSON_UNESCAPED_UNICODE);
 
-                return;
-            }
+            //     return;
+            // }
 
             if ($mahasiswa->status == 1) {
                 $this->handleAbsensi($mahasiswa, $ruangan, $request->id, $request->kode, $now);
