@@ -197,8 +197,8 @@ class DoorLockController extends Controller
         $status = $mahasiswa->status ?? 2;
 
         // Validasi ruangan dan waktu operasional
-        $ruangan = Ruangan::with('scanner')
-            ->whereHas('scanner', fn ($query) => $query->where('kode', $request->kode))
+        $ruangan = Ruangan::with('scanerStatuses')
+            ->whereHas('scanerStatuses', fn ($query) => $query->where('kode', $request->kode))
             ->first();
 
         if (! $ruangan || $currentTime < $ruangan->jam_buka || $currentTime > $ruangan->jam_tutup) {

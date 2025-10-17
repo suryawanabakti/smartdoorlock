@@ -1,8 +1,7 @@
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
-import { send } from '@/routes/verification';
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Transition } from '@headlessui/react';
-import { Form, Head, Link, usePage } from '@inertiajs/react';
+import { Form, Head, usePage } from '@inertiajs/react';
 
 import DeleteUser from '@/components/delete-user';
 import HeadingSmall from '@/components/heading-small';
@@ -55,12 +54,12 @@ export default function Profile({
 
                                     <Input
                                         id="name"
+                                        disabled
                                         className="mt-1 block w-full"
                                         defaultValue={auth.user.name}
                                         name="name"
                                         required
                                         autoComplete="name"
-                                        placeholder="Full name"
                                     />
 
                                     <InputError
@@ -70,51 +69,49 @@ export default function Profile({
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="email">Email address</Label>
+                                    <Label htmlFor="nowa">
+                                        Nomor Whatsapp Notifikasi
+                                    </Label>
 
                                     <Input
-                                        id="email"
-                                        type="email"
+                                        id="nowa"
                                         className="mt-1 block w-full"
-                                        defaultValue={auth.user.email}
-                                        name="email"
+                                        defaultValue={auth.user.nowa}
+                                        name="nowa"
                                         required
-                                        autoComplete="username"
-                                        placeholder="Email address"
+                                        autoComplete="nowa"
+                                        placeholder="0812-1234-3214"
                                     />
 
                                     <InputError
                                         className="mt-2"
-                                        message={errors.email}
+                                        message={errors.name}
                                     />
                                 </div>
 
-                                {mustVerifyEmail &&
-                                    auth.user.email_verified_at === null && (
-                                        <div>
-                                            <p className="-mt-4 text-sm text-muted-foreground">
-                                                Your email address is
-                                                unverified.{' '}
-                                                <Link
-                                                    href={send()}
-                                                    as="button"
-                                                    className="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
-                                                >
-                                                    Click here to resend the
-                                                    verification email.
-                                                </Link>
-                                            </p>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="email">
+                                        Email Notifikasi
+                                    </Label>
 
-                                            {status ===
-                                                'verification-link-sent' && (
-                                                <div className="mt-2 text-sm font-medium text-green-600">
-                                                    A new verification link has
-                                                    been sent to your email
-                                                    address.
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
+                                    <Input
+                                        id="email_notifikasi"
+                                        type="email"
+                                        className="mt-1 block w-full"
+                                        defaultValue={
+                                            auth.user.email_notifikasi
+                                        }
+                                        name="email_notifikasi"
+                                        required
+                                        autoComplete="username"
+                                        placeholder="Email_notifikasi address"
+                                    />
+
+                                    <InputError
+                                        className="mt-2"
+                                        message={errors.email_notifikasi}
+                                    />
+                                </div>
 
                                 <div className="flex items-center gap-4">
                                     <Button

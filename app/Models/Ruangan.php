@@ -33,6 +33,11 @@ class Ruangan extends Model
         'jam_tutup' => 'datetime:H:i',
     ];
 
+    public function scanner()
+    {
+        return $this->hasMany(ScanerStatus::class);
+    }
+
     public function scanerStatuses()
     {
         return $this->hasMany(ScanerStatus::class);
