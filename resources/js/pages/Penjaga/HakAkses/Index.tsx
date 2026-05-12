@@ -28,6 +28,7 @@ import { PaginatedResponse, type BreadcrumbItem } from '@/types';
 import { type HakAkses } from '@/types/hak-akses';
 import { type Ruangan } from '@/types/ruangan';
 import { Head, Link, router } from '@inertiajs/react';
+import { Pagination } from '@/components/pagination';
 import {
     Building,
     Calendar,
@@ -441,34 +442,10 @@ export default function HakAksesPenjagaIndex({
                         </div>
 
                         {/* Pagination */}
-                        {hakAkses.links.length > 3 && (
-                            <div className="mt-6 flex flex-col items-center justify-between gap-4 sm:flex-row">
-                                <div className="text-sm text-muted-foreground">
-                                    Menampilkan {hakAkses.from} hingga{' '}
-                                    {hakAkses.to} dari {hakAkses.total} hasil
-                                </div>
-                                <div className="flex flex-wrap gap-1">
-                                    {hakAkses.links.map((link, index) => (
-                                        <Button
-                                            key={index}
-                                            variant={
-                                                link.active
-                                                    ? 'default'
-                                                    : 'outline'
-                                            }
-                                            size="sm"
-                                            disabled={!link.url}
-                                            onClick={() =>
-                                                router.get(link.url!)
-                                            }
-                                            dangerouslySetInnerHTML={{
-                                                __html: link.label,
-                                            }}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-                        )}
+                        <Pagination
+                            links={hakAkses.links}
+                            meta={{ from: hakAkses.from, to: hakAkses.to, total: hakAkses.total }}
+                        />
                     </CardContent>
                 </Card>
             </div>

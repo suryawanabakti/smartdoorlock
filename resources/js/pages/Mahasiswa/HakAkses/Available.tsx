@@ -21,6 +21,7 @@ import { PaginatedResponse, type BreadcrumbItem } from '@/types';
 import { type HakAkses } from '@/types/hak-akses';
 import { type Mahasiswa } from '@/types/mahasiswa';
 import { Head, Link, router } from '@inertiajs/react';
+import { Pagination } from '@/components/pagination';
 import {
     ArrowLeft,
     Building,
@@ -318,37 +319,10 @@ export default function HakAksesMahasiswaAvailable({
                         </div>
 
                         {/* Pagination */}
-                        {availableHakAkses.links.length > 3 && (
-                            <div className="mt-6 flex flex-col items-center justify-between gap-4 sm:flex-row">
-                                <div className="text-sm text-muted-foreground">
-                                    Menampilkan {availableHakAkses.from} hingga{' '}
-                                    {availableHakAkses.to} dari{' '}
-                                    {availableHakAkses.total} hasil
-                                </div>
-                                <div className="flex flex-wrap gap-1">
-                                    {availableHakAkses.links.map(
-                                        (link, index) => (
-                                            <Button
-                                                key={index}
-                                                variant={
-                                                    link.active
-                                                        ? 'default'
-                                                        : 'outline'
-                                                }
-                                                size="sm"
-                                                disabled={!link.url}
-                                                onClick={() =>
-                                                    router.get(link.url!)
-                                                }
-                                                dangerouslySetInnerHTML={{
-                                                    __html: link.label,
-                                                }}
-                                            />
-                                        ),
-                                    )}
-                                </div>
-                            </div>
-                        )}
+                        <Pagination
+                            links={availableHakAkses.links}
+                            meta={{ from: availableHakAkses.from, to: availableHakAkses.to, total: availableHakAkses.total }}
+                        />
                     </CardContent>
                 </Card>
             </div>

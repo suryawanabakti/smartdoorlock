@@ -76,7 +76,7 @@ const adminNavItems: NavItem[] = [
         icon: ClipboardCheck,
     },
     {
-        title: 'Calendar',
+        title: 'Kalender',
         href: '/calendar',
         icon: Calendar,
     },

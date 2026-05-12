@@ -27,6 +27,7 @@ import AppLayout from '@/layouts/app-layout';
 import { PaginatedResponse, type BreadcrumbItem } from '@/types';
 import { type Mahasiswa } from '@/types/mahasiswa';
 import { Head, Link, router } from '@inertiajs/react';
+import { Pagination } from '@/components/pagination';
 import {
     BookOpen,
     Edit,
@@ -412,40 +413,10 @@ export default function MahasiswaIndex({
                         </div>
 
                         {/* Pagination */}
-                        {mahasiswas.links.length > 3 && (
-                            <div className="mt-6 flex flex-col items-center justify-between gap-4 sm:flex-row">
-                                <div className="text-sm text-muted-foreground">
-                                    Menampilkan {mahasiswas.from} hingga{' '}
-                                    {mahasiswas.to} dari {mahasiswas.total}{' '}
-                                    hasil
-                                </div>
-                                <div className="flex flex-wrap gap-1">
-                                    {mahasiswas.links.map((link, index) => (
-                                        <Button
-                                            key={index}
-                                            variant={
-                                                link.active
-                                                    ? 'default'
-                                                    : 'outline'
-                                            }
-                                            size="sm"
-                                            disabled={!link.url}
-                                            onClick={() =>
-                                                router.get(link.url!)
-                                            }
-                                            dangerouslySetInnerHTML={{
-                                                __html: link.label,
-                                            }}
-                                            className={
-                                                link.active
-                                                    ? 'bg-primary text-primary-foreground'
-                                                    : ''
-                                            }
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-                        )}
+                        <Pagination
+                            links={mahasiswas.links}
+                            meta={{ from: mahasiswas.from, to: mahasiswas.to, total: mahasiswas.total }}
+                        />
                     </CardContent>
                 </Card>
             </div>

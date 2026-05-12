@@ -27,6 +27,7 @@ import AppLayout from '@/layouts/app-layout';
 import { PaginatedResponse, type BreadcrumbItem } from '@/types';
 import { type Ruangan } from '@/types/ruangan';
 import { Head, Link, router } from '@inertiajs/react';
+import { Pagination } from '@/components/pagination';
 import { Edit, Eye, Plus, RefreshCcw, Search, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -305,34 +306,10 @@ export default function RuanganIndex({ ruangans, filters }: Props) {
                         </Table>
 
                         {/* Pagination */}
-                        {ruangans.links.length > 3 && (
-                            <div className="mt-4 flex items-center justify-between">
-                                <div className="text-sm text-muted-foreground">
-                                    Menampilkan {ruangans.from} hingga{' '}
-                                    {ruangans.to} dari {ruangans.total} hasil
-                                </div>
-                                <div className="flex gap-1">
-                                    {ruangans.links.map((link, index) => (
-                                        <Button
-                                            key={index}
-                                            variant={
-                                                link.active
-                                                    ? 'default'
-                                                    : 'outline'
-                                            }
-                                            size="sm"
-                                            disabled={!link.url}
-                                            onClick={() =>
-                                                router.get(link.url!)
-                                            }
-                                            dangerouslySetInnerHTML={{
-                                                __html: link.label,
-                                            }}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-                        )}
+                        <Pagination
+                            links={ruangans.links}
+                            meta={{ from: ruangans.from, to: ruangans.to, total: ruangans.total }}
+                        />
                     </CardContent>
                 </Card>
             </div>

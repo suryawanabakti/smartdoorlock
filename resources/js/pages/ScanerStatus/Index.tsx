@@ -28,6 +28,7 @@ import { PaginatedResponse, type BreadcrumbItem } from '@/types';
 import { type Ruangan } from '@/types/ruangan';
 import { type ScanerStatus } from '@/types/scaner-status';
 import { Head, Link, router } from '@inertiajs/react';
+import { Pagination } from '@/components/pagination';
 import {
     Building,
     Clock,
@@ -355,40 +356,10 @@ export default function ScanerStatusIndex({
                         </div>
 
                         {/* Pagination */}
-                        {scanerStatuses.links.length > 3 && (
-                            <div className="mt-6 flex flex-col items-center justify-between gap-4 sm:flex-row">
-                                <div className="text-sm text-muted-foreground">
-                                    Menampilkan {scanerStatuses.from} hingga{' '}
-                                    {scanerStatuses.to} dari{' '}
-                                    {scanerStatuses.total} hasil
-                                </div>
-                                <div className="flex flex-wrap gap-1">
-                                    {scanerStatuses.links.map((link, index) => (
-                                        <Button
-                                            key={index}
-                                            variant={
-                                                link.active
-                                                    ? 'default'
-                                                    : 'outline'
-                                            }
-                                            size="sm"
-                                            disabled={!link.url}
-                                            onClick={() =>
-                                                router.get(link.url!)
-                                            }
-                                            dangerouslySetInnerHTML={{
-                                                __html: link.label,
-                                            }}
-                                            className={
-                                                link.active
-                                                    ? 'bg-primary text-primary-foreground'
-                                                    : ''
-                                            }
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-                        )}
+                        <Pagination
+                            links={scanerStatuses.links}
+                            meta={{ from: scanerStatuses.from, to: scanerStatuses.to, total: scanerStatuses.total }}
+                        />
                     </CardContent>
                 </Card>
             </div>

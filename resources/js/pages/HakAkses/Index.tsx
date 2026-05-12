@@ -28,6 +28,7 @@ import { PaginatedResponse, type BreadcrumbItem } from '@/types';
 import { type HakAkses } from '@/types/hak-akses';
 import { type Ruangan } from '@/types/ruangan';
 import { Head, Link, router } from '@inertiajs/react';
+import { Pagination } from '@/components/pagination';
 import {
     Building,
     Calendar,
@@ -150,12 +151,7 @@ export default function HakAksesIndex({
                             Kelola akses ruangan untuk mahasiswa
                         </p>
                     </div>
-                    <Link href="/hak-akses/create">
-                        <Button>
-                            <Plus className="mr-2 h-4 w-4" />
-                            Tambah Hak Akses
-                        </Button>
-                    </Link>
+
                 </div>
 
                 {/* Filters */}
@@ -300,13 +296,13 @@ export default function HakAksesIndex({
                                                     {isPastDate(
                                                         item.tanggal,
                                                     ) && (
-                                                        <Badge
-                                                            variant="secondary"
-                                                            className="text-xs"
-                                                        >
-                                                            Sudah Lewat
-                                                        </Badge>
-                                                    )}
+                                                            <Badge
+                                                                variant="secondary"
+                                                                className="text-xs"
+                                                            >
+                                                                Sudah Lewat
+                                                            </Badge>
+                                                        )}
                                                 </div>
                                             </TableCell>
                                             <TableCell>
@@ -333,7 +329,7 @@ export default function HakAksesIndex({
 
                                                     {item.mahasiswas &&
                                                         item.mahasiswas.length >
-                                                            0 && (
+                                                        0 && (
                                                             <div className="text-xs">
                                                                 {item.mahasiswas
                                                                     .slice(0, 2)
@@ -418,39 +414,10 @@ export default function HakAksesIndex({
                         </div>
 
                         {/* Pagination */}
-                        {hakAkses.links.length > 3 && (
-                            <div className="mt-6 flex flex-col items-center justify-between gap-4 sm:flex-row">
-                                <div className="text-sm text-muted-foreground">
-                                    Menampilkan {hakAkses.from} hingga{' '}
-                                    {hakAkses.to} dari {hakAkses.total} hasil
-                                </div>
-                                <div className="flex flex-wrap gap-1">
-                                    {hakAkses.links.map((link, index) => (
-                                        <Button
-                                            key={index}
-                                            variant={
-                                                link.active
-                                                    ? 'default'
-                                                    : 'outline'
-                                            }
-                                            size="sm"
-                                            disabled={!link.url}
-                                            onClick={() =>
-                                                router.get(link.url!)
-                                            }
-                                            dangerouslySetInnerHTML={{
-                                                __html: link.label,
-                                            }}
-                                            className={
-                                                link.active
-                                                    ? 'bg-primary text-primary-foreground'
-                                                    : ''
-                                            }
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-                        )}
+                        <Pagination
+                            links={hakAkses.links}
+                            meta={{ from: hakAkses.from, to: hakAkses.to, total: hakAkses.total }}
+                        />
                     </CardContent>
                 </Card>
             </div>

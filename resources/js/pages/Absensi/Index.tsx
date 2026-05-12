@@ -28,6 +28,7 @@ import { PaginatedResponse, type BreadcrumbItem } from '@/types';
 import { type Absensi } from '@/types/absensi';
 import { type Ruangan } from '@/types/ruangan';
 import { Head, Link, router } from '@inertiajs/react';
+import { Pagination } from '@/components/pagination';
 import {
     Activity,
     Building,
@@ -550,39 +551,10 @@ export default function AbsensiIndex({
                         </div>
 
                         {/* Pagination */}
-                        {absensis.links.length > 3 && (
-                            <div className="mt-6 flex flex-col items-center justify-between gap-4 sm:flex-row">
-                                <div className="text-sm text-muted-foreground">
-                                    Menampilkan {absensis.from} hingga{' '}
-                                    {absensis.to} dari {absensis.total} hasil
-                                </div>
-                                <div className="flex flex-wrap gap-1">
-                                    {absensis.links.map((link, index) => (
-                                        <Button
-                                            key={index}
-                                            variant={
-                                                link.active
-                                                    ? 'default'
-                                                    : 'outline'
-                                            }
-                                            size="sm"
-                                            disabled={!link.url}
-                                            onClick={() =>
-                                                router.get(link.url!)
-                                            }
-                                            dangerouslySetInnerHTML={{
-                                                __html: link.label,
-                                            }}
-                                            className={
-                                                link.active
-                                                    ? 'bg-primary text-primary-foreground'
-                                                    : ''
-                                            }
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-                        )}
+                        <Pagination
+                            links={absensis.links}
+                            meta={{ from: absensis.from, to: absensis.to, total: absensis.total }}
+                        />
                     </CardContent>
                 </Card>
             </div>

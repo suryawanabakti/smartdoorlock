@@ -33,6 +33,7 @@ import {
     getStatusLabel,
 } from '@/types/scaner-status';
 import { Head, router } from '@inertiajs/react';
+import { Pagination } from '@/components/pagination';
 import {
     BarChart3,
     Building,
@@ -638,39 +639,10 @@ export default function HistoriIndex({
                         </div>
 
                         {/* Pagination */}
-                        {historis.links.length > 3 && (
-                            <div className="mt-6 flex flex-col items-center justify-between gap-4 sm:flex-row">
-                                <div className="text-sm text-muted-foreground">
-                                    Menampilkan {historis.from} hingga{' '}
-                                    {historis.to} dari {historis.total} hasil
-                                </div>
-                                <div className="flex flex-wrap gap-1">
-                                    {historis.links.map((link, index) => (
-                                        <Button
-                                            key={index}
-                                            variant={
-                                                link.active
-                                                    ? 'default'
-                                                    : 'outline'
-                                            }
-                                            size="sm"
-                                            disabled={!link.url}
-                                            onClick={() =>
-                                                router.get(link.url!)
-                                            }
-                                            dangerouslySetInnerHTML={{
-                                                __html: link.label,
-                                            }}
-                                            className={
-                                                link.active
-                                                    ? 'bg-primary text-primary-foreground'
-                                                    : ''
-                                            }
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-                        )}
+                        <Pagination
+                            links={historis.links}
+                            meta={{ from: historis.from, to: historis.to, total: historis.total }}
+                        />
                     </CardContent>
                 </Card>
             </div>

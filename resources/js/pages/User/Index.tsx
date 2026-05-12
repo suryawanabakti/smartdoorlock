@@ -27,6 +27,7 @@ import AppLayout from '@/layouts/app-layout';
 import { PaginatedResponse, type BreadcrumbItem } from '@/types';
 import { type User } from '@/types/user';
 import { Head, Link, router } from '@inertiajs/react';
+import { Pagination } from '@/components/pagination';
 import { Edit, Image, Mail, Phone, Plus, Search, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -344,39 +345,10 @@ export default function UserIndex({ users, filters, roles }: Props) {
                         </div>
 
                         {/* Pagination */}
-                        {users.links.length > 3 && (
-                            <div className="mt-6 flex flex-col items-center justify-between gap-4 sm:flex-row">
-                                <div className="text-sm text-muted-foreground">
-                                    Menampilkan {users.from} hingga {users.to}{' '}
-                                    dari {users.total} hasil
-                                </div>
-                                <div className="flex flex-wrap gap-1">
-                                    {users.links.map((link, index) => (
-                                        <Button
-                                            key={index}
-                                            variant={
-                                                link.active
-                                                    ? 'default'
-                                                    : 'outline'
-                                            }
-                                            size="sm"
-                                            disabled={!link.url}
-                                            onClick={() =>
-                                                router.get(link.url!)
-                                            }
-                                            dangerouslySetInnerHTML={{
-                                                __html: link.label,
-                                            }}
-                                            className={
-                                                link.active
-                                                    ? 'bg-primary text-primary-foreground'
-                                                    : ''
-                                            }
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-                        )}
+                        <Pagination
+                            links={users.links}
+                            meta={{ from: users.from, to: users.to, total: users.total }}
+                        />
                     </CardContent>
                 </Card>
             </div>
