@@ -82,4 +82,7 @@ export interface MahasiswaFormData {
     ket: 'mhs' | 'dsn';
     status: boolean;
     tahun_masuk: number;
+    create_user?: boolean;
+    email?: string;
+    password?: string;
 }

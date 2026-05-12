@@ -39,16 +39,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-    },
-    {
-        title: 'Manajemen Mahasiswa/Dosen',
-        href: '/mahasiswas',
-    },
-];
+// Breadcrumbs will be handled inside the component to be dynamic
 
 interface Props {
     mahasiswas: PaginatedResponse<Mahasiswa>;
@@ -128,21 +119,55 @@ export default function MahasiswaIndex({
         );
     };
 
+    const isMahasiswa = filters.ket === 'mhs';
+    const isDosen = filters.ket === 'dsn';
+
+    let pageTitle = 'Manajemen Mahasiswa & Dosen';
+    let pageSubtitle = 'Kelola data mahasiswa dan dosen';
+    let tableTitle = 'Daftar Mahasiswa & Dosen';
+
+    if (isMahasiswa) {
+        pageTitle = 'Manajemen Mahasiswa';
+        pageSubtitle = 'Kelola data mahasiswa';
+        tableTitle = 'Daftar Mahasiswa';
+    } else if (isDosen) {
+        pageTitle = 'Manajemen Dosen';
+        pageSubtitle = 'Kelola data dosen';
+        tableTitle = 'Daftar Dosen';
+    }
+
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: 'Dashboard',
+            href: '/dashboard',
+        },
+        {
+            title: pageTitle,
+            href: isMahasiswa
+                ? '/mahasiswas?ket=mhs'
+                : isDosen
+                  ? '/mahasiswas?ket=dsn'
+                  : '/mahasiswas',
+        },
+    ];
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Manajemen Mahasiswa/Dosen" />
+            <Head title={pageTitle} />
 
             <div className="flex flex-col gap-6 p-4">
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">
-                            Manajemen Mahasiswa & Dosen
+                            {pageTitle}
                         </h1>
                         <p className="text-muted-foreground">
-                            Kelola data mahasiswa dan dosen
+                            {pageSubtitle}
                         </p>
                     </div>
-                    <Link href="/mahasiswas/create">
+                    <Link
+                        href={`/mahasiswas/create${filters.ket ? `?ket=${filters.ket}` : ''}`}
+                    >
                         <Button>
                             <Plus className="mr-2 h-4 w-4" />
                             Tambah Data
@@ -228,7 +253,7 @@ export default function MahasiswaIndex({
                 {/* Table */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Daftar Mahasiswa & Dosen</CardTitle>
+                        <CardTitle>{tableTitle}</CardTitle>
                         <CardDescription>
                             Total {mahasiswas.total} data ditemukan
                         </CardDescription>
@@ -254,12 +279,12 @@ export default function MahasiswaIndex({
                                         <TableRow key={mahasiswa.id}>
                                             <TableCell>
                                                 <div className="flex items-center gap-3">
-                                                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100">
+                                                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 dark:bg-neutral-800">
                                                         {mahasiswa.ket ===
                                                         'dsn' ? (
-                                                            <User className="h-4 w-4 text-gray-600" />
+                                                            <User className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                                                         ) : (
-                                                            <BookOpen className="h-4 w-4 text-gray-600" />
+                                                            <BookOpen className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                                                         )}
                                                     </div>
                                                     <div>

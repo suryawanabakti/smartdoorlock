@@ -6,20 +6,7 @@ import { type User } from '@/types/user';
 import { Head } from '@inertiajs/react';
 import MahasiswaForm from './Form';
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-    },
-    {
-        title: 'Manajemen Mahasiswa/dsn',
-        href: '/mahasiswas',
-    },
-    {
-        title: 'Edit Data',
-        href: '#',
-    },
-];
+// Breadcrumbs will be handled inside the component
 
 interface Props {
     mahasiswa: Mahasiswa;
@@ -36,22 +23,51 @@ export default function MahasiswaEdit({
     ketOptions,
     tahunOptions,
 }: Props) {
+    const isMahasiswa = mahasiswa.ket === 'mhs';
+    const isDosen = mahasiswa.ket === 'dsn';
+
+    let pageTitle = 'Edit Data';
+    let parentTitle = 'Manajemen Mahasiswa & Dosen';
+    let parentHref = '/mahasiswas';
+    let label = isDosen ? 'Dosen' : 'Mahasiswa';
+
+    if (isMahasiswa) {
+        pageTitle = 'Edit Mahasiswa';
+        parentTitle = 'Manajemen Mahasiswa';
+        parentHref = '/mahasiswas?ket=mhs';
+    } else if (isDosen) {
+        pageTitle = 'Edit Dosen';
+        parentTitle = 'Manajemen Dosen';
+        parentHref = '/mahasiswas?ket=dsn';
+    }
+
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: 'Dashboard',
+            href: '/dashboard',
+        },
+        {
+            title: parentTitle,
+            href: parentHref,
+        },
+        {
+            title: pageTitle,
+            href: '#',
+        },
+    ];
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head
-                title={`Edit ${mahasiswa.ket === 'dsn' ? 'dsn' : 'mhs'} - ${mahasiswa.nama}`}
-            />
+            <Head title={`${pageTitle} - ${mahasiswa.nama}`} />
 
             <div className="flex flex-col gap-6 p-4">
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">
-                            Edit Data
+                            {pageTitle}
                         </h1>
                         <p className="text-muted-foreground">
-                            Perbarui data{' '}
-                            {mahasiswa.ket === 'dsn' ? 'dsn' : 'mhs'}{' '}
-                            {mahasiswa.nama}
+                            Perbarui data {label} {mahasiswa.nama}
                         </p>
                     </div>
                 </div>

@@ -240,9 +240,9 @@ export default function HakAksesMahasiswaForm({
                         </div>
 
                         <div className="space-y-4 pt-2">
-                            <div className="flex items-center gap-2 rounded-lg bg-blue-50 p-2">
-                                <UserCheck className="h-4 w-4 text-blue-600" />
-                                <span className="text-sm text-blue-800">
+                            <div className="flex items-center gap-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 p-2">
+                                <UserCheck className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                                <span className="text-sm text-blue-800 dark:text-blue-200">
                                     Anda otomatis termasuk sebagai peserta
                                 </span>
                             </div>
@@ -430,7 +430,7 @@ export default function HakAksesMahasiswaForm({
                                             key={teman.id}
                                             className={`flex cursor-pointer items-center justify-between p-4 transition-colors hover:bg-muted/50 ${
                                                 isMahasiswaSelected(teman.id)
-                                                    ? 'border-l-4 border-l-blue-500 bg-blue-50'
+                                                    ? 'border-l-4 border-l-blue-500 bg-blue-50 dark:bg-blue-900/30'
                                                     : ''
                                             }`}
                                             onClick={() =>
@@ -443,8 +443,8 @@ export default function HakAksesMahasiswaForm({
                                                         isMahasiswaSelected(
                                                             teman.id,
                                                         )
-                                                            ? 'bg-blue-100 text-blue-600'
-                                                            : 'bg-gray-100 text-gray-600'
+                                                            ? 'bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-300'
+                                                            : 'bg-gray-100 dark:bg-neutral-800 text-gray-600 dark:text-gray-400'
                                                     }`}
                                                 >
                                                     <GraduationCap className="h-4 w-4" />
@@ -483,7 +483,7 @@ export default function HakAksesMahasiswaForm({
                                                             teman.id,
                                                         )
                                                             ? 'border-blue-600 bg-blue-600'
-                                                            : 'border-gray-300 bg-white'
+                                                            : 'border-gray-300 dark:border-neutral-700 bg-white dark:bg-neutral-900'
                                                     }`}
                                                 />
                                             </div>

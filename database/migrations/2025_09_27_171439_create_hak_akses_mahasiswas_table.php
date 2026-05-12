@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('hak_akses_mahasiswas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('mahasiswa_id')->constrained('mahasiswas')->cascadeOnDelete();
+            $table->foreignId('mahasiswa_id')->constrained('mahasiswa')->cascadeOnDelete();
             $table->foreignId('hak_akses_id')->constrained('hak_akses')->cascadeOnDelete();
             $table->timestamps();
 

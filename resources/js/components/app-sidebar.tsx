@@ -41,14 +41,19 @@ const adminNavItems: NavItem[] = [
         icon: DoorOpen,
     },
     {
-        title: 'User',
+        title: 'Penjaga',
         href: '/users',
         icon: Users,
     },
     {
         title: 'Mahasiswa',
-        href: '/mahasiswas',
+        href: '/mahasiswas?ket=mhs',
         icon: GraduationCap,
+    },
+    {
+        title: 'Dosen',
+        href: '/mahasiswas?ket=dsn',
+        icon: BookOpen,
     },
     {
         title: 'Scanner',
@@ -119,16 +124,7 @@ const mahasiswaNavItems: NavItem[] = [
 ];
 
 const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },
+
 ];
 
 export function AppSidebar() {

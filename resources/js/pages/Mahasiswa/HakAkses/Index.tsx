@@ -165,30 +165,30 @@ export default function HakAksesMahasiswaIndex({
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <Card>
                         <CardContent className="p-4 text-center">
-                            <div className="text-2xl font-bold text-blue-600">
+                            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                                 {statistics.total}
                             </div>
-                            <div className="text-sm text-blue-800">
+                            <div className="text-sm text-blue-800 dark:text-blue-300">
                                 Total Permohonan
                             </div>
                         </CardContent>
                     </Card>
                     <Card>
                         <CardContent className="p-4 text-center">
-                            <div className="text-2xl font-bold text-green-600">
+                            <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                                 {statistics.approved}
                             </div>
-                            <div className="text-sm text-green-800">
+                            <div className="text-sm text-green-800 dark:text-green-300">
                                 Disetujui
                             </div>
                         </CardContent>
                     </Card>
                     <Card>
                         <CardContent className="p-4 text-center">
-                            <div className="text-2xl font-bold text-yellow-600">
+                            <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
                                 {statistics.pending}
                             </div>
-                            <div className="text-sm text-yellow-800">
+                            <div className="text-sm text-yellow-800 dark:text-yellow-300">
                                 Menunggu
                             </div>
                         </CardContent>
@@ -273,14 +273,14 @@ export default function HakAksesMahasiswaIndex({
                                             key={item.id}
                                             className={
                                                 isToday(item.tanggal)
-                                                    ? 'bg-blue-50'
+                                                    ? 'bg-blue-50 dark:bg-blue-900/40'
                                                     : ''
                                             }
                                         >
                                             <TableCell>
                                                 <div className="space-y-1">
-                                                    <div className="flex items-center gap-2 font-medium">
-                                                        <Building className="h-4 w-4 text-blue-600" />
+                                                    <div className="flex items-center gap-2 font-medium text-foreground">
+                                                        <Building className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                                                         {
                                                             item.ruangan
                                                                 ?.nama_ruangan
@@ -315,7 +315,7 @@ export default function HakAksesMahasiswaIndex({
                                                         {item.tujuan}
                                                     </p>
                                                     {item.skill && (
-                                                        <p className="mt-1 line-clamp-1 text-sm text-muted-foreground">
+                                                        <p className="mt-1 line-clamp-1 text-sm text-muted-foreground dark:text-muted-foreground/80">
                                                             Skill: {item.skill}
                                                         </p>
                                                     )}
@@ -323,8 +323,8 @@ export default function HakAksesMahasiswaIndex({
                                             </TableCell>
                                             <TableCell>
                                                 <div className="flex items-center gap-2">
-                                                    <Users className="h-4 w-4 text-green-600" />
-                                                    <span className="font-medium">
+                                                    <Users className="h-4 w-4 text-green-600 dark:text-green-400" />
+                                                    <span className="font-medium text-foreground">
                                                         {item.mahasiswas
                                                             ?.length || 0}
                                                     </span>

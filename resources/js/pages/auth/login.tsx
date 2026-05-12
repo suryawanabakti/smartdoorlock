@@ -19,10 +19,10 @@ interface LoginProps {
 export default function Login({ status, canResetPassword }: LoginProps) {
     return (
         <AuthLayout
-            title="Log in to your account"
-            description="Enter your username and password below to log in"
+            title="Masuk ke Akun Anda"
+            description="Silakan masukkan username dan password Anda"
         >
-            <Head title="Log in" />
+            <Head title="Masuk" />
 
             <Form
                 {...AuthenticatedSessionController.store.form()}
@@ -42,7 +42,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     autoFocus
                                     tabIndex={1}
                                     autoComplete="username"
-                                    placeholder="C1234567"
+                                    placeholder="Masukkan NIM atau Username"
                                 />
                                 <InputError message={errors.email} />
                             </div>
@@ -56,7 +56,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                             className="ml-auto text-sm"
                                             tabIndex={5}
                                         >
-                                            Forgot password?
+                                            Lupa password?
                                         </TextLink>
                                     )}
                                 </div>
@@ -67,7 +67,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     required
                                     tabIndex={2}
                                     autoComplete="current-password"
-                                    placeholder="Password"
+                                    placeholder="Masukkan password"
                                 />
                                 <InputError message={errors.password} />
                             </div>
@@ -78,7 +78,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     name="remember"
                                     tabIndex={3}
                                 />
-                                <Label htmlFor="remember">Remember me</Label>
+                                <Label htmlFor="remember">Ingat saya</Label>
                             </div>
 
                             <Button
@@ -89,17 +89,10 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 data-test="login-button"
                             >
                                 {processing && (
-                                    <LoaderCircle className="h-4 w-4 animate-spin" />
+                                    <LoaderCircle className="h-4 w-4 animate-spin mr-2" />
                                 )}
-                                Log in
+                                Masuk
                             </Button>
-                        </div>
-
-                        <div className="text-center text-sm text-muted-foreground">
-                            Don't have an account?{' '}
-                            <TextLink href={register()} tabIndex={5}>
-                                Sign up
-                            </TextLink>
                         </div>
                     </>
                 )}

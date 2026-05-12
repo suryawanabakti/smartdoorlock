@@ -11,11 +11,11 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/dashboard',
     },
     {
-        title: 'Manajemen User',
+        title: 'Manajemen Penjaga',
         href: '/users',
     },
     {
-        title: 'Edit User',
+        title: 'Edit Penjaga',
         href: '#',
     },
 ];
@@ -35,16 +35,16 @@ export default function UserEdit({
 }: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={`Edit User - ${user.name}`} />
+            <Head title={`Edit Penjaga - ${user.name}`} />
 
             <div className="flex flex-col gap-6 p-4">
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">
-                            Edit User
+                            Edit Penjaga
                         </h1>
                         <p className="text-muted-foreground">
-                            Perbarui data user {user.name}
+                            Perbarui data penjaga {user.name}
                         </p>
                     </div>
                 </div>

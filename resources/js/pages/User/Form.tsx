@@ -46,7 +46,7 @@ export default function UserForm({
             email_notifikasi: user?.email_notifikasi || '',
             password: '',
             password_confirmation: '',
-            role: user?.role || 'mahasiswa',
+            role: user?.role || 'penjaga',
             nowa: user?.nowa || '',
             image: null,
             ruangan_ids: userRuanganIds,
@@ -125,7 +125,7 @@ export default function UserForm({
                 <CardHeader>
                     <CardTitle>Informasi Dasar</CardTitle>
                     <CardDescription>
-                        Data utama user yang akan dibuat
+                        Data utama penjaga yang akan dibuat
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -216,31 +216,8 @@ export default function UserForm({
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="role">Role *</Label>
-                            <Select
-                                value={data.role}
-                                onValueChange={(value: any) =>
-                                    setData('role', value)
-                                }
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Pilih role user" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {roles.map((role) => (
-                                        <SelectItem key={role} value={role}>
-                                            <span className="capitalize">
-                                                {role}
-                                            </span>
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            {errors.role && (
-                                <p className="text-sm text-red-600">
-                                    {errors.role}
-                                </p>
-                            )}
+                            {/* Role is fixed to penjaga, hidden from UI as per request */}
+                            <Input type="hidden" id="role" value={data.role} />
                         </div>
 
                         <div className="space-y-2">
@@ -308,7 +285,7 @@ export default function UserForm({
                     <CardDescription>
                         {user
                             ? 'Kosongkan jika tidak ingin mengubah password'
-                            : 'Buat password untuk user baru'}
+                            : 'Buat password untuk penjaga baru'}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -369,13 +346,13 @@ export default function UserForm({
                 </CardContent>
             </Card>
 
-            {/* Ruangan Assignment - Hanya untuk role penjaga */}
+            {/* Ruangan Assignment - Khusus untuk penjaga */}
             {data.role === 'penjaga' && (
                 <Card>
                     <CardHeader>
                         <CardTitle>Penugasan Ruangan</CardTitle>
                         <CardDescription>
-                            Pilih ruangan yang akan dijaga oleh user ini
+                            Pilih ruangan yang akan dijaga oleh penjaga ini
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -490,9 +467,9 @@ export default function UserForm({
                             Menyimpan...
                         </>
                     ) : user ? (
-                        'Perbarui User'
+                        'Perbarui Penjaga'
                     ) : (
-                        'Buat User'
+                        'Buat Penjaga'
                     )}
                 </Button>
             </div>

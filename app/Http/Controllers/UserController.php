@@ -15,6 +15,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $query = User::with(['ruangans'])
+            ->where('role', 'penjaga')
             ->latest();
 
         // Search filter
@@ -35,8 +36,8 @@ class UserController extends Controller
 
         return Inertia::render('User/Index', [
             'users' => $users,
-            'filters' => $request->only(['search', 'role']),
-            'roles' => ['super', 'admin', 'penjaga', 'mahasiswa'],
+            'filters' => $request->only(['search']),
+            'roles' => ['penjaga'],
         ]);
     }
 
@@ -46,7 +47,7 @@ class UserController extends Controller
 
         return Inertia::render('User/Create', [
             'ruangans' => $ruangans,
-            'roles' => ['admin', 'penjaga', 'mahasiswa'], // Super biasanya dibuat manual
+            'roles' => ['penjaga'], // Super/Admin dibuat manual atau di sistem lain
         ]);
     }
 
@@ -65,7 +66,7 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'email_notifikasi' => 'nullable|string|email|max:255|unique:users',
             'password' => ['required', 'confirmed'],
-            'role' => 'required|in:super,admin,penjaga,mahasiswa',
+            'role' => 'required|in:penjaga',
             'nowa' => 'nullable|string|max:20',
             'image' => 'nullable|image|max:2048',
             'ruangan_ids' => 'nullable|array',
@@ -106,7 +107,7 @@ class UserController extends Controller
         return Inertia::render('User/Edit', [
             'user' => $user,
             'ruangans' => $ruangans,
-            'roles' => ['super', 'admin', 'penjaga', 'mahasiswa'],
+            'roles' => ['penjaga'],
             'userRuanganIds' => $user->ruangans->pluck('id')->toArray(),
         ]);
     }
@@ -118,7 +119,7 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
             'email_notifikasi' => 'nullable|string|email|max:255|unique:users,email_notifikasi,'.$user->id,
             'password' => 'nullable|confirmed|',
-            'role' => 'required|in:super,admin,penjaga,mahasiswa',
+            'role' => 'required|in:penjaga',
             'nowa' => 'nullable|string|max:20',
             'image' => 'nullable|image|max:2048',
             'ruangan_ids' => 'nullable|array',

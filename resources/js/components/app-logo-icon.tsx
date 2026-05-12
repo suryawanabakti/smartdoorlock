@@ -1,5 +1,5 @@
 import { SVGAttributes } from 'react';
 
-export default function AppLogoIcon(props: SVGAttributes<SVGElement>) {
-    return <img src="/logo.jpg" alt="" />;
+export default function AppLogoIcon({ className }: { className?: string }) {
+    return <img src="/logo.png" className={`${className} object-contain`} alt="Logo" />;
 }

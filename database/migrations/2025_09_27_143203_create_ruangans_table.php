@@ -19,14 +19,14 @@ return new class extends Migration
             $table->time('jam_buka')->default('00:01:00');
             $table->time('jam_tutup')->default('23:59:00');
             $table->integer('max_register')->default(10);
-            $table->foreignId('mahasiswa_id')->nullable()->constrained('mahasiswas')->onDelete('set null');
+            $table->integer('mahasiswa_id')->nullable();
             $table->text('penanggung_jawab')->nullable();
             $table->timestamps();
 
             // Indexes
             $table->index('type');
             $table->index('parent_id');
-            $table->index('mahasiswa_id');
+            // $table->index('mahasiswa_id');
         });
     }
 

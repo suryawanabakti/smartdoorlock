@@ -235,9 +235,9 @@ export default function HakAksesPenjagaForm({
                         </div>
 
                         <div className="space-y-4 pt-2">
-                            <div className="flex items-center gap-2 rounded-lg bg-green-50 p-2">
-                                <CheckCircle className="h-4 w-4 text-green-600" />
-                                <span className="text-sm text-green-800">
+                             <div className="flex items-center gap-2 rounded-lg bg-green-50 dark:bg-green-900/20 p-2">
+                                <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+                                <span className="text-sm text-green-800 dark:text-green-200">
                                     Hak akses akan otomatis disetujui karena
                                     dibuat oleh penjaga
                                 </span>
@@ -428,11 +428,11 @@ export default function HakAksesPenjagaForm({
                                         return (
                                             <div
                                                 key={mahasiswa.id}
-                                                className={`flex cursor-pointer items-center justify-between p-4 transition-colors hover:bg-muted/50 ${
-                                                    isSelected
-                                                        ? 'border-l-4 border-l-blue-500 bg-blue-50'
-                                                        : ''
-                                                }`}
+                                                 className={`flex cursor-pointer items-center justify-between p-4 transition-colors hover:bg-muted/50 ${
+                                                     isSelected
+                                                         ? 'border-l-4 border-l-blue-500 bg-blue-50 dark:bg-blue-900/30'
+                                                         : ''
+                                                 }`}
                                                 onClick={() =>
                                                     toggleMahasiswa(
                                                         mahasiswa.id,
@@ -440,15 +440,15 @@ export default function HakAksesPenjagaForm({
                                                 }
                                             >
                                                 <div className="flex items-center gap-3">
-                                                    <div
-                                                        className={`flex h-8 w-8 items-center justify-center rounded-full ${
-                                                            isSelected
-                                                                ? 'bg-blue-100 text-blue-600'
-                                                                : 'bg-gray-100 text-gray-600'
-                                                        }`}
-                                                    >
-                                                        <Users className="h-4 w-4" />
-                                                    </div>
+                                                     <div
+                                                         className={`flex h-8 w-8 items-center justify-center rounded-full ${
+                                                             isSelected
+                                                                 ? 'bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-300'
+                                                                 : 'bg-gray-100 dark:bg-neutral-800 text-gray-600 dark:text-gray-400'
+                                                         }`}
+                                                     >
+                                                         <Users className="h-4 w-4" />
+                                                     </div>
                                                     <div>
                                                         <div className="font-medium">
                                                             {mahasiswa.nama}
@@ -475,11 +475,11 @@ export default function HakAksesPenjagaForm({
                                                             : 'Nonaktif'}
                                                     </Badge>
                                                     <div
-                                                        className={`h-4 w-4 rounded border-2 ${
-                                                            isSelected
-                                                                ? 'border-blue-600 bg-blue-600'
-                                                                : 'border-gray-300 bg-white'
-                                                        }`}
+                                                         className={`h-4 w-4 rounded border-2 ${
+                                                             isSelected
+                                                                 ? 'border-blue-600 bg-blue-600'
+                                                                 : 'border-gray-300 dark:border-neutral-700 bg-white dark:bg-neutral-900'
+                                                         }`}
                                                     />
                                                 </div>
                                             </div>

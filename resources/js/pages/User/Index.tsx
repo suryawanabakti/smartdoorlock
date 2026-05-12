@@ -36,7 +36,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/dashboard',
     },
     {
-        title: 'Manajemen User',
+        title: 'Manajemen Penjaga',
         href: '/users',
     },
 ];
@@ -104,22 +104,22 @@ export default function UserIndex({ users, filters, roles }: Props) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Manajemen User" />
+            <Head title="Manajemen Penjaga" />
 
             <div className="flex flex-col gap-6 p-4">
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">
-                            Manajemen User
+                            Manajemen Penjaga
                         </h1>
                         <p className="text-muted-foreground">
-                            Kelola data user dan akses ruangan
+                            Kelola data penjaga dan akses ruangan
                         </p>
                     </div>
                     <Link href="/users/create">
                         <Button>
                             <Plus className="mr-2 h-4 w-4" />
-                            Tambah User
+                            Tambah Penjaga
                         </Button>
                     </Link>
                 </div>
@@ -130,7 +130,7 @@ export default function UserIndex({ users, filters, roles }: Props) {
                         <div className="flex flex-col gap-4 md:flex-row">
                             <div className="flex-1">
                                 <Input
-                                    placeholder="Cari user berdasarkan nama, email, atau nomor WhatsApp..."
+                                    placeholder="Cari penjaga berdasarkan nama, email, atau nomor WhatsApp..."
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                     onKeyPress={(e) =>
@@ -138,24 +138,6 @@ export default function UserIndex({ users, filters, roles }: Props) {
                                     }
                                 />
                             </div>
-                            <Select value={role} onValueChange={setRole}>
-                                <SelectTrigger className="w-full md:w-40">
-                                    <SelectValue placeholder="Semua Role" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">
-                                        Semua Role
-                                    </SelectItem>
-                                    {roles.map((roleItem) => (
-                                        <SelectItem
-                                            key={roleItem}
-                                            value={roleItem}
-                                        >
-                                            {roleItem.toUpperCase()}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
                             <Button
                                 onClick={handleFilter}
                                 className="w-full md:w-auto"
@@ -170,9 +152,9 @@ export default function UserIndex({ users, filters, roles }: Props) {
                 {/* Table */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Daftar User</CardTitle>
+                        <CardTitle>Daftar Penjaga</CardTitle>
                         <CardDescription>
-                            Total {users.total} user ditemukan
+                            Total {users.total} penjaga ditemukan
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -181,7 +163,7 @@ export default function UserIndex({ users, filters, roles }: Props) {
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead className="w-[250px]">
-                                            User
+                                            Penjaga
                                         </TableHead>
                                         <TableHead>Kontak</TableHead>
                                         <TableHead>Role</TableHead>
@@ -307,7 +289,7 @@ export default function UserIndex({ users, filters, roles }: Props) {
                                                         <Button
                                                             variant="outline"
                                                             size="sm"
-                                                            title="Edit User"
+                                                            title="Edit Penjaga"
                                                         >
                                                             <Edit className="h-4 w-4" />
                                                         </Button>
@@ -326,7 +308,7 @@ export default function UserIndex({ users, filters, roles }: Props) {
                                                             user.id ===
                                                             currentUserId
                                                                 ? 'Tidak dapat menghapus akun sendiri'
-                                                                : 'Hapus User'
+                                                                : 'Hapus Penjaga'
                                                         }
                                                     >
                                                         <Trash2 className="h-4 w-4" />
@@ -345,7 +327,7 @@ export default function UserIndex({ users, filters, roles }: Props) {
                                                     <Search className="h-8 w-8" />
                                                     <div>
                                                         <p className="font-medium">
-                                                            Tidak ada user
+                                                            Tidak ada penjaga
                                                             ditemukan
                                                         </p>
                                                         <p className="text-sm">

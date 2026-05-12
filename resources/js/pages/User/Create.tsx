@@ -10,11 +10,11 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/dashboard',
     },
     {
-        title: 'Manajemen User',
+        title: 'Manajemen Penjaga',
         href: '/users',
     },
     {
-        title: 'Tambah User',
+        title: 'Tambah Penjaga',
         href: '/users/create',
     },
 ];
@@ -27,16 +27,16 @@ interface Props {
 export default function UserCreate({ ruangans, roles }: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Tambah User Baru" />
+            <Head title="Tambah Penjaga Baru" />
 
             <div className="flex flex-col gap-6 p-4">
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">
-                            Tambah User Baru
+                            Tambah Penjaga Baru
                         </h1>
                         <p className="text-muted-foreground">
-                            Isi form berikut untuk menambahkan user baru ke
+                            Isi form berikut untuk menambahkan penjaga baru ke
                             sistem
                         </p>
                     </div>

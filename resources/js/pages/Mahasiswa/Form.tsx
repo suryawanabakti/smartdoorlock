@@ -29,11 +29,9 @@ import {
 } from 'lucide-react';
 
 interface Props {
-    mahasiswa?: Mahasiswa;
-    ruangans: Ruangan[];
-    users: User[];
     ketOptions: { value: string; label: string }[];
     tahunOptions: number[];
+    defaultKet?: string;
 }
 
 export default function MahasiswaForm({
@@ -42,6 +40,7 @@ export default function MahasiswaForm({
     users,
     ketOptions,
     tahunOptions,
+    defaultKet,
 }: Props) {
     const { data, setData, errors, processing, post, put, reset } =
         useForm<MahasiswaFormData>({
@@ -51,9 +50,12 @@ export default function MahasiswaForm({
             nim: mahasiswa?.nim || '',
             pin: mahasiswa?.pin || '',
             ruangan_id: mahasiswa?.ruangan_id || null,
-            ket: mahasiswa?.ket || 'mhs',
+            ket: mahasiswa?.ket || (defaultKet as any) || 'mhs',
             status: mahasiswa ? Boolean(mahasiswa.status) : true,
             tahun_masuk: mahasiswa?.tahun_masuk || new Date().getFullYear(),
+            create_user: false,
+            email: '',
+            password: '',
         });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -72,7 +74,7 @@ export default function MahasiswaForm({
 
     // Filter users berdasarkan ket yang dipilih
     const filteredUsers = users.filter((user) =>
-        data.ket === 'dsn' ? user.role === 'dsn' : user.role === 'mahasiswa',
+        data.ket === 'dsn' ? user.role === 'dosen' : user.role === 'mahasiswa',
     );
 
     // Filter ruangan hanya yang type kelas untuk mahasiswa
@@ -242,52 +244,113 @@ export default function MahasiswaForm({
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <div className="space-y-2">
-                            <Label htmlFor="user_id">User Account</Label>
-                            <Select
-                                value={data.user_id?.toString() || ''}
-                                onValueChange={(value) =>
-                                    setData(
-                                        'user_id',
-                                        value ? parseInt(value) : null,
-                                    )
-                                }
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Pilih user account (opsional)" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="-">
-                                        Tidak ada user account
-                                    </SelectItem>
-                                    {filteredUsers.map((user) => (
-                                        <SelectItem
-                                            key={user.id}
-                                            value={user.id.toString()}
-                                        >
-                                            <div className="flex items-center gap-2">
-                                                {user.image_url ? (
-                                                    <img
-                                                        src={user.image_url}
-                                                        alt={user.name}
-                                                        className="h-4 w-4 rounded-full"
-                                                    />
-                                                ) : (
-                                                    <User2Icon className="h-4 w-4" />
-                                                )}
-                                                {user.name} ({user.email})
-                                            </div>
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="user_id">User Account</Label>
+                                <Select
+                                    disabled={data.create_user}
+                                    value={data.user_id?.toString() || ''}
+                                    onValueChange={(value) =>
+                                        setData(
+                                            'user_id',
+                                            value && value !== '-' ? parseInt(value) : null,
+                                        )
+                                    }
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder={data.create_user ? "Akan membuat user baru" : "Pilih user account (opsional)"} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="-">
+                                            Tidak ada user account
                                         </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <p className="text-sm text-muted-foreground">
-                                Pilih user account yang terkait dengan data ini
-                            </p>
-                            {errors.user_id && (
-                                <p className="text-sm text-red-600">
-                                    {errors.user_id}
-                                </p>
+                                        {filteredUsers.map((user) => (
+                                            <SelectItem
+                                                key={user.id}
+                                                value={user.id.toString()}
+                                            >
+                                                <div className="flex items-center gap-2">
+                                                    {user.image_url ? (
+                                                        <img
+                                                            src={user.image_url}
+                                                            alt={user.name}
+                                                            className="h-4 w-4 rounded-full"
+                                                        />
+                                                    ) : (
+                                                        <User2Icon className="h-4 w-4" />
+                                                    )}
+                                                    {user.name} ({user.email})
+                                                </div>
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                {errors.user_id && (
+                                    <p className="text-sm text-red-600">
+                                        {errors.user_id}
+                                    </p>
+                                )}
+                            </div>
+
+                            {!data.user_id && (
+                                <div className="space-y-4 rounded-lg border border-blue-100/30 bg-blue-50/50 p-4 dark:border-blue-900/30 dark:bg-blue-900/10">
+                                    <div className="flex items-center justify-between">
+                                        <div className="space-y-0.5">
+                                            <Label htmlFor="create_user">Buat Akun User Baru</Label>
+                                            <p className="text-xs text-muted-foreground">
+                                                Aktifkan untuk membuat akun login secara otomatis
+                                            </p>
+                                        </div>
+                                        <Switch
+                                            id="create_user"
+                                            checked={data.create_user}
+                                            onCheckedChange={(checked) => {
+                                                setData((prev) => ({
+                                                    ...prev,
+                                                    create_user: checked,
+                                                    user_id: checked ? null : prev.user_id
+                                                }));
+                                            }}
+                                        />
+                                    </div>
+
+                                    {data.create_user && (
+                                        <div className="grid grid-cols-1 gap-4 pt-2">
+                                            <div className="space-y-2">
+                                                <Label htmlFor="email">Email Account *</Label>
+                                                <Input
+                                                    id="email"
+                                                    type="email"
+                                                    value={data.email}
+                                                    onChange={(e) => setData('email', e.target.value)}
+                                                    placeholder="email@example.com"
+                                                    className=""
+                                                />
+                                                {errors.email && (
+                                                    <p className="text-sm text-red-600">
+                                                        {errors.email}
+                                                    </p>
+                                                )}
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label htmlFor="password">Password Account *</Label>
+                                                <Input
+                                                    id="password"
+                                                    type="password"
+                                                    value={data.password}
+                                                    onChange={(e) => setData('password', e.target.value)}
+                                                    placeholder="Minimal 8 karakter"
+                                                    className=""
+                                                />
+                                                {errors.password && (
+                                                    <p className="text-sm text-red-600">
+                                                        {errors.password}
+                                                    </p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             )}
                         </div>
 

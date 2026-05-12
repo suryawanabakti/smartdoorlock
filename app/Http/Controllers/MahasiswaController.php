@@ -7,6 +7,7 @@ use App\Models\Ruangan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
 class MahasiswaController extends Controller
@@ -59,9 +60,9 @@ class MahasiswaController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        $ruangans = Ruangan::where('type', 'kelas')->get();
+        $ruangans = Ruangan::all();
         $users = User::where('role', 'mahasiswa')->orWhere('role', 'dosen')->get();
 
         return Inertia::render('Mahasiswa/Create', [
@@ -72,6 +73,7 @@ class MahasiswaController extends Controller
                 ['value' => 'dsn', 'label' => 'Dosen'],
             ],
             'tahunOptions' => range(date('Y'), date('Y') - 10, -1),
+            'filters' => $request->only(['ket']),
         ]);
     }
 
@@ -79,21 +81,39 @@ class MahasiswaController extends Controller
     {
         $validated = $request->validate([
             'user_id' => 'nullable|exists:users,id',
-            'id_tag' => 'nullable|string|unique:mahasiswas,id_tag',
+            'create_user' => 'nullable|boolean',
+            'email' => 'required_if:create_user,true|nullable|email|unique:users,email',
+            'password' => 'required_if:create_user,true|nullable|string|min:8',
+            'id_tag' => 'nullable|string|unique:mahasiswa,id_tag',
             'nama' => 'required|string|max:255',
-            'nim' => 'required|string|unique:mahasiswas,nim',
-            'pin' => 'nullable|string|unique:mahasiswas,pin',
+            'nim' => 'required|string|unique:mahasiswa,nim',
+            'pin' => 'nullable|string|unique:mahasiswa,pin',
             'ruangan_id' => 'nullable|exists:ruangans,id',
             'ket' => 'required|in:mhs,dsn',
             'status' => 'required|boolean',
-            'tahun_masuk' => 'required|integer|min:2000|max:'.(date('Y') + 1),
+            'tahun_masuk' => 'required|integer|min:2000|max:' . (date('Y') + 1),
         ]);
 
         DB::transaction(function () use ($validated) {
+            if (!empty($validated['create_user']) && $validated['create_user']) {
+                $user = User::create([
+                    'name' => $validated['nama'],
+                    'email' => $validated['email'],
+                    'password' => Hash::make($validated['password']),
+                    'role' => 'mahasiswa',
+                ]);
+                $validated['user_id'] = $user->id;
+            }
+
             $mahasiswa = Mahasiswa::create($validated);
 
             // Jika ada user_id, update role user sesuai dengan ket
-
+            if ($validated['user_id']) {
+                $user = User::find($validated['user_id']);
+                if ($user) {
+                    $user->update(['role' => 'mahasiswa']);
+                }
+            }
         });
 
         return redirect()->route('mahasiswas.index')
@@ -121,35 +141,48 @@ class MahasiswaController extends Controller
     {
         $validated = $request->validate([
             'user_id' => 'nullable|exists:users,id',
-            'id_tag' => 'nullable|string|unique:mahasiswas,id_tag,'.$mahasiswa->id,
+            'create_user' => 'nullable|boolean',
+            'email' => 'required_if:create_user,true|nullable|email|unique:users,email',
+            'password' => 'required_if:create_user,true|nullable|string|min:8',
+            'id_tag' => 'nullable|string|unique:mahasiswa,id_tag,' . $mahasiswa->id,
             'nama' => 'required|string|max:255',
-            'nim' => 'required|string|unique:mahasiswas,nim,'.$mahasiswa->id,
-            'pin' => 'nullable|string|unique:mahasiswas,pin,'.$mahasiswa->id,
+            'nim' => 'required|string|unique:mahasiswa,nim,' . $mahasiswa->id,
+            'pin' => 'nullable|string|unique:mahasiswa,pin,' . $mahasiswa->id,
             'ruangan_id' => 'nullable|exists:ruangans,id',
             'ket' => 'required|in:mhs,dsn',
             'status' => 'required|boolean',
-            'tahun_masuk' => 'required|integer|min:2000|max:'.(date('Y') + 1),
+            'tahun_masuk' => 'required|integer|min:2000|max:' . (date('Y') + 1),
         ]);
 
         DB::transaction(function () use ($mahasiswa, $validated) {
+            if (!empty($validated['create_user']) && $validated['create_user']) {
+                $user = User::create([
+                    'name' => $validated['nama'],
+                    'email' => $validated['email'],
+                    'password' => Hash::make($validated['password']),
+                    'role' => 'mahasiswa',
+                ]);
+                $validated['user_id'] = $user->id;
+            }
+
             $oldUserId = $mahasiswa->user_id;
             $oldKet = $mahasiswa->ket;
 
             $mahasiswa->update($validated);
 
             // Update user role jika ket berubah atau user_id berubah
-            if ($validated['user_id'] && ($validated['ket'] !== $oldKet || $validated['user_id'] !== $oldUserId)) {
+            if ($validated['user_id']) {
                 $user = User::find($validated['user_id']);
                 if ($user) {
-                    $user->update(['role' => $validated['ket']]);
+                    $user->update(['role' => 'mahasiswa']);
                 }
             }
 
             // Reset role user lama jika user_id berubah
             if ($oldUserId && $oldUserId !== $validated['user_id']) {
                 $oldUser = User::find($oldUserId);
-                if ($oldUser && $oldUser->role === $oldKet) {
-                    $oldUser->update(['role' => 'mahasiswa']); // Default role
+                if ($oldUser && ($oldUser->role === 'dosen' || $oldUser->role === 'mahasiswa')) {
+                    $oldUser->update(['role' => 'mahasiswa']); // Default role or maybe handle better
                 }
             }
         });
