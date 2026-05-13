@@ -47,14 +47,15 @@ const adminNavItems: NavItem[] = [
     },
     {
         title: 'Mahasiswa',
-        href: '/mahasiswas?ket=mhs',
+        href: '/mahasiswa-list',
         icon: GraduationCap,
     },
     {
         title: 'Dosen',
-        href: '/mahasiswas?ket=dsn',
+        href: '/dosen-list',
         icon: BookOpen,
     },
+
     {
         title: 'Scanner',
         href: '/scaner-status',

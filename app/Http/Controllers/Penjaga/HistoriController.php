@@ -8,6 +8,9 @@ use App\Models\Mahasiswa;
 use App\Models\Ruangan;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Exports\HistoriExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class HistoriController extends Controller
 {
@@ -118,10 +121,12 @@ class HistoriController extends Controller
 
     public function export(Request $request)
     {
-        // Implement export functionality here (Excel/PDF)
-        // This is a placeholder for export functionality
-        return response()->json(['message' => 'Export feature will be implemented']);
+        $filters = $request->all();
+        $fileName = 'riwayat_scan_penjaga_' . date('Ymd_His') . '.xlsx';
+        
+        return Excel::download(new HistoriExport($filters), $fileName);
     }
+
 
     public function statistics(Request $request)
     {

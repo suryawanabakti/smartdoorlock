@@ -130,9 +130,22 @@ export default function HistoriIndex({
     };
 
     const exportData = () => {
-        // Implement export functionality
-        alert('Fitur export akan diimplementasikan');
+        const filterParams: any = {};
+        if (search) filterParams.search = search;
+        if (status !== '') filterParams.status = status;
+        if (ruanganId) filterParams.ruangan_id = ruanganId;
+        if (type) filterParams.type = type;
+        if (tanggalMulai) filterParams.tanggal_mulai = tanggalMulai;
+        if (tanggalSelesai) filterParams.tanggal_selesai = tanggalSelesai;
+        if (jamMulai) filterParams.jam_mulai = jamMulai;
+        if (jamSelesai) filterParams.jam_selesai = jamSelesai;
+        if (kelas) filterParams.kelas = kelas;
+        if (tahunMasuk) filterParams.tahun_masuk = tahunMasuk;
+
+        const queryString = new URLSearchParams(filterParams).toString();
+        window.location.href = `/histori/export?${queryString}`;
     };
+
 
     const getStatusBadge = (status: number) => {
         const variant = getStatusBadgeVariant(status);
@@ -185,23 +198,25 @@ export default function HistoriIndex({
                             Riwayat Scan
                         </h1>
                         <p className="text-muted-foreground">
-                            Data lengkap aktivitas scanning
+                            Data lengkap aktivitas scanning pintu ruangan
                         </p>
                     </div>
                     <div className="flex gap-2">
-                        <Button variant="outline" onClick={exportData}>
-                            <Download className="mr-2 h-4 w-4" />
-                            Export
-                        </Button>
                         <Button
                             variant="outline"
                             onClick={() => setShowFilters(!showFilters)}
+                            className={showFilters ? 'bg-secondary' : ''}
                         >
                             <Filter className="mr-2 h-4 w-4" />
-                            Filter
+                            {showFilters ? 'Sembunyikan Filter' : 'Tampilkan Filter'}
+                        </Button>
+                        <Button variant="default" onClick={exportData} className="bg-green-600 hover:bg-green-700">
+                            <Download className="mr-2 h-4 w-4" />
+                            Export Excel
                         </Button>
                     </div>
                 </div>
+
 
                 {/* Statistics */}
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
@@ -269,167 +284,155 @@ export default function HistoriIndex({
 
                 {/* Filters */}
                 {showFilters && (
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Filter className="h-5 w-5" />
-                                Filter Data
+                    <Card className="border-blue-100 bg-blue-50/30 shadow-sm transition-all duration-300 dark:border-blue-900/30 dark:bg-blue-950/10">
+                        <CardHeader className="pb-3">
+                            <CardTitle className="flex items-center gap-2 text-lg">
+                                <Filter className="h-5 w-5 text-blue-600" />
+                                Filter Data Riwayat
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+                                {/* Search Section */}
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">
-                                        Pencarian
+                                    <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                                        <Search className="h-3.5 w-3.5" />
+                                        Pencarian Mahasiswa
                                     </label>
                                     <Input
-                                        placeholder="Cari ID Tag, Nama, NIM..."
+                                        placeholder="Nama, NIM, atau ID Tag..."
                                         value={search}
-                                        onChange={(e) =>
-                                            setSearch(e.target.value)
-                                        }
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        className="bg-background"
                                     />
+                                    <p className="text-[10px] text-muted-foreground">Cari berdasarkan nama, nim atau id tag</p>
                                 </div>
+
+                                {/* Status Section */}
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">
-                                        Status
+                                    <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                                        <RefreshCw className="h-3.5 w-3.5" />
+                                        Status Scan
                                     </label>
-                                    <Select
-                                        value={status}
-                                        onValueChange={setStatus}
-                                    >
-                                        <SelectTrigger>
+                                    <Select value={status} onValueChange={setStatus}>
+                                        <SelectTrigger className="bg-background">
                                             <SelectValue placeholder="Semua Status" />
                                         </SelectTrigger>
                                         <SelectContent>
+                                            <SelectItem value="all">Semua Status</SelectItem>
                                             {statusOptions.map((option) => (
-                                                <SelectItem
-                                                    key={option.value}
-                                                    value={option.value}
-                                                >
+                                                <SelectItem key={option.value} value={option.value}>
                                                     {option.label}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
                                 </div>
+
+                                {/* Ruangan Section */}
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">
-                                        Ruangan
+                                    <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                                        <Building className="h-3.5 w-3.5" />
+                                        Filter Ruangan
                                     </label>
-                                    <Select
-                                        value={ruanganId}
-                                        onValueChange={setRuanganId}
-                                    >
-                                        <SelectTrigger>
+                                    <Select value={ruanganId} onValueChange={setRuanganId}>
+                                        <SelectTrigger className="bg-background">
                                             <SelectValue placeholder="Semua Ruangan" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="all">
-                                                Semua Ruangan
-                                            </SelectItem>
+                                            <SelectItem value="all">Semua Ruangan</SelectItem>
                                             {ruangans.map((ruangan) => (
-                                                <SelectItem
-                                                    key={ruangan.id}
-                                                    value={ruangan.id.toString()}
-                                                >
+                                                <SelectItem key={ruangan.id} value={ruangan.id.toString()}>
                                                     {ruangan.nama_ruangan}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
                                 </div>
+
+                                {/* Type Section */}
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">
-                                        Type Scanner
+                                    <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                                        <Scan className="h-3.5 w-3.5" />
+                                        Posisi Scanner
                                     </label>
-                                    <Select
-                                        value={type}
-                                        onValueChange={setType}
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Semua Type" />
+                                    <Select value={type} onValueChange={setType}>
+                                        <SelectTrigger className="bg-background">
+                                            <SelectValue placeholder="Semua Posisi" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             {typeOptions.map((option) => (
-                                                <SelectItem
-                                                    key={option.value}
-                                                    value={option.value}
-                                                >
+                                                <SelectItem key={option.value} value={option.value}>
                                                     {option.label}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium">
-                                        Tanggal Mulai
+                            </div>
+
+                            <div className="mt-6 grid grid-cols-1 gap-6 border-t pt-6 md:grid-cols-2 lg:grid-cols-4">
+                                {/* Date Range */}
+                                <div className="space-y-2 lg:col-span-2">
+                                    <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                                        <Calendar className="h-3.5 w-3.5" />
+                                        Rentang Tanggal Scan
                                     </label>
-                                    <Input
-                                        type="date"
-                                        value={tanggalMulai}
-                                        onChange={(e) =>
-                                            setTanggalMulai(e.target.value)
-                                        }
-                                    />
+                                    <div className="flex items-center gap-2">
+                                        <Input
+                                            type="date"
+                                            value={tanggalMulai}
+                                            onChange={(e) => setTanggalMulai(e.target.value)}
+                                            className="bg-background"
+                                        />
+                                        <span className="text-muted-foreground">s/d</span>
+                                        <Input
+                                            type="date"
+                                            value={tanggalSelesai}
+                                            onChange={(e) => setTanggalSelesai(e.target.value)}
+                                            className="bg-background"
+                                        />
+                                    </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium">
-                                        Tanggal Selesai
+
+                                {/* Time Range */}
+                                <div className="space-y-2 lg:col-span-2">
+                                    <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                                        <Clock className="h-3.5 w-3.5" />
+                                        Rentang Waktu Scan
                                     </label>
-                                    <Input
-                                        type="date"
-                                        value={tanggalSelesai}
-                                        onChange={(e) =>
-                                            setTanggalSelesai(e.target.value)
-                                        }
-                                    />
+                                    <div className="flex items-center gap-2">
+                                        <Input
+                                            type="time"
+                                            value={jamMulai}
+                                            onChange={(e) => setJamMulai(e.target.value)}
+                                            className="bg-background"
+                                        />
+                                        <span className="text-muted-foreground">s/d</span>
+                                        <Input
+                                            type="time"
+                                            value={jamSelesai}
+                                            onChange={(e) => setJamSelesai(e.target.value)}
+                                            className="bg-background"
+                                        />
+                                    </div>
                                 </div>
+                            </div>
+
+                            <div className="mt-6 grid grid-cols-1 gap-6 border-t pt-6 md:grid-cols-2 lg:grid-cols-4">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">
-                                        Jam Mulai
+                                    <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                                        <Building className="h-3.5 w-3.5" />
+                                        Filter Kelas
                                     </label>
-                                    <Input
-                                        type="time"
-                                        value={jamMulai}
-                                        onChange={(e) =>
-                                            setJamMulai(e.target.value)
-                                        }
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium">
-                                        Jam Selesai
-                                    </label>
-                                    <Input
-                                        type="time"
-                                        value={jamSelesai}
-                                        onChange={(e) =>
-                                            setJamSelesai(e.target.value)
-                                        }
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium">
-                                        Kelas
-                                    </label>
-                                    <Select
-                                        value={kelas}
-                                        onValueChange={setKelas}
-                                    >
-                                        <SelectTrigger>
+                                    <Select value={kelas} onValueChange={setKelas}>
+                                        <SelectTrigger className="bg-background">
                                             <SelectValue placeholder="Semua Kelas" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="all">
-                                                Semua Kelas
-                                            </SelectItem>
+                                            <SelectItem value="all">Semua Kelas</SelectItem>
                                             {kelasOptions.map((kelas) => (
-                                                <SelectItem
-                                                    key={kelas.id}
-                                                    value={kelas.id.toString()}
-                                                >
+                                                <SelectItem key={kelas.id} value={kelas.id.toString()}>
                                                     {kelas.nama_ruangan}
                                                 </SelectItem>
                                             ))}
@@ -437,25 +440,18 @@ export default function HistoriIndex({
                                     </Select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">
+                                    <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                                        <Calendar className="h-3.5 w-3.5" />
                                         Tahun Masuk
                                     </label>
-                                    <Select
-                                        value={tahunMasuk}
-                                        onValueChange={setTahunMasuk}
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Semua Tahun" />
+                                    <Select value={tahunMasuk} onValueChange={setTahunMasuk}>
+                                        <SelectTrigger className="bg-background">
+                                            <SelectValue placeholder="Semua Angkatan" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="all">
-                                                Semua Tahun
-                                            </SelectItem>
+                                            <SelectItem value="all">Semua Angkatan</SelectItem>
                                             {tahunOptions.map((tahun) => (
-                                                <SelectItem
-                                                    key={tahun}
-                                                    value={tahun.toString()}
-                                                >
+                                                <SelectItem key={tahun} value={tahun.toString()}>
                                                     {tahun}
                                                 </SelectItem>
                                             ))}
@@ -463,22 +459,28 @@ export default function HistoriIndex({
                                     </Select>
                                 </div>
                             </div>
-                            <div className="mt-4 flex gap-2">
-                                <Button onClick={handleFilter}>
-                                    <Search className="mr-2 h-4 w-4" />
-                                    Terapkan Filter
-                                </Button>
+
+                            <div className="mt-8 flex justify-end gap-3 border-t pt-6">
                                 <Button
                                     variant="outline"
                                     onClick={clearFilters}
+                                    className="px-6"
                                 >
                                     <RefreshCw className="mr-2 h-4 w-4" />
-                                    Reset Filter
+                                    Reset Semua
+                                </Button>
+                                <Button
+                                    onClick={handleFilter}
+                                    className="bg-blue-600 px-8 hover:bg-blue-700"
+                                >
+                                    <Search className="mr-2 h-4 w-4" />
+                                    Terapkan Filter
                                 </Button>
                             </div>
                         </CardContent>
                     </Card>
                 )}
+
 
                 {/* Table */}
                 <Card>

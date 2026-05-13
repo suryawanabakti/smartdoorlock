@@ -36,8 +36,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('users.toggle-status');
 
     Route::resource('mahasiswas', MahasiswaController::class);
+    Route::get('/mahasiswa-list', [MahasiswaController::class, 'index'])->name('mahasiswa.list');
+    Route::get('/dosen-list', [MahasiswaController::class, 'index'])->name('dosen.list');
     Route::post('/mahasiswas/{mahasiswa}/toggle-status', [MahasiswaController::class, 'toggleStatus'])
         ->name('mahasiswas.toggle-status');
+    Route::post('/mahasiswas/import', [MahasiswaController::class, 'import'])->name('mahasiswas.import');
+
+
 
     Route::resource('scaner-status', ScanerStatusController::class);
 
@@ -54,7 +59,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/hak-akses/{hakAkses}/toggle-admin', [HakAksesController::class, 'toggleAdmin'])->name('hak-akses.toggle-admin');
 
     Route::get('/histori', [HistoriController::class, 'index'])->name('histori.index');
-    Route::post('/histori/export', [HistoriController::class, 'export'])->name('histori.export');
+    Route::get('/histori/export', [HistoriController::class, 'export'])->name('histori.export');
     Route::get('/histori/statistics', [HistoriController::class, 'statistics'])->name('histori.statistics');
 
     Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
@@ -90,7 +95,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/ruangan/{ruangan}', [RuanganPenjagaController::class, 'update'])->name('penjaga.ruangan.update');
 
         Route::get('/histori', [PenjagaHistoriController::class, 'index'])->name('penjaga.histori.index');
-        Route::post('/histori/export', [PenjagaHistoriController::class, 'export'])->name('penjaga.histori.export');
+        Route::get('/histori/export', [PenjagaHistoriController::class, 'export'])->name('penjaga.histori.export');
         Route::get('/histori/statistics', [PenjagaHistoriController::class, 'statistics'])->name('penjaga.histori.statistics');
     });
 

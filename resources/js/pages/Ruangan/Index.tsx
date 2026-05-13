@@ -30,6 +30,8 @@ import { Head, Link, router } from '@inertiajs/react';
 import { Pagination } from '@/components/pagination';
 import { Edit, Eye, Plus, RefreshCcw, Search, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+import { ConfirmDialog } from '@/components/confirm-dialog';
+
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -53,6 +55,9 @@ interface Props {
 export default function RuanganIndex({ ruangans, filters }: Props) {
     const [search, setSearch] = useState(filters.search || '');
     const [type, setType] = useState(filters.type || '');
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [idToDelete, setIdToDelete] = useState<number | null>(null);
+
 
     const handleFilter = () => {
         const filters: any = {};
@@ -67,10 +72,17 @@ export default function RuanganIndex({ ruangans, filters }: Props) {
     };
 
     const deleteRuangan = (id: number) => {
-        if (confirm('Apakah Anda yakin ingin menghapus ruangan ini?')) {
-            router.delete(`/ruangans/${id}`);
+        setIdToDelete(id);
+        setIsDeleteDialogOpen(true);
+    };
+
+    const confirmDelete = () => {
+        if (idToDelete) {
+            router.delete(`/ruangans/${idToDelete}`);
+            setIdToDelete(null);
         }
     };
+
 
     const getTypeBadge = (type: string) => {
         const variants = {
@@ -91,6 +103,17 @@ export default function RuanganIndex({ ruangans, filters }: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Manajemen Ruangan" />
+
+            <ConfirmDialog
+                isOpen={isDeleteDialogOpen}
+                onClose={() => setIsDeleteDialogOpen(false)}
+                onConfirm={confirmDelete}
+                title="Hapus Ruangan"
+                description="Apakah Anda yakin ingin menghapus ruangan ini? Tindakan ini tidak dapat dibatalkan."
+                variant="destructive"
+                confirmText="Hapus"
+            />
+
 
             <div className="flex flex-col gap-6 p-4">
                 <div className="flex items-center justify-between">

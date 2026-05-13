@@ -37,8 +37,23 @@ import {
     ToggleRight,
     Trash2,
     User,
+    FileUp,
+    Download
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { ConfirmDialog } from '@/components/confirm-dialog';
+
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogFooter,
+} from '@/components/ui/dialog';
+import { useForm } from '@inertiajs/react';
+
 
 // Breadcrumbs will be handled inside the component to be dynamic
 
@@ -66,6 +81,32 @@ export default function MahasiswaIndex({
     const [status, setStatus] = useState(filters.status || '');
     const [ket, setKet] = useState(filters.ket || '');
     const [tahunMasuk, setTahunMasuk] = useState(filters.tahun_masuk || '');
+    const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [mahasiswaToDelete, setMahasiswaToDelete] = useState<Mahasiswa | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+
+    const { data, setData, post, processing, reset, errors } = useForm({
+        file: null as File | null,
+        ket: filters.ket || 'mhs',
+    });
+
+    const handleImport = (e: React.FormEvent) => {
+        e.preventDefault();
+        post('/mahasiswas/import', {
+            data: {
+                ...data,
+                ket: filters.ket || 'mhs',
+            },
+            onSuccess: () => {
+                setIsImportDialogOpen(false);
+                reset();
+            },
+        });
+    };
+
+
 
     const handleFilter = () => {
         const filterParams: any = {};
@@ -81,14 +122,17 @@ export default function MahasiswaIndex({
     };
 
     const deleteMahasiswa = (mahasiswa: Mahasiswa) => {
-        if (
-            confirm(
-                `Apakah Anda yakin ingin menghapus ${mahasiswa.ket} ${mahasiswa.nama}?`,
-            )
-        ) {
-            router.delete(`/mahasiswas/${mahasiswa.id}`);
+        setMahasiswaToDelete(mahasiswa);
+        setIsDeleteDialogOpen(true);
+    };
+
+    const confirmDelete = () => {
+        if (mahasiswaToDelete) {
+            router.delete(`/mahasiswas/${mahasiswaToDelete.id}`);
+            setMahasiswaToDelete(null);
         }
     };
+
 
     const toggleStatus = (mahasiswa: Mahasiswa) => {
         router.post(`/mahasiswas/${mahasiswa.id}/toggle-status`);
@@ -145,16 +189,28 @@ export default function MahasiswaIndex({
         {
             title: pageTitle,
             href: isMahasiswa
-                ? '/mahasiswas?ket=mhs'
+                ? '/mahasiswa-list'
                 : isDosen
-                  ? '/mahasiswas?ket=dsn'
+                  ? '/dosen-list'
                   : '/mahasiswas',
         },
     ];
 
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={pageTitle} />
+
+            <ConfirmDialog
+                isOpen={isDeleteDialogOpen}
+                onClose={() => setIsDeleteDialogOpen(false)}
+                onConfirm={confirmDelete}
+                title="Hapus Data"
+                description={`Apakah Anda yakin ingin menghapus ${mahasiswaToDelete?.ket === 'dsn' ? 'Dosen' : 'Mahasiswa'} ${mahasiswaToDelete?.nama}? Tindakan ini tidak dapat dibatalkan.`}
+                variant="destructive"
+                confirmText="Hapus"
+            />
+
 
             <div className="flex flex-col gap-6 p-4">
                 <div className="flex items-center justify-between">
@@ -166,14 +222,64 @@ export default function MahasiswaIndex({
                             {pageSubtitle}
                         </p>
                     </div>
-                    <Link
-                        href={`/mahasiswas/create${filters.ket ? `?ket=${filters.ket}` : ''}`}
-                    >
-                        <Button>
-                            <Plus className="mr-2 h-4 w-4" />
-                            Tambah Data
-                        </Button>
-                    </Link>
+                    <div className="flex gap-2">
+                        <Dialog open={isImportDialogOpen} onOpenChange={setIsImportDialogOpen}>
+                            <DialogTrigger asChild>
+                                <Button variant="outline">
+                                    <FileUp className="mr-2 h-4 w-4" />
+                                    Import Excel
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Import Data {isDosen ? 'Dosen' : 'Mahasiswa'}</DialogTitle>
+                                    <DialogDescription>
+                                        Pilih file Excel (.xlsx, .xls) atau CSV untuk diimport. 
+                                        Pastikan kolom sesuai dengan format {isDosen ? 'Dosen' : 'Mahasiswa'}.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <form onSubmit={handleImport}>
+                                    <div className="grid gap-4 py-4">
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-sm font-medium">File Excel/CSV</label>
+                                            <Input 
+                                                type="file" 
+                                                accept=".xlsx,.xls,.csv"
+                                                onChange={e => setData('file', e.target.files ? e.target.files[0] : null)}
+                                            />
+                                            {errors.file && <p className="text-sm text-red-500">{errors.file}</p>}
+                                        </div>
+                                        <div className="rounded-md bg-blue-50 p-3 text-xs text-blue-800 dark:bg-blue-900/20 dark:text-blue-300">
+                                            <p className="font-semibold mb-1">Format Kolom {isDosen ? 'Dosen' : 'Mahasiswa'}:</p>
+                                            <ul className="list-disc list-inside space-y-1">
+                                                <li><strong>nama</strong>: Nama Lengkap</li>
+                                                <li><strong>{isDosen ? 'nidn / nim' : 'nim'}</strong>: Nomor Induk (Unique)</li>
+                                                <li><strong>id_tag</strong>: ID Tag RFID (Opsional)</li>
+                                                <li><strong>{isDosen ? 'tahun_gabung' : 'tahun_masuk'}</strong>: Tahun</li>
+                                                <li><strong>{isDosen ? 'homebase / kelas' : 'kelas'}</strong>: Nama Ruangan/Kelas</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <DialogFooter>
+                                        <Button type="button" variant="outline" onClick={() => setIsImportDialogOpen(false)}>Batal</Button>
+                                        <Button type="submit" disabled={processing || !data.file}>
+                                            {processing ? 'Mengimport...' : 'Import Sekarang'}
+                                        </Button>
+                                    </DialogFooter>
+                                </form>
+                            </DialogContent>
+                        </Dialog>
+                        <Link
+                            href={`/mahasiswas/create${filters.ket ? `?ket=${filters.ket}` : ''}`}
+                        >
+                            <Button>
+                                <Plus className="mr-2 h-4 w-4" />
+                                Tambah Data
+                            </Button>
+                        </Link>
+                    </div>
+
                 </div>
 
                 {/* Filters */}
@@ -264,16 +370,16 @@ export default function MahasiswaIndex({
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>Identitas</TableHead>
-                                        <TableHead>NIM/NIDN</TableHead>
-                                        <TableHead>Kelas/Ruangan</TableHead>
-                                        <TableHead>Jenis</TableHead>
+                                        <TableHead>{isDosen ? 'Nama Dosen' : 'Identitas'}</TableHead>
+                                        <TableHead>{isDosen ? 'NIDN' : 'NIM'}</TableHead>
+                                        <TableHead>{isDosen ? 'Homebase/Ruangan' : 'Kelas/Ruangan'}</TableHead>
                                         <TableHead>Status</TableHead>
-                                        <TableHead>Tahun</TableHead>
+                                        <TableHead>{isDosen ? 'Tahun Gabung' : 'Angkatan'}</TableHead>
                                         <TableHead className="w-[120px] text-right">
                                             Aksi
                                         </TableHead>
                                     </TableRow>
+
                                 </TableHeader>
                                 <TableBody>
                                     {mahasiswas.data.map((mahasiswa) => (
@@ -326,17 +432,18 @@ export default function MahasiswaIndex({
                                                     </span>
                                                 )}
                                             </TableCell>
-                                            <TableCell>
-                                                {getKetBadge(mahasiswa.ket)}
-                                            </TableCell>
+
                                             <TableCell>
                                                 {getStatusBadge(
                                                     mahasiswa.status,
                                                 )}
                                             </TableCell>
                                             <TableCell>
-                                                {mahasiswa.tahun_masuk}
+                                                <Badge variant="outline">
+                                                    {mahasiswa.tahun_masuk}
+                                                </Badge>
                                             </TableCell>
+
                                             <TableCell>
                                                 <div className="flex justify-end gap-2">
                                                     <Button

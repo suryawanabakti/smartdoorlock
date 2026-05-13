@@ -9,13 +9,27 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
+use App\Imports\MahasiswaImport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class MahasiswaController extends Controller
 {
     public function index(Request $request)
     {
+        // Detect ket from route if not explicitly provided
+        $ket = $request->get('ket');
+        if (!$ket) {
+            if ($request->routeIs('mahasiswa.list')) {
+                $ket = 'mhs';
+            } elseif ($request->routeIs('dosen.list')) {
+                $ket = 'dsn';
+            }
+        }
+
         $query = Mahasiswa::with(['user', 'ruangan'])
             ->latest();
+
 
         // Search filter
         if ($request->has('search') && $request->search) {
@@ -45,7 +59,13 @@ class MahasiswaController extends Controller
 
         return Inertia::render('Mahasiswa/Index', [
             'mahasiswas' => $mahasiswas,
-            'filters' => $request->only(['search', 'status', 'ket', 'tahun_masuk']),
+            'filters' => [
+                'search' => $request->search,
+                'status' => $request->status,
+                'ket' => $ket,
+                'tahun_masuk' => $request->tahun_masuk,
+            ],
+
             'statusOptions' => [
                 ['value' => 'all', 'label' => 'Semua Status'],
                 ['value' => '1', 'label' => 'Aktif'],
@@ -218,4 +238,30 @@ class MahasiswaController extends Controller
         return redirect()->back()
             ->with('success', "Data berhasil {$status}.");
     }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:10240',
+            'ket' => 'nullable|in:mhs,dsn',
+        ]);
+
+        $ket = $request->get('ket', 'mhs');
+
+        try {
+            Excel::import(new MahasiswaImport($ket), $request->file('file'));
+            return redirect()->back()->with('success', 'Data ' . ($ket === 'dsn' ? 'dosen' : 'mahasiswa') . ' berhasil diimport.');
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+
+            $failures = $e->failures();
+            $errors = [];
+            foreach ($failures as $failure) {
+                $errors[] = "Baris {$failure->row()}: " . implode(', ', $failure->errors());
+            }
+            return redirect()->back()->with('error', 'Import gagal: ' . implode(' | ', array_slice($errors, 0, 3)));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat import: ' . $e->getMessage());
+        }
+    }
 }
+

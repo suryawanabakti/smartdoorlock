@@ -70,7 +70,7 @@ export default function Profile({
 
                                 <div className="grid gap-2">
                                     <Label htmlFor="nowa">
-                                        Nomor Whatsapp Notifikasi
+                                        Nomor Whatsapp
                                     </Label>
 
                                     <Input
@@ -80,7 +80,7 @@ export default function Profile({
                                         name="nowa"
                                         required
                                         autoComplete="nowa"
-                                        placeholder="0812-1234-3214"
+                                        placeholder="081212343214"
                                     />
 
                                     <InputError
@@ -138,7 +138,6 @@ export default function Profile({
                     </Form>
                 </div>
 
-                <DeleteUser />
             </SettingsLayout>
         </AppLayout>
     );

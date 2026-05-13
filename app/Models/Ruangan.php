@@ -28,10 +28,10 @@ class Ruangan extends Model
     protected $casts = [
         'open_api' => 'boolean',
         'pin_active' => 'boolean',
-        'penanggung_jawab' => 'array',
         'jam_buka' => 'datetime:H:i',
         'jam_tutup' => 'datetime:H:i',
     ];
+
 
     public function scanner()
     {

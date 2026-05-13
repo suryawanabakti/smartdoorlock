@@ -30,6 +30,8 @@ import { Head, Link, router } from '@inertiajs/react';
 import { Pagination } from '@/components/pagination';
 import { Edit, Image, Mail, Phone, Plus, Search, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+import { ConfirmDialog } from '@/components/confirm-dialog';
+
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -54,6 +56,9 @@ interface Props {
 export default function UserIndex({ users, filters, roles }: Props) {
     const [search, setSearch] = useState(filters.search || '');
     const [role, setRole] = useState(filters.role || 'all');
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [userToDelete, setUserToDelete] = useState<User | null>(null);
+
 
     const handleFilter = () => {
         const filterParams: any = {};
@@ -67,10 +72,17 @@ export default function UserIndex({ users, filters, roles }: Props) {
     };
 
     const deleteUser = (user: User) => {
-        if (confirm(`Apakah Anda yakin ingin menghapus user ${user.name}?`)) {
-            router.delete(`/users/${user.id}`);
+        setUserToDelete(user);
+        setIsDeleteDialogOpen(true);
+    };
+
+    const confirmDelete = () => {
+        if (userToDelete) {
+            router.delete(`/users/${userToDelete.id}`);
+            setUserToDelete(null);
         }
     };
+
 
     const getRoleBadge = (userRole: string) => {
         const variants = {
@@ -106,6 +118,17 @@ export default function UserIndex({ users, filters, roles }: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Manajemen Penjaga" />
+
+            <ConfirmDialog
+                isOpen={isDeleteDialogOpen}
+                onClose={() => setIsDeleteDialogOpen(false)}
+                onConfirm={confirmDelete}
+                title="Hapus Penjaga"
+                description={`Apakah Anda yakin ingin menghapus penjaga ${userToDelete?.name}? Tindakan ini tidak dapat dibatalkan.`}
+                variant="destructive"
+                confirmText="Hapus"
+            />
+
 
             <div className="flex flex-col gap-6 p-4">
                 <div className="flex items-center justify-between">

@@ -40,6 +40,8 @@ import {
     Trash2,
 } from 'lucide-react';
 import { useState } from 'react';
+import { ConfirmDialog } from '@/components/confirm-dialog';
+
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -72,6 +74,9 @@ export default function ScanerStatusIndex({
     const [search, setSearch] = useState(filters.search || '');
     const [type, setType] = useState(filters.type || '');
     const [ruanganId, setRuanganId] = useState(filters.ruangan_id || '');
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [scannerToDelete, setScannerToDelete] = useState<ScanerStatus | null>(null);
+
 
     const handleFilter = () => {
         const filterParams: any = {};
@@ -86,14 +91,17 @@ export default function ScanerStatusIndex({
     };
 
     const deleteScanerStatus = (scanerStatus: ScanerStatus) => {
-        if (
-            confirm(
-                `Apakah Anda yakin ingin menghapus scanner ${scanerStatus.kode}?`,
-            )
-        ) {
-            router.delete(`/scaner-status/${scanerStatus.id}`);
+        setScannerToDelete(scanerStatus);
+        setIsDeleteDialogOpen(true);
+    };
+
+    const confirmDelete = () => {
+        if (scannerToDelete) {
+            router.delete(`/scaner-status/${scannerToDelete.id}`);
+            setScannerToDelete(null);
         }
     };
+
 
     const getTypeBadge = (type: string) => {
         const variants = {
@@ -135,6 +143,17 @@ export default function ScanerStatusIndex({
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Manajemen Scanner Status" />
+
+            <ConfirmDialog
+                isOpen={isDeleteDialogOpen}
+                onClose={() => setIsDeleteDialogOpen(false)}
+                onConfirm={confirmDelete}
+                title="Hapus Scanner"
+                description={`Apakah Anda yakin ingin menghapus scanner ${scannerToDelete?.kode}? Tindakan ini tidak dapat dibatalkan.`}
+                variant="destructive"
+                confirmText="Hapus"
+            />
+
 
             <div className="flex flex-col gap-6 p-4">
                 <div className="flex items-center justify-between">
