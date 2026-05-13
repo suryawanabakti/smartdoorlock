@@ -156,9 +156,10 @@ export default function MahasiswaForm({
                                                 ) : (
                                                     <BookOpen className="h-4 w-4" />
                                                 )}
-                                                {option.label}
+                                                {option.value === 'dsn' ? 'Dosen / Staff' : option.label}
                                             </div>
                                         </SelectItem>
+
                                     ))}
                                 </SelectContent>
                             </Select>
@@ -354,60 +355,7 @@ export default function MahasiswaForm({
                             )}
                         </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="ruangan_id">
-                                {data.ket === 'dsn' ? 'Ruangan' : 'Kelas'}
-                            </Label>
-                            <Select
-                                value={data.ruangan_id?.toString() || ''}
-                                onValueChange={(value) =>
-                                    setData(
-                                        'ruangan_id',
-                                        value ? parseInt(value) : null,
-                                    )
-                                }
-                            >
-                                <SelectTrigger>
-                                    <SelectValue
-                                        placeholder={
-                                            data.ket === 'dsn'
-                                                ? 'Pilih ruangan (opsional)'
-                                                : 'Pilih kelas (opsional)'
-                                        }
-                                    />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="-">
-                                        Tidak ada{' '}
-                                        {data.ket === 'dsn'
-                                            ? 'ruangan'
-                                            : 'kelas'}
-                                    </SelectItem>
-                                    {filteredRuangans.map((ruangan) => (
-                                        <SelectItem
-                                            key={ruangan.id}
-                                            value={ruangan.id.toString()}
-                                        >
-                                            <div className="flex items-center gap-2">
-                                                <Building className="h-4 w-4" />
-                                                {ruangan.nama_ruangan} (
-                                                {ruangan.type})
-                                            </div>
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <p className="text-sm text-muted-foreground">
-                                {data.ket === 'dsn'
-                                    ? 'Ruangan tempat dosen mengajar'
-                                    : 'Kelas tempat mahasiswa belajar'}
-                            </p>
-                            {errors.ruangan_id && (
-                                <p className="text-sm text-red-600">
-                                    {errors.ruangan_id}
-                                </p>
-                            )}
-                        </div>
+
                     </div>
                 </CardContent>
             </Card>
@@ -467,7 +415,7 @@ export default function MahasiswaForm({
                         </div>
                         <div>
                             <span className="font-medium">Jenis:</span>{' '}
-                            {data.ket === 'dsn' ? 'dsn' : 'Mahasiswa'}
+                            {data.ket === 'dsn' ? 'Dosen / Staff' : 'Mahasiswa'}
                         </div>
                         <div>
                             <span className="font-medium">Tahun Masuk:</span>{' '}

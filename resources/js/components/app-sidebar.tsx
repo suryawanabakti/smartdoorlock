@@ -51,10 +51,12 @@ const adminNavItems: NavItem[] = [
         icon: GraduationCap,
     },
     {
-        title: 'Dosen',
+        title: 'Dosen / Staff',
         href: '/dosen-list',
         icon: BookOpen,
     },
+
+
 
     {
         title: 'Scanner',

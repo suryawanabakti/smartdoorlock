@@ -167,19 +167,20 @@ export default function MahasiswaIndex({
     const isMahasiswa = filters.ket === 'mhs';
     const isDosen = filters.ket === 'dsn';
 
-    let pageTitle = 'Manajemen Mahasiswa & Dosen';
-    let pageSubtitle = 'Kelola data mahasiswa dan dosen';
-    let tableTitle = 'Daftar Mahasiswa & Dosen';
+    let pageTitle = 'Manajemen Mahasiswa & Dosen / Staff';
+    let pageSubtitle = 'Kelola data mahasiswa dan dosen / staff';
+    let tableTitle = 'Daftar Mahasiswa & Dosen / Staff';
 
     if (isMahasiswa) {
         pageTitle = 'Manajemen Mahasiswa';
         pageSubtitle = 'Kelola data mahasiswa';
         tableTitle = 'Daftar Mahasiswa';
     } else if (isDosen) {
-        pageTitle = 'Manajemen Dosen';
-        pageSubtitle = 'Kelola data dosen';
-        tableTitle = 'Daftar Dosen';
+        pageTitle = 'Manajemen Dosen / Staff';
+        pageSubtitle = 'Kelola data dosen / staff';
+        tableTitle = 'Daftar Dosen / Staff';
     }
+
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -191,8 +192,8 @@ export default function MahasiswaIndex({
             href: isMahasiswa
                 ? '/mahasiswa-list'
                 : isDosen
-                  ? '/dosen-list'
-                  : '/mahasiswas',
+                    ? '/dosen-list'
+                    : '/mahasiswas',
         },
     ];
 
@@ -206,7 +207,7 @@ export default function MahasiswaIndex({
                 onClose={() => setIsDeleteDialogOpen(false)}
                 onConfirm={confirmDelete}
                 title="Hapus Data"
-                description={`Apakah Anda yakin ingin menghapus ${mahasiswaToDelete?.ket === 'dsn' ? 'Dosen' : 'Mahasiswa'} ${mahasiswaToDelete?.nama}? Tindakan ini tidak dapat dibatalkan.`}
+                description={`Apakah Anda yakin ingin menghapus ${mahasiswaToDelete?.ket === 'dsn' ? 'Dosen / Staff' : 'Mahasiswa'} ${mahasiswaToDelete?.nama}? Tindakan ini tidak dapat dibatalkan.`}
                 variant="destructive"
                 confirmText="Hapus"
             />
@@ -232,18 +233,20 @@ export default function MahasiswaIndex({
                             </DialogTrigger>
                             <DialogContent>
                                 <DialogHeader>
-                                    <DialogTitle>Import Data {isDosen ? 'Dosen' : 'Mahasiswa'}</DialogTitle>
+                                    <DialogTitle>Import Data {isDosen ? 'Dosen / Staff' : 'Mahasiswa'}</DialogTitle>
                                     <DialogDescription>
-                                        Pilih file Excel (.xlsx, .xls) atau CSV untuk diimport. 
-                                        Pastikan kolom sesuai dengan format {isDosen ? 'Dosen' : 'Mahasiswa'}.
+                                        Pilih file Excel (.xlsx, .xls) atau CSV untuk diimport.
+                                        Pastikan kolom sesuai dengan format {isDosen ? 'Dosen / Staff' : 'Mahasiswa'}.
                                     </DialogDescription>
                                 </DialogHeader>
+
+
                                 <form onSubmit={handleImport}>
                                     <div className="grid gap-4 py-4">
                                         <div className="flex flex-col gap-2">
                                             <label className="text-sm font-medium">File Excel/CSV</label>
-                                            <Input 
-                                                type="file" 
+                                            <Input
+                                                type="file"
                                                 accept=".xlsx,.xls,.csv"
                                                 onChange={e => setData('file', e.target.files ? e.target.files[0] : null)}
                                             />
@@ -370,15 +373,16 @@ export default function MahasiswaIndex({
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>{isDosen ? 'Nama Dosen' : 'Identitas'}</TableHead>
+                                        <TableHead>{isDosen ? 'Dosen / Staff' : 'Mahasiswa'}</TableHead>
                                         <TableHead>{isDosen ? 'NIDN' : 'NIM'}</TableHead>
-                                        <TableHead>{isDosen ? 'Homebase/Ruangan' : 'Kelas/Ruangan'}</TableHead>
                                         <TableHead>Status</TableHead>
                                         <TableHead>{isDosen ? 'Tahun Gabung' : 'Angkatan'}</TableHead>
                                         <TableHead className="w-[120px] text-right">
                                             Aksi
                                         </TableHead>
                                     </TableRow>
+
+
 
                                 </TableHeader>
                                 <TableBody>
@@ -388,7 +392,7 @@ export default function MahasiswaIndex({
                                                 <div className="flex items-center gap-3">
                                                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 dark:bg-neutral-800">
                                                         {mahasiswa.ket ===
-                                                        'dsn' ? (
+                                                            'dsn' ? (
                                                             <User className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                                                         ) : (
                                                             <BookOpen className="h-4 w-4 text-gray-600 dark:text-gray-400" />
@@ -409,35 +413,11 @@ export default function MahasiswaIndex({
                                                 {mahasiswa.nim}
                                             </TableCell>
                                             <TableCell>
-                                                {mahasiswa.ruangan ? (
-                                                    <div>
-                                                        <div className="font-medium">
-                                                            {
-                                                                mahasiswa
-                                                                    .ruangan
-                                                                    .nama_ruangan
-                                                            }
-                                                        </div>
-                                                        <div className="text-sm text-muted-foreground capitalize">
-                                                            {
-                                                                mahasiswa
-                                                                    .ruangan
-                                                                    .type
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                ) : (
-                                                    <span className="text-muted-foreground">
-                                                        -
-                                                    </span>
-                                                )}
-                                            </TableCell>
-
-                                            <TableCell>
                                                 {getStatusBadge(
                                                     mahasiswa.status,
                                                 )}
                                             </TableCell>
+
                                             <TableCell>
                                                 <Badge variant="outline">
                                                     {mahasiswa.tahun_masuk}

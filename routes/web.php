@@ -38,6 +38,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('mahasiswas', MahasiswaController::class);
     Route::get('/mahasiswa-list', [MahasiswaController::class, 'index'])->name('mahasiswa.list');
     Route::get('/dosen-list', [MahasiswaController::class, 'index'])->name('dosen.list');
+
+
     Route::post('/mahasiswas/{mahasiswa}/toggle-status', [MahasiswaController::class, 'toggleStatus'])
         ->name('mahasiswas.toggle-status');
     Route::post('/mahasiswas/import', [MahasiswaController::class, 'import'])->name('mahasiswas.import');
