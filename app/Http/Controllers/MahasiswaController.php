@@ -28,6 +28,7 @@ class MahasiswaController extends Controller
         }
 
         $query = Mahasiswa::with(['user', 'ruangan'])
+            ->where('ket', $ket)
             ->latest();
 
 
@@ -264,4 +265,3 @@ class MahasiswaController extends Controller
         }
     }
 }
-
