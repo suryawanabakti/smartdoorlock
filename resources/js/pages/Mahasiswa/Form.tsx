@@ -318,13 +318,15 @@ export default function MahasiswaForm({
                                     {data.create_user && (
                                         <div className="grid grid-cols-1 gap-4 pt-2">
                                             <div className="space-y-2">
-                                                <Label htmlFor="email">Email Account *</Label>
+                                                <Label htmlFor="email">Username / Email *</Label>
+
                                                 <Input
                                                     id="email"
                                                     type="email"
                                                     value={data.email}
                                                     onChange={(e) => setData('email', e.target.value)}
-                                                    placeholder="email@example.com"
+                                                    placeholder="Masukkan NIM atau Email"
+
                                                     className=""
                                                 />
                                                 {errors.email && (
@@ -334,7 +336,8 @@ export default function MahasiswaForm({
                                                 )}
                                             </div>
                                             <div className="space-y-2">
-                                                <Label htmlFor="password">Password Account *</Label>
+                                                <Label htmlFor="password">Password *</Label>
+
                                                 <Input
                                                     id="password"
                                                     type="password"

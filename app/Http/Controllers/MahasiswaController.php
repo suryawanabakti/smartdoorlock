@@ -103,7 +103,7 @@ class MahasiswaController extends Controller
         $validated = $request->validate([
             'user_id' => 'nullable|exists:users,id',
             'create_user' => 'nullable|boolean',
-            'email' => 'required_if:create_user,true|nullable|email|unique:users,email',
+            'email' => 'required_if:create_user,true|nullable|string|unique:users,email',
             'password' => 'required_if:create_user,true|nullable|string|min:8',
             'id_tag' => 'nullable|string|unique:mahasiswa,id_tag',
             'nama' => 'required|string|max:255',
@@ -163,7 +163,7 @@ class MahasiswaController extends Controller
         $validated = $request->validate([
             'user_id' => 'nullable|exists:users,id',
             'create_user' => 'nullable|boolean',
-            'email' => 'required_if:create_user,true|nullable|email|unique:users,email',
+            'email' => 'required_if:create_user,true|nullable|string|unique:users,email',
             'password' => 'required_if:create_user,true|nullable|string|min:8',
             'id_tag' => 'nullable|string|unique:mahasiswa,id_tag,' . $mahasiswa->id,
             'nama' => 'required|string|max:255',
