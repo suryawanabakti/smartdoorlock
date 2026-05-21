@@ -35,21 +35,12 @@ class SendEmailToAdminJob implements ShouldQueue
      */
     public function handle()
     {
-        //         <H1>Halo Admin Ruangan {{ $data->hakAkses->ruangan->nama_ruangan }}</H1>
-        // <p>Ada mahasiswa yang mendaftar di ruangan anda</p>
-
-        // <p>Nama : {{ $data->mahasiswa->nama }}</p>
-        // <p>NIM : {{ $data->mahasiswa->nim }}</p>
-        // <p>Ruangan : {{ $data->hakAkses->ruangan->nama_ruangan ?? null }} </p>
-        // <p>Jam Masuk : {{ $data->hakAkses->jam_masuk }}</p>
-        // <p>Jam Keluar : {{ $data->hakAkses->jam_keluar }} </p>
-        Log::info($this->hakAkses);
 
         $mahasiswaList = $this->hakAkses->mahasiswas->map(function ($mhs) {
-            return "Nama: {$mhs->nama}\nNim: {$mhs->nim}";
+            return "👤 *Nama:* {$mhs->nama}\n🎓 *NIM:* {$mhs->nim}";
         })->implode("\n\n");
 
-        $message = "Halo Admin {$this->hakAkses->ruangan->nama_ruangan} Mahasiswa baru saja mendaftar\n\n{$mahasiswaList}";
+        $message = "Halo Admin *{$this->hakAkses->ruangan->nama_ruangan}* 👋\n\nAda mahasiswa yang baru saja mendaftar:\n\n{$mahasiswaList}\n\nSilakan periksa dashboard untuk info lebih lanjut.";
         FonnteService::sendWa($this->user->nowa, $message);
 
         Mail::to($this->user->email_notifikasi)->send(
@@ -57,5 +48,7 @@ class SendEmailToAdminJob implements ShouldQueue
                 $this->hakAkses
             )
         );
+
+        $this->user->notify(new \App\Notifications\RegisterToAdminNotification($this->hakAkses));
     }
 }

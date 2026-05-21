@@ -70,7 +70,7 @@ export default function Profile({
 
                                 <div className="grid gap-2">
                                     <Label htmlFor="nowa">
-                                        Nomor Whatsapp
+                                        Nomor WA
                                     </Label>
 
                                     <Input

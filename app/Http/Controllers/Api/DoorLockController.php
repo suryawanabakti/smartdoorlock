@@ -34,7 +34,7 @@ class DoorLockController extends Controller
 
         // Validasi ruangan dan waktu operasional
         $ruangan = Ruangan::with('scanerStatuses')
-            ->whereHas('scanerStatuses', fn ($query) => $query->where('kode', $request->kode))
+            ->whereHas('scanerStatuses', fn($query) => $query->where('kode', $request->kode))
             ->first();
 
         if (! $ruangan || $currentTime < $ruangan->jam_buka || $currentTime > $ruangan->jam_tutup) {
@@ -124,7 +124,7 @@ class DoorLockController extends Controller
         if (! $ruanganAkses) {
             $ruanganAkses = Ruangan::where('parent_id', $ruangan->id)
                 ->with('hakAksesOne.hakAksesMahasiswaOne')
-                ->whereHas('hakAksesOne.hakAksesMahasiswaOne', fn ($query) => $query->where('mahasiswa_id', $mahasiswa->id))
+                ->whereHas('hakAksesOne.hakAksesMahasiswaOne', fn($query) => $query->where('mahasiswa_id', $mahasiswa->id))
                 ->whereHas('hakAksesOne', function ($query) use ($currentTime, $currentDate) {
                     $query->where('tanggal', $currentDate)
                         ->where('is_approve', 1)
@@ -198,7 +198,7 @@ class DoorLockController extends Controller
 
         // Validasi ruangan dan waktu operasional
         $ruangan = Ruangan::with('scanerStatuses')
-            ->whereHas('scanerStatuses', fn ($query) => $query->where('kode', $request->kode))
+            ->whereHas('scanerStatuses', fn($query) => $query->where('kode', $request->kode))
             ->first();
 
         // if (! $ruangan || $currentTime < $ruangan->jam_buka || $currentTime > $ruangan->jam_tutup) {

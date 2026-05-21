@@ -259,7 +259,7 @@ export default function UserForm({
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="nowa">Nomor WhatsApp</Label>
+                            <Label htmlFor="nowa">Nomor WA</Label>
                             <Input
                                 id="nowa"
                                 value={data.nowa}

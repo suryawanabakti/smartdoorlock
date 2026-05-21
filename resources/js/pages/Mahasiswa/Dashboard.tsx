@@ -7,11 +7,13 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import AppLayout from '@/layouts/app-layout';
 import { DashboardData } from '@/types/mahasiswa';
-import { Head } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import {
     AlertCircle,
+    AlertTriangle,
     Calendar,
     CheckCircle,
     Clock,
@@ -32,6 +34,9 @@ const MahasiswaDashboard = ({
     aktivitasTerkini,
     mahasiswa,
 }: Props) => {
+    const { auth } = usePage<any>().props;
+    const isProfileIncomplete = !auth.user.nowa || !auth.user.email_notifikasi;
+
     const breadcrumbs = [{ title: 'Dashboard', href: '/mahasiswa/dashboard' }];
 
     const formatDate = (dateString: string) => {
@@ -80,6 +85,19 @@ const MahasiswaDashboard = ({
                         NIM: {mahasiswa.nim} | ID Tag: {mahasiswa.id_tag}
                     </p>
                 </div>
+
+                {isProfileIncomplete && (
+                    <Alert className="border-yellow-200 bg-yellow-50 text-yellow-800 [&>svg]:text-yellow-800">
+                        <AlertTriangle className="h-4 w-4" />
+                        <AlertTitle>Profil Belum Lengkap</AlertTitle>
+                        <AlertDescription className="text-yellow-800/90">
+                            Sangat disarankan untuk mengisi <strong>Nomor WA aktif</strong> dan <strong>Email Notifikasi</strong> agar Anda dapat menerima pemberitahuan penting (seperti status persetujuan ruangan dan peringatan jam pulang). <br />
+                            <Link href="/settings/profile" className="mt-1 inline-block font-medium underline hover:text-yellow-900">
+                                Lengkapi Profil Sekarang
+                            </Link>
+                        </AlertDescription>
+                    </Alert>
+                )}
 
                 {/* Statistics Grid */}
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

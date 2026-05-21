@@ -41,18 +41,26 @@ class SendEmailToMahasiswa implements ShouldQueue
     public function handle()
     {
         if ($this->mahasiswa->user->email_notifikasi) {
+            $dataPayload = [
+                'mahasiswa' => $this->mahasiswa->toArray(),
+                'hak_akses' => $this->hakAkses->load('ruangan')->toArray(),
+            ];
+
             if ($this->status == 'approve') {
 
                 // Fonnte::sendWa("081244067445", "TESTTTER");
 
-                FonnteService::sendWa($this->mahasiswa->user->nowa, 'Halo '.$this->mahasiswa->user->name.' Terima kasih telah mendaftar di ruangan'.$this->hakAkses->ruangan->nama_ruangan."\n\nTanggal: ".$this->hakAkses->tanggal."\nJadwal : ".$this->hakAkses->jam_masuk.'~'.$this->hakAkses->jam_keluar);
+                $message = "Halo *{$this->mahasiswa->user->name}* 👋\n\nTerima kasih telah mendaftar di ruangan *{$this->hakAkses->ruangan->nama_ruangan}*.\n\nBerikut detail pendaftaran Anda:\n📅 *Tanggal:* {$this->hakAkses->tanggal}\n🕒 *Jadwal:* {$this->hakAkses->jam_masuk} - {$this->hakAkses->jam_keluar}\n\nSelamat beraktivitas! 🚀";
+                FonnteService::sendWa($this->mahasiswa->user->nowa, $message);
 
                 Mail::to($this->mahasiswa->user->email_notifikasi)
-                    ->send(new NotificationRegisterToMahasiswa($this->hakAkses));
+                    ->send(new NotificationRegisterToMahasiswa($dataPayload));
             } else {
                 Mail::to($this->mahasiswa->user->email_notifikasi)
-                    ->send(new NotificationDisapproveToMahasiswa($this->hakAkses));
+                    ->send(new NotificationDisapproveToMahasiswa($dataPayload));
             }
         }
+
+        $this->mahasiswa->user->notify(new \App\Notifications\RegisterToMahasiswaNotification($this->hakAkses, $this->status));
     }
 }

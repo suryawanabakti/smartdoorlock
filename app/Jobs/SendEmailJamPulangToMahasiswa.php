@@ -36,10 +36,18 @@ class SendEmailJamPulangToMahasiswa implements ShouldQueue
     public function handle()
     {
         if ($this->mahasiswa->user->email_notifikasi) {
+            $dataPayload = [
+                'mahasiswa' => $this->mahasiswa->toArray(),
+                'hak_akses' => $this->hakAkses->load('ruangan')->toArray(),
+            ];
+
             $namaRuangan = $this->hakAkses->ruangan->nama_ruangan ?? null;
-            FonnteService::sendWa($this->mahasiswa->user->nowa, "Jam pulang $namaRuangan  sisa 10 menit lagi\nHarap keluar sebelum pintu terkunci");
+            $message = "⚠️ *Peringatan Jam Pulang*\n\nHalo, waktu penggunaan ruangan *{$namaRuangan}* tersisa *10 menit lagi*.\n\nMohon bersiap-siap dan harap keluar sebelum pintu terkunci otomatis. Terima kasih! 🙏";
+            FonnteService::sendWa($this->mahasiswa->user->nowa, $message);
             Mail::to($this->mahasiswa->user->email_notifikasi)
-                ->send(new NotificationJamPulangToMahasiswa($this->hakAkses));
+                ->send(new NotificationJamPulangToMahasiswa($dataPayload));
         }
+
+        $this->mahasiswa->user->notify(new \App\Notifications\JamPulangToMahasiswaNotification($this->hakAkses));
     }
 }

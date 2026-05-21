@@ -26,6 +26,7 @@ Route::delete('/hak-akses/destroy-by-date', [HakAksesController::class, 'destroy
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/notifications/{id}/mark-as-read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
 
     Route::get('/ruangans/reset-api', [RuanganController::class, 'resetApi']);
     Route::resource('ruangans', RuanganController::class);

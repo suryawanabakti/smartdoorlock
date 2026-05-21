@@ -154,7 +154,7 @@ export default function UserIndex({ users, filters, roles }: Props) {
                         <div className="flex flex-col gap-4 md:flex-row">
                             <div className="flex-1">
                                 <Input
-                                    placeholder="Cari penjaga berdasarkan nama, email, atau nomor WhatsApp..."
+                                    placeholder="Cari penjaga berdasarkan nama, email, atau nomor WA..."
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                     onKeyPress={(e) =>
