@@ -19,6 +19,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { type Ruangan, type RuanganFormData } from '@/types/ruangan';
 import { useForm } from '@inertiajs/react';
+import { useMemo, useState } from 'react';
 
 interface Props {
     ruangan?: Ruangan;
@@ -39,6 +40,33 @@ export default function RuanganForm({
             : JSON.parse(ruangan.penanggung_jawab)
         : [];
 
+    // Convert existing penanggung_jawab (which may be array of ids or option objects)
+    // into MultiSelectOption[] for the UI, and keep only ids for form submission.
+    const initialSelectedOptions = useMemo(() => {
+        if (!existingPenanggungJawab || existingPenanggungJawab.length === 0)
+            return [];
+
+        // If items look like option objects (have value and label), keep them
+        if (
+            existingPenanggungJawab[0] &&
+            typeof existingPenanggungJawab[0] === 'object' &&
+            'value' in existingPenanggungJawab[0]
+        ) {
+            return existingPenanggungJawab as any[];
+        }
+
+        // Otherwise treat items as ids and map to provided mahasiswas options
+        return existingPenanggungJawab
+            .map((id: string | number) =>
+                mahasiswas.find((m) => m.value === id),
+            )
+            .filter(Boolean) as any[];
+    }, [existingPenanggungJawab, mahasiswas]);
+
+    const [selectedOptions, setSelectedOptions] = useState(
+        initialSelectedOptions,
+    );
+
     const { data, setData, errors, processing, post, put } =
         useForm<RuanganFormData>({
             nama_ruangan: ruangan?.nama_ruangan || '',
@@ -51,7 +79,7 @@ export default function RuanganForm({
             jam_tutup: ruangan?.jam_tutup || '23:59',
             max_register: ruangan?.max_register || 10,
             mahasiswa_id: ruangan?.mahasiswa_id || null,
-            penanggung_jawab: existingPenanggungJawab,
+            penanggung_jawab: initialSelectedOptions.map((o) => o.value),
         });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -64,10 +92,13 @@ export default function RuanganForm({
         }
     };
 
-    const handlePenanggungJawabChange = (
-        selectedOptions: MultiSelectOption[],
-    ) => {
-        setData('penanggung_jawab', selectedOptions);
+    const handlePenanggungJawabChange = (options: MultiSelectOption[]) => {
+        setSelectedOptions(options);
+        // submit only an array of ids/values to the backend
+        setData(
+            'penanggung_jawab',
+            options.map((o) => o.value),
+        );
     };
 
     // Convert null to empty string for Select components
@@ -191,7 +222,7 @@ export default function RuanganForm({
                         </Label>
                         <MultiSelect
                             options={mahasiswas}
-                            value={data.penanggung_jawab || []}
+                            value={selectedOptions}
                             onChange={handlePenanggungJawabChange}
                             placeholder="Pilih penanggung jawab..."
                         />

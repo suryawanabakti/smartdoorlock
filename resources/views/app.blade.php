@@ -32,9 +32,13 @@
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
-        <link rel="icon" href="/logo.png" sizes="any">
-        <link rel="icon" href="/logo.png" type="image/png">
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        @php
+            $appName = config('app.name', 'Laravel');
+            $logoUrl = (str_contains(strtoupper($appName), 'MEGA BUANA')) ? '/logo-megabuana.png' : '/logo.png';
+        @endphp
+        <link rel="icon" href="{{ $logoUrl }}" sizes="any">
+        <link rel="icon" href="{{ $logoUrl }}" type="image/png">
+        <link rel="apple-touch-icon" href="{{ $logoUrl }}">
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=lexend:400,500,600,700" rel="stylesheet" />

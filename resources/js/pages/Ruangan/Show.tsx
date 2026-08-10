@@ -379,9 +379,29 @@ export default function RuanganShow({ ruangan, statistics }: Props) {
                                                 <label className="text-sm font-medium text-muted-foreground">
                                                     Penanggung Jawab
                                                 </label>
-                                                <p className="font-semibold">
-                                                    {ruangan.penanggung_jawab}
-                                                </p>
+                                                {Array.isArray(
+                                                    ruangan.penanggung_jawab,
+                                                ) ? (
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {ruangan.penanggung_jawab.map(
+                                                            (pj, idx) => (
+                                                                <Badge
+                                                                    key={idx}
+                                                                    variant="outline"
+                                                                    className="text-xs"
+                                                                >
+                                                                    {pj.label}
+                                                                </Badge>
+                                                            ),
+                                                        )}
+                                                    </div>
+                                                ) : (
+                                                    <p className="font-semibold">
+                                                        {
+                                                            ruangan.penanggung_jawab
+                                                        }
+                                                    </p>
+                                                )}
                                             </div>
                                         )}
                                         {ruangan.mahasiswa_penanggung_jawab && (
@@ -436,7 +456,7 @@ export default function RuanganShow({ ruangan, statistics }: Props) {
                             <CardContent>
                                 {ruangan.scaner_statuses &&
                                 ruangan.scaner_statuses.length > 0 ? (
-                                    <div className="rounded-md border">
+                                    <div className="rounded-md border w-full overflow-x-auto">
                                         <Table>
                                             <TableHeader>
                                                 <TableRow>
@@ -559,7 +579,7 @@ export default function RuanganShow({ ruangan, statistics }: Props) {
                             </CardHeader>
                             <CardContent>
                                 {recentHistories.length > 0 ? (
-                                    <div className="rounded-md border">
+                                    <div className="rounded-md border w-full overflow-x-auto">
                                         <Table>
                                             <TableHeader>
                                                 <TableRow>

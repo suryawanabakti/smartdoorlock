@@ -15,6 +15,8 @@ interface Props {
     filters: {
         ket?: string;
     };
+    defaultKet?: string;
+    hideKet?: boolean;
 }
 
 export default function MahasiswaCreate({
@@ -23,12 +25,15 @@ export default function MahasiswaCreate({
     ketOptions,
     tahunOptions,
     filters,
+    defaultKet,
+    hideKet,
 }: Props) {
     const isMahasiswa = filters?.ket === 'mhs';
     const isDosen = filters?.ket === 'dsn';
 
     let pageTitle = 'Tambah Data Baru';
-    let pageSubtitle = 'Isi form berikut untuk menambahkan data mahasiswa atau dosen';
+    let pageSubtitle =
+        'Isi form berikut untuk menambahkan data mahasiswa atau dosen';
     let parentTitle = 'Manajemen Mahasiswa & Dosen';
     let parentHref = '/mahasiswas';
 
@@ -36,12 +41,12 @@ export default function MahasiswaCreate({
         pageTitle = 'Tambah Mahasiswa';
         pageSubtitle = 'Isi form berikut untuk menambahkan data mahasiswa';
         parentTitle = 'Manajemen Mahasiswa';
-        parentHref = '/mahasiswas?ket=mhs';
+        parentHref = '/mahasiswa-list';
     } else if (isDosen) {
         pageTitle = 'Tambah Dosen';
         pageSubtitle = 'Isi form berikut untuk menambahkan data dosen';
         parentTitle = 'Manajemen Dosen';
-        parentHref = '/mahasiswas?ket=dsn';
+        parentHref = '/dosen-list';
     }
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -78,7 +83,8 @@ export default function MahasiswaCreate({
                     users={users}
                     ketOptions={ketOptions}
                     tahunOptions={tahunOptions}
-                    defaultKet={filters?.ket}
+                    defaultKet={defaultKet ?? filters?.ket}
+                    hideKet={hideKet ?? Boolean(filters?.ket)}
                 />
             </div>
         </AppLayout>

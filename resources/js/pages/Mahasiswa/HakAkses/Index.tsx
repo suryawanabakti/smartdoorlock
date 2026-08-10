@@ -16,6 +16,12 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
     Table,
     TableBody,
     TableCell,
@@ -37,6 +43,7 @@ import {
     ExternalLink,
     Eye,
     GraduationCap,
+    Menu,
     Plus,
     Search,
     Trash2,
@@ -140,61 +147,53 @@ export default function HakAksesMahasiswaIndex({
                     <div>
                         <h1 className="flex items-center gap-2 text-3xl font-bold tracking-tight">
                             <GraduationCap className="h-8 w-8" />
-                            Hak Akses Saya
+                            Hak Akses Sayas
                         </h1>
                         <p className="text-muted-foreground">
                             Kelola permohonan hak akses ruangan yang Anda ajukan
                         </p>
                     </div>
                     <div className="flex gap-2">
-                        <Link href="/mahasiswa/hak-akses/available">
-                            <Button variant="outline">
-                                <ExternalLink className="mr-2 h-4 w-4" />
-                                Hak Akses Tersedia
-                            </Button>
-                        </Link>
-                        <Link href="/mahasiswa/hak-akses/create">
-                            <Button>
-                                <Plus className="mr-2 h-4 w-4" />
-                                Ajukan Hak Akses
-                            </Button>
-                        </Link>
+                        <div className="hidden md:flex gap-2">
+                            <Link href="/mahasiswa/hak-akses/available">
+                                <Button variant="outline">
+                                    <ExternalLink className="mr-2 h-4 w-4" />
+                                    Hak Akses Tersedia
+                                </Button>
+                            </Link>
+                            <Link href="/mahasiswa/hak-akses/create">
+                                <Button>
+                                    <Plus className="mr-2 h-4 w-4" />
+                                    Ajukan Hak Akses
+                                </Button>
+                            </Link>
+                        </div>
+                        <div className="md:hidden">
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="outline" size="icon">
+                                        <Menu className="h-5 w-5" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-56">
+                                    <DropdownMenuItem asChild>
+                                        <Link href="/mahasiswa/hak-akses/available" className="w-full flex items-center cursor-pointer">
+                                            <ExternalLink className="mr-2 h-4 w-4" />
+                                            Hak Akses Tersedia
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link href="/mahasiswa/hak-akses/create" className="w-full flex items-center cursor-pointer">
+                                            <Plus className="mr-2 h-4 w-4" />
+                                            Ajukan Hak Akses
+                                        </Link>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div>
                     </div>
                 </div>
 
-                {/* Statistics */}
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                    <Card>
-                        <CardContent className="p-4 text-center">
-                            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                                {statistics.total}
-                            </div>
-                            <div className="text-sm text-blue-800 dark:text-blue-300">
-                                Total Permohonan
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardContent className="p-4 text-center">
-                            <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-                                {statistics.approved}
-                            </div>
-                            <div className="text-sm text-green-800 dark:text-green-300">
-                                Disetujui
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardContent className="p-4 text-center">
-                            <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
-                                {statistics.pending}
-                            </div>
-                            <div className="text-sm text-yellow-800 dark:text-yellow-300">
-                                Menunggu
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
 
                 {/* Filters */}
                 <Card>
@@ -255,7 +254,8 @@ export default function HakAksesMahasiswaIndex({
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="rounded-md border">
+                        {/* Desktop Table */}
+                        <div className="hidden md:block rounded-md border w-full overflow-x-auto">
                             <Table>
                                 <TableHeader>
                                     <TableRow>
@@ -295,13 +295,13 @@ export default function HakAksesMahasiswaIndex({
                                                         {isToday(
                                                             item.tanggal,
                                                         ) && (
-                                                            <Badge
-                                                                variant="secondary"
-                                                                className="text-xs"
-                                                            >
-                                                                Hari Ini
-                                                            </Badge>
-                                                        )}
+                                                                <Badge
+                                                                    variant="secondary"
+                                                                    className="text-xs"
+                                                                >
+                                                                    Hari Ini
+                                                                </Badge>
+                                                            )}
                                                     </div>
                                                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                                         <Clock className="h-3 w-3" />
@@ -332,7 +332,7 @@ export default function HakAksesMahasiswaIndex({
                                                 </div>
                                                 {item.mahasiswas &&
                                                     item.mahasiswas.length >
-                                                        0 && (
+                                                    0 && (
                                                         <div className="mt-1 text-xs text-muted-foreground">
                                                             Termasuk Anda +{' '}
                                                             {item.mahasiswas
@@ -418,6 +418,99 @@ export default function HakAksesMahasiswaIndex({
                                     )}
                                 </TableBody>
                             </Table>
+                        </div>
+
+                        {/* Mobile Card List */}
+                        <div className="grid grid-cols-1 gap-4 md:hidden">
+                            {hakAkses.data.map((item) => (
+                                <Card key={item.id} className={isToday(item.tanggal) ? 'bg-blue-50 dark:bg-blue-900/40' : ''}>
+                                    <CardContent className="p-4 space-y-4">
+                                        <div className="flex justify-between items-start">
+                                            <div className="space-y-1">
+                                                <div className="flex items-center gap-2 font-medium text-foreground">
+                                                    <Building className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                                                    {item.ruangan?.nama_ruangan}
+                                                </div>
+                                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                                    <Calendar className="h-3 w-3" />
+                                                    {formatDate(item.tanggal)}
+                                                    {isToday(item.tanggal) && (
+                                                        <Badge variant="secondary" className="text-[10px] h-4 px-1 py-0 ml-1">Hari Ini</Badge>
+                                                    )}
+                                                </div>
+                                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                                    <Clock className="h-3 w-3" />
+                                                    {item.jam_masuk} - {item.jam_keluar}
+                                                </div>
+                                            </div>
+                                            <div>
+                                                {getStatusBadge(item)}
+                                            </div>
+                                        </div>
+                                        
+                                        <div>
+                                            <p className="line-clamp-2 text-sm font-medium">{item.tujuan}</p>
+                                            {item.skill && (
+                                                <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">
+                                                    Skill: {item.skill}
+                                                </p>
+                                            )}
+                                        </div>
+                                        
+                                        <div className="flex items-center gap-2 text-sm">
+                                            <Users className="h-4 w-4 text-green-600 dark:text-green-400" />
+                                            <span className="font-medium text-foreground">
+                                                {item.mahasiswas?.length || 0} Peserta
+                                            </span>
+                                            {item.mahasiswas && item.mahasiswas.length > 0 && (
+                                                <span className="text-xs text-muted-foreground">
+                                                    (Termasuk Anda + {item.mahasiswas.length - 1} teman)
+                                                </span>
+                                            )}
+                                        </div>
+                                        
+                                        <div className="flex justify-end gap-2 pt-2 border-t">
+                                            <Link href={`/mahasiswa/hak-akses/${item.id}`}>
+                                                <Button variant="outline" size="sm" title="Detail">
+                                                    <Eye className="h-4 w-4" />
+                                                </Button>
+                                            </Link>
+                                            {canEdit(item) && (
+                                                <>
+                                                    <Link href={`/mahasiswa/hak-akses/${item.id}/edit`}>
+                                                        <Button variant="outline" size="sm" title="Edit">
+                                                            <Edit className="h-4 w-4" />
+                                                        </Button>
+                                                    </Link>
+                                                    <Button
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        onClick={() => deleteHakAkses(item)}
+                                                        title="Batalkan"
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
+                                                </>
+                                            )}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                            {hakAkses.data.length === 0 && (
+                                <div className="py-8 text-center text-muted-foreground border rounded-lg border-dashed">
+                                    <div className="flex flex-col items-center gap-2">
+                                        <Calendar className="h-8 w-8" />
+                                        <div>
+                                            <p className="font-medium">Belum ada permohonan hak akses</p>
+                                            <p className="text-sm">
+                                                <Link href="/mahasiswa/hak-akses/create" className="text-blue-600 hover:underline">
+                                                    Ajukan hak akses pertama Anda
+                                                </Link>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Pagination */}

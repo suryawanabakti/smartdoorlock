@@ -16,22 +16,15 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { type Mahasiswa, type MahasiswaFormData } from '@/types/mahasiswa';
-import { type Ruangan } from '@/types/ruangan';
-import { type User } from '@/types/user';
+import { type MahasiswaFormData } from '@/types/mahasiswa';
 import { useForm } from '@inertiajs/react';
-import {
-    BookOpen,
-    Building,
-    GraduationCap,
-    User2,
-    User2Icon,
-} from 'lucide-react';
+import { BookOpen, GraduationCap, User2, User2Icon } from 'lucide-react';
 
 interface Props {
     ketOptions: { value: string; label: string }[];
     tahunOptions: number[];
     defaultKet?: string;
+    hideKet?: boolean;
 }
 
 export default function MahasiswaForm({
@@ -41,6 +34,7 @@ export default function MahasiswaForm({
     ketOptions,
     tahunOptions,
     defaultKet,
+    hideKet,
 }: Props) {
     const { data, setData, errors, processing, post, put, reset } =
         useForm<MahasiswaFormData>({
@@ -79,7 +73,7 @@ export default function MahasiswaForm({
 
     // Filter ruangan hanya yang type kelas untuk mahasiswa
     const filteredRuangans =
-        data.ket === 'mahasiswa'
+        data.ket === 'mhs'
             ? ruangans.filter((ruangan) => ruangan.type === 'kelas')
             : ruangans;
 
@@ -133,42 +127,45 @@ export default function MahasiswaForm({
                             )}
                         </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="ket">Jenis *</Label>
-                            <Select
-                                value={data.ket}
-                                onValueChange={(value: 'mahasiswa' | 'dsn') =>
-                                    setData('ket', value)
-                                }
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Pilih jenis" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {ketOptions.map((option) => (
-                                        <SelectItem
-                                            key={option.value}
-                                            value={option.value}
-                                        >
-                                            <div className="flex items-center gap-2">
-                                                {option.value === 'dsn' ? (
-                                                    <User2 className="h-4 w-4" />
-                                                ) : (
-                                                    <BookOpen className="h-4 w-4" />
-                                                )}
-                                                {option.value === 'dsn' ? 'Dosen / Staff' : option.label}
-                                            </div>
-                                        </SelectItem>
-
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            {errors.ket && (
-                                <p className="text-sm text-red-600">
-                                    {errors.ket}
-                                </p>
-                            )}
-                        </div>
+                        {!hideKet && (
+                            <div className="space-y-2">
+                                <Label htmlFor="ket">Jenis *</Label>
+                                <Select
+                                    value={data.ket}
+                                    onValueChange={(value: 'mhs' | 'dsn') =>
+                                        setData('ket', value)
+                                    }
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Pilih jenis" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {ketOptions.map((option) => (
+                                            <SelectItem
+                                                key={option.value}
+                                                value={option.value}
+                                            >
+                                                <div className="flex items-center gap-2">
+                                                    {option.value === 'dsn' ? (
+                                                        <User2 className="h-4 w-4" />
+                                                    ) : (
+                                                        <BookOpen className="h-4 w-4" />
+                                                    )}
+                                                    {option.value === 'dsn'
+                                                        ? 'Dosen / Staff'
+                                                        : option.label}
+                                                </div>
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                {errors.ket && (
+                                    <p className="text-sm text-red-600">
+                                        {errors.ket}
+                                    </p>
+                                )}
+                            </div>
+                        )}
 
                         <div className="space-y-2">
                             <Label htmlFor="tahun_masuk">Tahun Masuk *</Label>
@@ -254,12 +251,20 @@ export default function MahasiswaForm({
                                     onValueChange={(value) =>
                                         setData(
                                             'user_id',
-                                            value && value !== '-' ? parseInt(value) : null,
+                                            value && value !== '-'
+                                                ? parseInt(value)
+                                                : null,
                                         )
                                     }
                                 >
                                     <SelectTrigger>
-                                        <SelectValue placeholder={data.create_user ? "Akan membuat user baru" : "Pilih user account (opsional)"} />
+                                        <SelectValue
+                                            placeholder={
+                                                data.create_user
+                                                    ? 'Akan membuat user baru'
+                                                    : 'Pilih user account (opsional)'
+                                            }
+                                        />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="-">
@@ -297,9 +302,12 @@ export default function MahasiswaForm({
                                 <div className="space-y-4 rounded-lg border border-blue-100/30 bg-blue-50/50 p-4 dark:border-blue-900/30 dark:bg-blue-900/10">
                                     <div className="flex items-center justify-between">
                                         <div className="space-y-0.5">
-                                            <Label htmlFor="create_user">Buat Akun User Baru</Label>
+                                            <Label htmlFor="create_user">
+                                                Buat Akun User Baru
+                                            </Label>
                                             <p className="text-xs text-muted-foreground">
-                                                Aktifkan untuk membuat akun login secara otomatis
+                                                Aktifkan untuk membuat akun
+                                                login secara otomatis
                                             </p>
                                         </div>
                                         <Switch
@@ -309,7 +317,9 @@ export default function MahasiswaForm({
                                                 setData((prev) => ({
                                                     ...prev,
                                                     create_user: checked,
-                                                    user_id: checked ? null : prev.user_id
+                                                    user_id: checked
+                                                        ? null
+                                                        : prev.user_id,
                                                 }));
                                             }}
                                         />
@@ -318,15 +328,21 @@ export default function MahasiswaForm({
                                     {data.create_user && (
                                         <div className="grid grid-cols-1 gap-4 pt-2">
                                             <div className="space-y-2">
-                                                <Label htmlFor="email">Username / Email *</Label>
+                                                <Label htmlFor="email">
+                                                    Username / Email *
+                                                </Label>
 
                                                 <Input
                                                     id="email"
-                                                    type="email"
+                                                    type="text"
                                                     value={data.email}
-                                                    onChange={(e) => setData('email', e.target.value)}
+                                                    onChange={(e) =>
+                                                        setData(
+                                                            'email',
+                                                            e.target.value,
+                                                        )
+                                                    }
                                                     placeholder="Masukkan NIM atau Email"
-
                                                     className=""
                                                 />
                                                 {errors.email && (
@@ -336,13 +352,20 @@ export default function MahasiswaForm({
                                                 )}
                                             </div>
                                             <div className="space-y-2">
-                                                <Label htmlFor="password">Password *</Label>
+                                                <Label htmlFor="password">
+                                                    Password *
+                                                </Label>
 
                                                 <Input
                                                     id="password"
                                                     type="password"
                                                     value={data.password}
-                                                    onChange={(e) => setData('password', e.target.value)}
+                                                    onChange={(e) =>
+                                                        setData(
+                                                            'password',
+                                                            e.target.value,
+                                                        )
+                                                    }
                                                     placeholder="Minimal 8 karakter"
                                                     className=""
                                                 />
@@ -357,8 +380,6 @@ export default function MahasiswaForm({
                                 </div>
                             )}
                         </div>
-
-
                     </div>
                 </CardContent>
             </Card>
@@ -427,11 +448,10 @@ export default function MahasiswaForm({
                         <div>
                             <span className="font-medium">Status:</span>
                             <span
-                                className={`ml-2 rounded-full px-2 py-1 text-xs ${
-                                    data.status
+                                className={`ml-2 rounded-full px-2 py-1 text-xs ${data.status
                                         ? 'bg-green-100 text-green-800'
                                         : 'bg-gray-100 text-gray-800'
-                                }`}
+                                    }`}
                             >
                                 {data.status ? 'Aktif' : 'Nonaktif'}
                             </span>

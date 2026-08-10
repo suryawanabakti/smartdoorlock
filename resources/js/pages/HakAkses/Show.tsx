@@ -304,7 +304,7 @@ export default function HakAksesShow({ hakAkses }: Props) {
                     <CardContent>
                         {hakAkses.mahasiswas &&
                         hakAkses.mahasiswas.length > 0 ? (
-                            <div className="rounded-md border">
+                            <div className="rounded-md border w-full overflow-x-auto">
                                 <Table>
                                     <TableHeader>
                                         <TableRow>

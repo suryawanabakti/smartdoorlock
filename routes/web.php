@@ -3,8 +3,10 @@
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DosenController;
 use App\Http\Controllers\HakAksesController;
 use App\Http\Controllers\HistoriController;
+use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\Mahasiswa\DashboardController as MahasiswaDashboardController;
 use App\Http\Controllers\Mahasiswa\HakAksesMahasiswaController;
 use App\Http\Controllers\MahasiswaController;
@@ -18,7 +20,7 @@ use App\Http\Controllers\ScanerStatusController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/login')->name('home');
+Route::get('/', [LandingPageController::class, 'index'])->name('home');
 
 Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
 Route::get('/hak-akses/{hakAkses}', [HakAksesController::class, 'show'])->name('hak-akses.show');
@@ -38,14 +40,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('mahasiswas', MahasiswaController::class);
     Route::get('/mahasiswa-list', [MahasiswaController::class, 'index'])->name('mahasiswa.list');
-    Route::get('/dosen-list', [MahasiswaController::class, 'index'])->name('dosen.list');
+    Route::get('/dosen-list', [DosenController::class, 'index'])->name('dosen.list');
 
+    // Routes for creating/editing specific jenis (mahasiswa/dosen) that render forms with ket hidden
+    Route::get('/mahasiswa/create', [MahasiswaController::class, 'createMahasiswa'])->name('mahasiswa.create');
+    Route::get('/dosen/create', [DosenController::class, 'create'])->name('dosen.create');
+
+    Route::get('/mahasiswa/{mahasiswa}/edit', [MahasiswaController::class, 'editMahasiswa'])->name('mahasiswa.edit');
+    Route::get('/dosen/{mahasiswa}/edit', [DosenController::class, 'edit'])->name('dosen.edit');
 
     Route::post('/mahasiswas/{mahasiswa}/toggle-status', [MahasiswaController::class, 'toggleStatus'])
         ->name('mahasiswas.toggle-status');
     Route::post('/mahasiswas/import', [MahasiswaController::class, 'import'])->name('mahasiswas.import');
-
-
 
     Route::resource('scaner-status', ScanerStatusController::class);
 

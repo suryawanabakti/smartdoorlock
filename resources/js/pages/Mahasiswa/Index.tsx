@@ -115,7 +115,7 @@ export default function MahasiswaIndex({
         if (ket) filterParams.ket = ket;
         if (tahunMasuk) filterParams.tahun_masuk = tahunMasuk;
 
-        router.get('/mahasiswas', filterParams, {
+        router.get(window.location.pathname, filterParams, {
             preserveState: true,
             replace: true,
         });
@@ -369,7 +369,7 @@ export default function MahasiswaIndex({
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="rounded-md border">
+                        <div className="rounded-md border w-full overflow-x-auto">
                             <Table>
                                 <TableHeader>
                                     <TableRow>

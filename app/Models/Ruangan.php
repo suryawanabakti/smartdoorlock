@@ -30,6 +30,7 @@ class Ruangan extends Model
         'pin_active' => 'boolean',
         'jam_buka' => 'datetime:H:i',
         'jam_tutup' => 'datetime:H:i',
+        'penanggung_jawab' => 'array',
     ];
 
 

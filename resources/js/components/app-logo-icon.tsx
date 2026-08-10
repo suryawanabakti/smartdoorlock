@@ -1,5 +1,13 @@
-import { SVGAttributes } from 'react';
+import { SharedData } from '@/types';
+import { usePage } from '@inertiajs/react';
 
 export default function AppLogoIcon({ className }: { className?: string }) {
-    return <img src="/logo.png" className={`${className} object-contain`} alt="Logo" />;
+    const { logo } = usePage<SharedData>().props;
+    return (
+        <img
+            src={'/logo.png'}
+            className={`${className} object-contain`}
+            alt="Logo"
+        />
+    );
 }

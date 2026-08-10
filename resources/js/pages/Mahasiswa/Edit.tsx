@@ -14,6 +14,8 @@ interface Props {
     users: User[];
     ketOptions: { value: string; label: string }[];
     tahunOptions: number[];
+    defaultKet?: string;
+    hideKet?: boolean;
 }
 
 export default function MahasiswaEdit({
@@ -22,6 +24,8 @@ export default function MahasiswaEdit({
     users,
     ketOptions,
     tahunOptions,
+    defaultKet,
+    hideKet,
 }: Props) {
     const isMahasiswa = mahasiswa.ket === 'mhs';
     const isDosen = mahasiswa.ket === 'dsn';
@@ -34,11 +38,11 @@ export default function MahasiswaEdit({
     if (isMahasiswa) {
         pageTitle = 'Edit Mahasiswa';
         parentTitle = 'Manajemen Mahasiswa';
-        parentHref = '/mahasiswas?ket=mhs';
+        parentHref = '/mahasiswa-list';
     } else if (isDosen) {
         pageTitle = 'Edit Dosen';
         parentTitle = 'Manajemen Dosen';
-        parentHref = '/mahasiswas?ket=dsn';
+        parentHref = '/dosen-list';
     }
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -78,6 +82,8 @@ export default function MahasiswaEdit({
                     users={users}
                     ketOptions={ketOptions}
                     tahunOptions={tahunOptions}
+                    defaultKet={defaultKet}
+                    hideKet={hideKet}
                 />
             </div>
         </AppLayout>

@@ -37,10 +37,14 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
+        
+        $appName = config('app.name', 'Laravel');
+        $logo = str_contains(strtoupper($appName), 'MEGA BUANA') ? '/logo-megabuana.png' : '/logo.png';
 
         return [
             ...parent::share($request),
-            'name' => config('app.name'),
+            'name' => $appName,
+            'logo' => $logo,
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
                 'user' => $request->user() ? array_merge($request->user()->toArray(), [

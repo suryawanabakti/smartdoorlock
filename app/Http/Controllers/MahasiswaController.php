@@ -24,6 +24,8 @@ class MahasiswaController extends Controller
                 $ket = 'mhs';
             } elseif ($request->routeIs('dosen.list')) {
                 $ket = 'dsn';
+            } else {
+                $ket = 'mhs';
             }
         }
 
@@ -98,6 +100,46 @@ class MahasiswaController extends Controller
         ]);
     }
 
+    // Create page specifically for Mahasiswa (hide ket field)
+    public function createMahasiswa(Request $request)
+    {
+        $ruangans = Ruangan::all();
+        $users = User::where('role', 'mahasiswa')->orWhere('role', 'dosen')->get();
+
+        return Inertia::render('Mahasiswa/Create', [
+            'ruangans' => $ruangans,
+            'users' => $users,
+            'ketOptions' => [
+                ['value' => 'mhs', 'label' => 'Mahasiswa'],
+                ['value' => 'dsn', 'label' => 'Dosen'],
+            ],
+            'tahunOptions' => range(date('Y'), date('Y') - 10, -1),
+            'filters' => ['ket' => 'mhs'],
+            'defaultKet' => 'mhs',
+            'hideKet' => true,
+        ]);
+    }
+
+    // Create page specifically for Dosen (hide ket field)
+    public function createDosen(Request $request)
+    {
+        $ruangans = Ruangan::all();
+        $users = User::where('role', 'mahasiswa')->orWhere('role', 'dosen')->get();
+
+        return Inertia::render('Mahasiswa/Create', [
+            'ruangans' => $ruangans,
+            'users' => $users,
+            'ketOptions' => [
+                ['value' => 'mhs', 'label' => 'Mahasiswa'],
+                ['value' => 'dsn', 'label' => 'Dosen'],
+            ],
+            'tahunOptions' => range(date('Y'), date('Y') - 10, -1),
+            'filters' => ['ket' => 'dsn'],
+            'defaultKet' => 'dsn',
+            'hideKet' => true,
+        ]);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -137,7 +179,8 @@ class MahasiswaController extends Controller
             }
         });
 
-        return redirect()->route('mahasiswas.index')
+        $route = $validated['ket'] === 'dsn' ? 'dosen.list' : 'mahasiswa.list';
+        return redirect()->route($route)
             ->with('success', 'Data mahasiswa/dosen berhasil dibuat.');
     }
 
@@ -155,6 +198,46 @@ class MahasiswaController extends Controller
                 ['value' => 'dsn', 'label' => 'Dosen'],
             ],
             'tahunOptions' => range(date('Y'), date('Y') - 10, -1),
+        ]);
+    }
+
+    // Edit page for Mahasiswa (hide ket field)
+    public function editMahasiswa(Mahasiswa $mahasiswa)
+    {
+        $ruangans = Ruangan::where('type', 'kelas')->get();
+        $users = User::where('role', 'mahasiswa')->orWhere('role', 'dosen')->get();
+
+        return Inertia::render('Mahasiswa/Edit', [
+            'mahasiswa' => $mahasiswa->load(['user', 'ruangan']),
+            'ruangans' => $ruangans,
+            'users' => $users,
+            'ketOptions' => [
+                ['value' => 'mhs', 'label' => 'Mahasiswa'],
+                ['value' => 'dsn', 'label' => 'Dosen'],
+            ],
+            'tahunOptions' => range(date('Y'), date('Y') - 10, -1),
+            'defaultKet' => 'mhs',
+            'hideKet' => true,
+        ]);
+    }
+
+    // Edit page for Dosen (hide ket field)
+    public function editDosen(Mahasiswa $mahasiswa)
+    {
+        $ruangans = Ruangan::where('type', 'kelas')->get();
+        $users = User::where('role', 'mahasiswa')->orWhere('role', 'dosen')->get();
+
+        return Inertia::render('Mahasiswa/Edit', [
+            'mahasiswa' => $mahasiswa->load(['user', 'ruangan']),
+            'ruangans' => $ruangans,
+            'users' => $users,
+            'ketOptions' => [
+                ['value' => 'mhs', 'label' => 'Mahasiswa'],
+                ['value' => 'dsn', 'label' => 'Dosen'],
+            ],
+            'tahunOptions' => range(date('Y'), date('Y') - 10, -1),
+            'defaultKet' => 'dsn',
+            'hideKet' => true,
         ]);
     }
 
@@ -208,7 +291,8 @@ class MahasiswaController extends Controller
             }
         });
 
-        return redirect()->route('mahasiswas.index')
+        $route = $validated['ket'] === 'dsn' ? 'dosen.list' : 'mahasiswa.list';
+        return redirect()->route($route)
             ->with('success', 'Data mahasiswa/dosen berhasil diperbarui.');
     }
 
@@ -226,7 +310,8 @@ class MahasiswaController extends Controller
             $mahasiswa->delete();
         });
 
-        return redirect()->route('mahasiswas.index')
+        $route = $mahasiswa->ket === 'dsn' ? 'dosen.list' : 'mahasiswa.list';
+        return redirect()->route($route)
             ->with('success', 'Data mahasiswa/dosen berhasil dihapus.');
     }
 

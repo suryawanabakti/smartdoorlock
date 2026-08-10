@@ -74,6 +74,7 @@ export function MultiSelect({
                                 {item.label}
                                 <X
                                     className="ml-1 h-3 w-3 cursor-pointer"
+                                    style={{ pointerEvents: 'auto' }}
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         handleRemove(item.value);

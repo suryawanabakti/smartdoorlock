@@ -492,7 +492,7 @@ export default function HistoriIndex({
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="rounded-md border">
+                        <div className="rounded-md border w-full overflow-x-auto">
                             <Table>
                                 <TableHeader>
                                     <TableRow>

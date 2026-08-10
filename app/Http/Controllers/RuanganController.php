@@ -113,7 +113,7 @@ class RuanganController extends Controller
             'mahasiswa_id' => 'nullable|exists:mahasiswas,id',
             'penanggung_jawab' => 'nullable|array',
         ]);
-
+        
         Ruangan::create($validated);
 
         return redirect()->route('ruangans.index')

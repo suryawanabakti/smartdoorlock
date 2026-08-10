@@ -298,7 +298,7 @@ export default function ScanerStatusShow({ scanerStatus, histories }: Props) {
                     </CardHeader>
                     <CardContent>
                         {histories.length > 0 ? (
-                            <div className="rounded-md border">
+                            <div className="rounded-md border w-full overflow-x-auto">
                                 <Table>
                                     <TableHeader>
                                         <TableRow>

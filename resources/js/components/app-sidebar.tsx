@@ -24,6 +24,7 @@ import {
     History,
     Key,
     LayoutDashboard,
+    Plus,
     ScanLine,
     Users,
 } from 'lucide-react';
@@ -123,6 +124,11 @@ const mahasiswaNavItems: NavItem[] = [
         title: 'Hak Akses',
         href: '/mahasiswa/hak-akses',
         icon: Key,
+    },
+    {
+        title: 'Ajukan Hak Akses',
+        href: '/mahasiswa/hak-akses/create',
+        icon: Plus,
     },
 ];
 
