@@ -7,7 +7,7 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import AppLogoIcon from '@/components/app-logo-icon';
-import { dashboard, login, register } from '@/routes';
+import { dashboard, login } from '@/routes';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import {
@@ -22,7 +22,6 @@ import {
     Scan,
     Shield,
     Smartphone,
-    UserPlus,
     Users,
 } from 'lucide-react';
 
@@ -68,8 +67,8 @@ const features = [
 const steps = [
     {
         number: '01',
-        title: 'Daftar & Verifikasi',
-        description: 'Buat akun sebagai Mahasiswa, Dosen, atau Penjaga. Admin akan memverifikasi data Anda.',
+        title: 'Akun Disediakan Admin',
+        description: 'Akun Mahasiswa, Dosen, atau Penjaga dibuat dan diverifikasi oleh admin sistem.',
     },
     {
         number: '02',
@@ -134,12 +133,6 @@ export default function Landing() {
                                             Masuk
                                         </Button>
                                     </Link>
-                                    <Link href={register()}>
-                                        <Button variant="default" size="sm">
-                                            <UserPlus className="mr-1 size-4" />
-                                            Daftar
-                                        </Button>
-                                    </Link>
                                 </>
                             )}
                         </div>
@@ -187,25 +180,15 @@ export default function Landing() {
                                         </Link>
                                     ) : (
                                         <>
-                                            <Link href={register()}>
+                                            <Link href={login()}>
                                                 <Button
                                                     variant="default"
                                                     size="lg"
                                                     className="w-full sm:w-auto"
                                                 >
-                                                    <UserPlus className="mr-2 size-5" />
-                                                    Daftar Sekarang
-                                                    <ArrowRight className="ml-2 size-4" />
-                                                </Button>
-                                            </Link>
-                                            <Link href={login()}>
-                                                <Button
-                                                    variant="outline"
-                                                    size="lg"
-                                                    className="w-full sm:w-auto"
-                                                >
                                                     <LogIn className="mr-2 size-5" />
                                                     Masuk
+                                                    <ArrowRight className="ml-2 size-4" />
                                                 </Button>
                                             </Link>
                                         </>
@@ -451,17 +434,6 @@ export default function Landing() {
                                 </Link>
                             ) : (
                                 <>
-                                    <Link href={register()}>
-                                        <Button
-                                            variant="secondary"
-                                            size="lg"
-                                            className="w-full sm:w-auto"
-                                        >
-                                            <UserPlus className="mr-2 size-5" />
-                                            Daftar Sekarang
-                                            <ArrowRight className="ml-2 size-4" />
-                                        </Button>
-                                    </Link>
                                     <Link href={login()}>
                                         <Button
                                             variant="outline"
@@ -496,9 +468,6 @@ export default function Landing() {
                                     <>
                                         <Link href={login()} className="hover:text-foreground">
                                             Masuk
-                                        </Link>
-                                        <Link href={register()} className="hover:text-foreground">
-                                            Daftar
                                         </Link>
                                     </>
                                 )}

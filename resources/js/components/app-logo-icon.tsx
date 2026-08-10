@@ -5,7 +5,7 @@ export default function AppLogoIcon({ className }: { className?: string }) {
     const { logo } = usePage<SharedData>().props;
     return (
         <img
-            src={'/logo.png'}
+            src={'/logo-megabuana.png'}
             className={`${className} object-contain`}
             alt="Logo"
         />
