@@ -37,7 +37,14 @@ class DoorLockController extends Controller
             ->whereHas('scanerStatuses', fn($query) => $query->where('kode', $request->kode))
             ->first();
 
-        if (! $ruangan || $currentTime < $ruangan->jam_buka || $currentTime > $ruangan->jam_tutup) {
+        $jamBuka = $ruangan->jam_buka->format('H:i:s');
+        $jamTutup = $ruangan->jam_tutup->format('H:i:s');
+
+        if (
+            ! $ruangan ||
+            $now < $jamBuka ||
+            $now > $jamTutup
+        ) {
             echo json_encode(['noid'], JSON_UNESCAPED_UNICODE);
 
             return;

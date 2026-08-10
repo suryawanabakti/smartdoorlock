@@ -10,42 +10,32 @@ class ScanerStatusSeeder extends Seeder
 {
     /**
      * Seed scanner (scaner_status) untuk setiap ruangan.
+     *
      * Setiap ruangan mendapat 2 scanner: dalam (masuk) dan luar (keluar).
-     * Kode scanner: 5 karakter huruf kecil + angka, unik.
-     * Idempotent: satu ruangan + type hanya memiliki satu scanner.
+     * Kode scanner mengikuti pola RFID + huruf (A, B, C, ...) + nomor urut:
+     *   - Ruangan pertama: RFIDA1 (dalam), RFIDA2 (luar)
+     *   - Ruangan kedua:   RFIDB1 (dalam), RFIDB2 (luar)
+     *   - dst.
+     *
+     * Idempotent: scanner lama dihapus lalu dibuat ulang dengan pola kode baru.
      */
     public function run(): void
     {
-        foreach (Ruangan::all() as $ruangan) {
-            foreach (['dalam', 'luar'] as $type) {
-                $scanner = ScanerStatus::firstOrNew([
+        ScanerStatus::query()->delete();
+
+        $rooms = Ruangan::orderBy('id')->get();
+
+        foreach ($rooms as $index => $ruangan) {
+            $letter = chr(65 + $index); // A, B, C, ...
+
+            foreach (['dalam', 'luar'] as $i => $type) {
+                ScanerStatus::create([
+                    'kode' => 'RFID'.$letter.($i + 1),
                     'ruangan_id' => $ruangan->id,
                     'type' => $type,
+                    'last' => null,
                 ]);
-
-                if (! preg_match('/^[a-z0-9]{5}$/', (string) $scanner->kode)) {
-                    $scanner->kode = $this->generateKode();
-                }
-
-                $scanner->save();
             }
         }
-    }
-
-    /**
-     * Generate kode scanner acak: 5 karakter huruf kecil + angka, dijamin unik.
-     */
-    private function generateKode(): string
-    {
-        $chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-
-        do {
-            $kode = '';
-            for ($i = 0; $i < 5; $i++) {
-                $kode .= $chars[random_int(0, strlen($chars) - 1)];
-            }
-        } while (ScanerStatus::where('kode', $kode)->exists());
-
-        return $kode;
     }
 }
