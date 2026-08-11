@@ -37,6 +37,11 @@ class DoorLockController extends Controller
             ->whereHas('scanerStatuses', fn($query) => $query->where('kode', $request->kode))
             ->first();
 
+        if (!$ruangan) {
+            echo json_encode(['noid'], JSON_UNESCAPED_UNICODE);
+
+            return;
+        }
         $jamBuka = $ruangan->jam_buka->format('H:i:s');
         $jamTutup = $ruangan->jam_tutup->format('H:i:s');
 

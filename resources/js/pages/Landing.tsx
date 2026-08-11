@@ -1,12 +1,11 @@
+import AppLogoIcon from '@/components/app-logo-icon';
 import { Button } from '@/components/ui/button';
 import {
     Card,
-    CardContent,
     CardDescription,
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import AppLogoIcon from '@/components/app-logo-icon';
 import { dashboard, login } from '@/routes';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
@@ -68,17 +67,20 @@ const steps = [
     {
         number: '01',
         title: 'Akun Disediakan Admin',
-        description: 'Akun Mahasiswa, Dosen, atau Penjaga dibuat dan diverifikasi oleh admin sistem.',
+        description:
+            'Akun Mahasiswa, Dosen, atau Penjaga dibuat dan diverifikasi oleh admin sistem.',
     },
     {
         number: '02',
         title: 'Ajukan atau Atur Akses',
-        description: 'Ajukan permintaan akses ruangan atau atur jadwal akses untuk mahasiswa sesuai kebutuhan.',
+        description:
+            'Ajukan permintaan akses ruangan atau atur jadwal akses untuk mahasiswa sesuai kebutuhan.',
     },
     {
         number: '03',
         title: 'Scan & Masuk',
-        description: 'Gunakan kartu RFID/NFC Anda di scanner pintu untuk mengakses ruangan yang telah diizinkan.',
+        description:
+            'Gunakan kartu RFID/NFC Anda di scanner pintu untuk mengakses ruangan yang telah diizinkan.',
     },
 ];
 
@@ -86,7 +88,10 @@ export default function Landing() {
     const { auth, name } = usePage<SharedData>().props;
     const isAuthenticated = !!auth.user;
 
-    const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
+    const handleSmoothScroll = (
+        e: React.MouseEvent<HTMLAnchorElement>,
+        targetId: string,
+    ) => {
         e.preventDefault();
         const target = document.getElementById(targetId);
         if (target) {
@@ -127,11 +132,9 @@ export default function Landing() {
                                 </Link>
                             ) : (
                                 <>
-                                    <Link href={login()}>
-                                        <Button variant="ghost" size="sm">
-                                            <LogIn className="mr-1 size-4" />
-                                            Masuk
-                                        </Button>
+                                    <Link href={login()} as={Button}>
+                                        <LogIn className="mr-1 size-4" />
+                                        Masuk
                                     </Link>
                                 </>
                             )}
@@ -145,7 +148,7 @@ export default function Landing() {
                     <div className="pointer-events-none absolute inset-0 -z-10">
                         <div className="absolute -top-40 right-0 h-[500px] w-[500px] rounded-full bg-primary/5 blur-3xl" />
                         <div className="absolute -bottom-40 left-0 h-[400px] w-[400px] rounded-full bg-primary/10 blur-3xl" />
-                        <div className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-3xl" />
+                        <div className="absolute top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-3xl" />
                     </div>
 
                     <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
@@ -156,14 +159,17 @@ export default function Landing() {
                                     <Shield className="mr-2 size-4" />
                                     Smart Door Lock System v2.0
                                 </div>
-                                <h1 className="text-4xl font-bold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+                                <h1 className="text-4xl leading-tight font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
                                     Sistem Keamanan &amp; Manajemen Akses{' '}
-                                    <span className="text-primary">Ruangan Cerdas</span>
+                                    <span className="text-primary">
+                                        Ruangan Cerdas
+                                    </span>
                                 </h1>
                                 <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground lg:mx-0">
-                                    Solusi terintegrasi untuk manajemen akses ruangan kampus berbasis
-                                    RFID/NFC. Kelola izin akses, pantau kehadiran, dan amankan setiap
-                                    ruangan dengan teknologi pintar.
+                                    Solusi terintegrasi untuk manajemen akses
+                                    ruangan kampus berbasis RFID/NFC. Kelola
+                                    izin akses, pantau kehadiran, dan amankan
+                                    setiap ruangan dengan teknologi pintar.
                                 </p>
                                 <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row lg:justify-start">
                                     {isAuthenticated ? (
@@ -226,7 +232,8 @@ export default function Landing() {
                                                         Smart Door Lock
                                                     </h3>
                                                     <p className="text-sm text-muted-foreground">
-                                                        Sistem Manajemen Akses Ruangan
+                                                        Sistem Manajemen Akses
+                                                        Ruangan
                                                     </p>
                                                     <div className="flex gap-2">
                                                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
@@ -264,7 +271,9 @@ export default function Landing() {
                                 { label: 'Scanner Terpasang', value: '25+' },
                             ].map((stat) => (
                                 <div key={stat.label} className="text-center">
-                                    <div className="text-3xl font-bold text-primary">{stat.value}</div>
+                                    <div className="text-3xl font-bold text-primary">
+                                        {stat.value}
+                                    </div>
                                     <div className="mt-1 text-sm text-muted-foreground">
                                         {stat.label}
                                     </div>
@@ -282,8 +291,8 @@ export default function Landing() {
                                 Fitur Unggulan
                             </h2>
                             <p className="mt-4 text-lg text-muted-foreground">
-                                Berbagai fitur dirancang untuk memudahkan manajemen akses dan keamanan
-                                ruangan kampus.
+                                Berbagai fitur dirancang untuk memudahkan
+                                manajemen akses dan keamanan ruangan kampus.
                             </p>
                         </div>
                         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -316,21 +325,25 @@ export default function Landing() {
                 <section id="how-it-works" className="bg-muted/30 py-20">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div className="mx-auto max-w-2xl text-center">
-                            <span className="mb-4 inline-block text-sm font-semibold uppercase tracking-widest text-primary">
+                            <span className="mb-4 inline-block text-sm font-semibold tracking-widest text-primary uppercase">
                                 Cara Kerja
                             </span>
                             <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                                 Mudah Digunakan dalam 3 Langkah
                             </h2>
                             <p className="mt-4 text-lg text-muted-foreground">
-                                Mulai menggunakan Smart Door Lock System dengan cepat dan mudah.
+                                Mulai menggunakan Smart Door Lock System dengan
+                                cepat dan mudah.
                             </p>
                         </div>
                         <div className="mt-16 grid gap-8 md:grid-cols-3">
                             {steps.map((step, index) => (
-                                <div key={step.number} className="relative text-center">
+                                <div
+                                    key={step.number}
+                                    className="relative text-center"
+                                >
                                     {index < steps.length - 1 && (
-                                        <div className="absolute left-[60%] top-12 hidden h-0.5 w-[80%] bg-gradient-to-r from-primary/40 to-transparent md:block" />
+                                        <div className="absolute top-12 left-[60%] hidden h-0.5 w-[80%] bg-gradient-to-r from-primary/40 to-transparent md:block" />
                                     )}
                                     <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-primary/10">
                                         <span className="text-3xl font-bold text-primary">
@@ -357,7 +370,8 @@ export default function Landing() {
                                 Untuk Semua Peran
                             </h2>
                             <p className="mt-4 text-lg text-muted-foreground">
-                                Dirancang untuk memenuhi kebutuhan setiap pengguna di lingkungan kampus.
+                                Dirancang untuk memenuhi kebutuhan setiap
+                                pengguna di lingkungan kampus.
                             </p>
                         </div>
                         <div className="mt-16 grid gap-8 md:grid-cols-3">
@@ -417,8 +431,9 @@ export default function Landing() {
                             Siap Mengelola Akses Ruangan dengan Cerdas?
                         </h2>
                         <p className="mx-auto mt-4 max-w-2xl text-lg text-primary-foreground/80">
-                            Bergabunglah dengan sistem manajemen akses ruangan terintegrasi untuk kampus
-                            yang lebih aman dan efisien.
+                            Bergabunglah dengan sistem manajemen akses ruangan
+                            terintegrasi untuk kampus yang lebih aman dan
+                            efisien.
                         </p>
                         <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
                             {isAuthenticated ? (
@@ -434,15 +449,9 @@ export default function Landing() {
                                 </Link>
                             ) : (
                                 <>
-                                    <Link href={login()}>
-                                        <Button
-                                            variant="outline"
-                                            size="lg"
-                                            className="w-full border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10 sm:w-auto"
-                                        >
-                                            <LogIn className="mr-2 size-5" />
-                                            Masuk
-                                        </Button>
+                                    <Link href={login()} as={Button}>
+                                        <LogIn className="mr-2 size-5" />
+                                        Masuk
                                     </Link>
                                 </>
                             )}
@@ -458,15 +467,23 @@ export default function Landing() {
                                 <div className="flex h-8 w-8 items-center justify-center">
                                     <AppLogoIcon className="size-8 fill-current text-primary" />
                                 </div>
-                                <span className="text-sm font-semibold text-foreground">{name}</span>
+                                <span className="text-sm font-semibold text-foreground">
+                                    {name}
+                                </span>
                             </div>
                             <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                                <Link href="/" className="hover:text-foreground">
+                                <Link
+                                    href="/"
+                                    className="hover:text-foreground"
+                                >
                                     Beranda
                                 </Link>
                                 {!isAuthenticated && (
                                     <>
-                                        <Link href={login()} className="hover:text-foreground">
+                                        <Link
+                                            href={login()}
+                                            className="hover:text-foreground"
+                                        >
                                             Masuk
                                         </Link>
                                     </>
@@ -474,7 +491,8 @@ export default function Landing() {
                             </div>
                         </div>
                         <div className="mt-8 border-t border-border/40 pt-8 text-center text-sm text-muted-foreground">
-                            &copy; {new Date().getFullYear()} {name}. All rights reserved.
+                            &copy; {new Date().getFullYear()} {name}. All rights
+                            reserved.
                         </div>
                     </div>
                 </footer>

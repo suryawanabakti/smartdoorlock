@@ -10,6 +10,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
+import { isHakAksesPast } from '@/lib/utils';
 import { type BreadcrumbItem } from '@/types';
 import { type HakAkses } from '@/types/hak-akses';
 import { type Mahasiswa } from '@/types/mahasiswa';
@@ -61,8 +62,8 @@ export default function HakAksesMahasiswaShow({ hakAkses, mahasiswa }: Props) {
         );
     };
 
-    const isPast = (dateString: string) => {
-        return new Date(dateString) < new Date();
+    const isPast = () => {
+        return isHakAksesPast(hakAkses.tanggal, hakAkses.jam_keluar);
     };
 
     const getStatusBadge = (hakAkses: HakAkses) => {
@@ -83,7 +84,7 @@ export default function HakAksesMahasiswaShow({ hakAkses, mahasiswa }: Props) {
         );
     };
 
-    const canEdit = !hakAkses.is_approve && !isPast(hakAkses.tanggal);
+    const canEdit = !hakAkses.is_approve && !isPast();
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -191,7 +192,7 @@ export default function HakAksesMahasiswaShow({ hakAkses, mahasiswa }: Props) {
                                                     Hari Ini
                                                 </Badge>
                                             )}
-                                            {isPast(hakAkses.tanggal) && (
+                                            {isPast() && (
                                                 <Badge
                                                     variant="outline"
                                                     className="bg-gray-100 text-xs"

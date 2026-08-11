@@ -19,12 +19,10 @@ import {
     Calendar,
     ClipboardCheck,
     DoorOpen,
-    Folder,
     GraduationCap,
     History,
     Key,
     LayoutDashboard,
-    Plus,
     ScanLine,
     Users,
 } from 'lucide-react';
@@ -56,8 +54,6 @@ const adminNavItems: NavItem[] = [
         href: '/dosen-list',
         icon: BookOpen,
     },
-
-
 
     {
         title: 'Scanner',
@@ -125,16 +121,9 @@ const mahasiswaNavItems: NavItem[] = [
         href: '/mahasiswa/hak-akses',
         icon: Key,
     },
-    {
-        title: 'Ajukan Hak Akses',
-        href: '/mahasiswa/hak-akses/create',
-        icon: Plus,
-    },
 ];
 
-const footerNavItems: NavItem[] = [
-
-];
+const footerNavItems: NavItem[] = [];
 
 export function AppSidebar() {
     const page = usePage<SharedData>();

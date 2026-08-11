@@ -16,6 +16,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
+import { isHakAksesPast } from '@/lib/utils';
 import { type BreadcrumbItem } from '@/types';
 import { type HakAkses } from '@/types/hak-akses';
 import { Head, Link, router } from '@inertiajs/react';
@@ -81,7 +82,7 @@ export default function HakAksesShow({ hakAkses }: Props) {
     };
 
     const isPastDate = () => {
-        return new Date(hakAkses.tanggal) < new Date();
+        return isHakAksesPast(hakAkses.tanggal, hakAkses.jam_keluar);
     };
     console.log(hakAkses);
     const approveHakAkses = () => {

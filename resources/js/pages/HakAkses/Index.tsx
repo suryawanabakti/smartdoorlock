@@ -24,6 +24,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
+import { isHakAksesPast } from '@/lib/utils';
 import { PaginatedResponse, type BreadcrumbItem } from '@/types';
 import { type HakAkses } from '@/types/hak-akses';
 import { type Ruangan } from '@/types/ruangan';
@@ -133,8 +134,8 @@ export default function HakAksesIndex({
         });
     };
 
-    const isPastDate = (dateString: string) => {
-        return new Date(dateString) < new Date();
+    const isPastDate = (hakAkses: { tanggal: string; jam_keluar: string }) => {
+        return isHakAksesPast(hakAkses.tanggal, hakAkses.jam_keluar);
     };
 
     return (
@@ -268,7 +269,7 @@ export default function HakAksesIndex({
                                         <TableRow
                                             key={item.id}
                                             className={
-                                                isPastDate(item.tanggal)
+                                                isPastDate(item)
                                                     ? 'bg-muted/50'
                                                     : ''
                                             }
@@ -293,9 +294,7 @@ export default function HakAksesIndex({
                                                         {item.jam_masuk} -{' '}
                                                         {item.jam_keluar}
                                                     </div>
-                                                    {isPastDate(
-                                                        item.tanggal,
-                                                    ) && (
+                                                    {isPastDate(item) && (
                                                             <Badge
                                                                 variant="secondary"
                                                                 className="text-xs"

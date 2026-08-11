@@ -8,6 +8,7 @@ class LandingPageController extends Controller
 {
     public function index()
     {
+        return redirect('/login');
         return Inertia::render('Landing');
     }
 }
