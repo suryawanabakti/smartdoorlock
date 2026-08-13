@@ -31,7 +31,7 @@ export function NavMain({
                             )}
                             tooltip={{ children: item.title }}
                         >
-                            <Link href={item.href}>
+                            <Link href={item.href} prefetch>
                                 {item.icon && <item.icon />}
                                 <span>{item.title}</span>
                             </Link>
