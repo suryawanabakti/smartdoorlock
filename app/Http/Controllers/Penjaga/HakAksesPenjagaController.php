@@ -97,7 +97,7 @@ class HakAksesPenjagaController extends Controller
             'additional_participant' => 'nullable|string|max:1000',
             'max_register' => 'required|integer|min:1|max:50',
             'mahasiswa_ids' => 'nullable|array',
-            'mahasiswa_ids.*' => 'exists:mahasiswas,id',
+            'mahasiswa_ids.*' => 'exists:mahasiswa,id',
         ]);
 
         // Penjaga otomatis approve hak akses yang mereka buat
