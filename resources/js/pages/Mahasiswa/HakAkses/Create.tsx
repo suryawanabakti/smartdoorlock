@@ -1,8 +1,10 @@
 import AppLayout from '@/layouts/app-layout';
+import { Button } from '@/components/ui/button';
 import { type BreadcrumbItem } from '@/types';
 import { type Mahasiswa } from '@/types/mahasiswa';
 import { type Ruangan } from '@/types/ruangan';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
+import { ArrowLeft } from 'lucide-react';
 import HakAksesForm from './Form';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -38,13 +40,21 @@ export default function HakAksesMahasiswaCreate({
             <div className="flex flex-col gap-6 p-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">
+                        <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
                             Ajukan Hak Akses Baru
                         </h1>
                         <p className="text-muted-foreground">
                             Ajukan permohonan akses ruangan untuk kegiatan
                             akademik
                         </p>
+                    </div>
+                    <div className="flex gap-2">
+                        <Link href="/mahasiswa/hak-akses">
+                            <Button variant="outline">
+                                <ArrowLeft className="mr-2 h-4 w-4" />
+                                Kembali
+                            </Button>
+                        </Link>
                     </div>
                 </div>
 
