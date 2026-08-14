@@ -32,7 +32,6 @@ import { Head, Link, router } from '@inertiajs/react';
 import {
     Building,
     Calendar,
-    Check,
     Clock,
     Edit,
     Eye,
@@ -155,15 +154,15 @@ export default function HakAksesMahasiswaIndex({
                             Ajukan Hak Akses
                         </Button>
                     </Link>
-                    <Link
+                    {/* <Link
                         href="/mahasiswa/hak-akses/available"
-                        className="mt-4 inline-block"
+                        className="mt-4 ml-3 inline-block"
                     >
                         <Button>
                             <Check className="mr-2 h-4 w-4" />
                             Hak Akses Yang Tersedia
                         </Button>
-                    </Link>
+                    </Link> */}
                 </div>
 
                 {/* Filters */}
