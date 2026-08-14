@@ -23,17 +23,17 @@ class MahasiswaImport implements ToModel, WithHeadingRow, WithValidation
 
     public function model(array $row)
     {
-        // Cari ruangan berdasarkan nama (kolom 'kelas' atau 'ruangan' di excel)
+        // Cari ruangan
         $ruanganName = $row['kelas'] ?? $row['ruangan'] ?? $row['tahun'] ?? $row['homebase'] ?? null;
         $ruangan = null;
-        
+
         if ($ruanganName) {
             $ruangan = Ruangan::where('nama_ruangan', 'like', '%' . $ruanganName . '%')->first();
         }
 
         $nim = $row['nim'] ?? $row['nidn'];
 
-        // Create or update user account
+        // Create / Update User
         $user = User::updateOrCreate(
             ['email' => $nim],
             [
@@ -43,17 +43,22 @@ class MahasiswaImport implements ToModel, WithHeadingRow, WithValidation
             ]
         );
 
-        return new Mahasiswa([
-            'nama'        => $row['nama'],
-            'nim'         => $nim,
-            'id_tag'      => $row['id_tag'] ?? $row['tag'] ?? null,
-            'tahun_masuk' => $row['tahun_masuk'] ?? $row['angkatan'] ?? $row['tahun_gabung'] ?? date('Y'),
-            'ruangan_id'  => $ruangan ? $ruangan->id : null,
-            'user_id'     => $user->id,
-            'ket'         => $this->ket,
-            'status'      => 1, // Aktif by default
-        ]);
-
+        // Create / Update Mahasiswa
+        return Mahasiswa::updateOrCreate(
+            ['nim' => $nim], // pencarian
+            [
+                'nama'        => $row['nama'],
+                'id_tag'      => $row['id_tag'] ?? $row['tag'] ?? null,
+                'tahun_masuk' => $row['tahun_masuk']
+                    ?? $row['angkatan']
+                    ?? $row['tahun_gabung']
+                    ?? date('Y'),
+                'ruangan_id'  => $ruangan?->id,
+                'user_id'     => $user->id,
+                'ket'         => $this->ket,
+                'status'      => 1,
+            ]
+        );
     }
 
 
