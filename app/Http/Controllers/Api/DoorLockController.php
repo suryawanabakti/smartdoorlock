@@ -27,7 +27,14 @@ class DoorLockController extends Controller
 
         if (! $mahasiswa) {
             echo json_encode(['noid'], JSON_UNESCAPED_UNICODE);
-
+            Histori::create([
+                'nim' => $mahasiswa->nim ?? null,
+                'nama' => $mahasiswa->nama ?? null,
+                'id_tag' => $request->id,
+                'kode' => $request->kode,
+                'waktu' => $now,
+                'status' => 2,
+            ]);
             return;
         }
         $status = $mahasiswa->status ?? 2;
