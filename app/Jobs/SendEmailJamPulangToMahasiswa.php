@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Mail\NotificationJamPulangToMahasiswa;
-use App\Services\FonnteService;
+use App\Services\WawebService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -43,7 +43,7 @@ class SendEmailJamPulangToMahasiswa implements ShouldQueue
 
             $namaRuangan = $this->hakAkses->ruangan->nama_ruangan ?? null;
             $message = "⚠️ *Peringatan Jam Pulang*\n\nHalo, waktu penggunaan ruangan *{$namaRuangan}* tersisa *10 menit lagi*.\n\nMohon bersiap-siap dan harap keluar sebelum pintu terkunci otomatis. Terima kasih! 🙏";
-            FonnteService::sendWa($this->mahasiswa->user->nowa, $message);
+            WawebService::sendWa($this->mahasiswa->user->nowa, $message);
             Mail::to($this->mahasiswa->user->email_notifikasi)
                 ->send(new NotificationJamPulangToMahasiswa($dataPayload));
         }

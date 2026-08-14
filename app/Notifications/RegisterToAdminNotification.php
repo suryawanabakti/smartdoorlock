@@ -28,7 +28,7 @@ class RegisterToAdminNotification extends Notification
         return [
             'type' => 'register_admin',
             'title' => 'Pendaftaran Ruangan Baru',
-            'message' => 'Ada mahasiswa yang mendaftar di ruangan ' . ($this->hakAkses->ruangan->nama_ruangan ?? ''),
+            'message' => 'Ada mahasiswa yang mendaftar di ruangan ' . ($this->hakAkses->ruangan->nama_ruangan ?? '') . ' untuk tanggal ' . ($this->hakAkses->tanggal ?? ''),
             'url' => '/penjaga/hak-akses',
         ];
     }

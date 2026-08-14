@@ -31,7 +31,7 @@ class RegisterToMahasiswaNotification extends Notification
         return [
             'type' => 'register_mahasiswa',
             'title' => 'Status Pendaftaran Ruangan',
-            'message' => 'Pendaftaran ruangan ' . ($this->hakAkses->ruangan->nama_ruangan ?? '') . ' telah ' . $statusText . '.',
+            'message' => 'Pendaftaran ruangan ' . ($this->hakAkses->ruangan->nama_ruangan ?? '') . ' untuk tanggal ' . ($this->hakAkses->tanggal ?? '') . ' telah ' . $statusText . '.',
             'url' => '/mahasiswa/dashboard',
         ];
     }

@@ -4,8 +4,7 @@ namespace App\Jobs;
 
 use App\Mail\NotificationDisapproveToMahasiswa;
 use App\Mail\NotificationRegisterToMahasiswa;
-use App\Services\Fonnte;
-use App\Services\FonnteService;
+use App\Services\WawebService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -47,11 +46,8 @@ class SendEmailToMahasiswa implements ShouldQueue
             ];
 
             if ($this->status == 'approve') {
-
-                // Fonnte::sendWa("081244067445", "TESTTTER");
-
                 $message = "Halo *{$this->mahasiswa->user->name}* 👋\n\nTerima kasih telah mendaftar di ruangan *{$this->hakAkses->ruangan->nama_ruangan}*.\n\nBerikut detail pendaftaran Anda:\n📅 *Tanggal:* {$this->hakAkses->tanggal}\n🕒 *Jadwal:* {$this->hakAkses->jam_masuk} - {$this->hakAkses->jam_keluar}\n\nSelamat beraktivitas! 🚀";
-                FonnteService::sendWa($this->mahasiswa->user->nowa, $message);
+                WawebService::sendWa($this->mahasiswa->user->nowa, $message);
 
                 Mail::to($this->mahasiswa->user->email_notifikasi)
                     ->send(new NotificationRegisterToMahasiswa($dataPayload));

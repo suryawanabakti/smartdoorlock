@@ -1,0 +1,12 @@
+# Dependencies
+node_modules/
+
+# Session & QR
+session/
+*.png
+
+# Env
+.env
+
+# Logs
+*.log

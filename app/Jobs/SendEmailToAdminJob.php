@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Mail\NotificationRegisterToAdmin;
-use App\Services\FonnteService;
+use App\Services\WawebService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -40,8 +40,8 @@ class SendEmailToAdminJob implements ShouldQueue
             return "👤 *Nama:* {$mhs->nama}\n🎓 *NIM:* {$mhs->nim}";
         })->implode("\n\n");
 
-        $message = "Halo Admin *{$this->hakAkses->ruangan->nama_ruangan}* 👋\n\nAda mahasiswa yang baru saja mendaftar:\n\n{$mahasiswaList}\n\nSilakan periksa dashboard untuk info lebih lanjut.";
-        FonnteService::sendWa($this->user->nowa, $message);
+        $message = "Halo Admin *{$this->hakAkses->ruangan->nama_ruangan}* 👋\n\nAda mahasiswa yang baru saja mendaftar:\n\n{$mahasiswaList}\n\n📅 *Tanggal Hak Akses:* {$this->hakAkses->tanggal}\n\nSilakan periksa dashboard untuk info lebih lanjut.";
+        WawebService::sendWa($this->user->nowa, $message);
 
         Mail::to($this->user->email_notifikasi)->send(
             new NotificationRegisterToAdmin(
