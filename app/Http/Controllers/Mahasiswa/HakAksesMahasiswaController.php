@@ -79,14 +79,16 @@ class HakAksesMahasiswaController extends Controller
         // Get all ruangan yang available
         $ruangans = Ruangan::whereNot('type', 'umum')->get();
 
-        // Get teman kelas (same ruangan_id and tahun_masuk) + semua mahasiswa
-        $temanKelas = Mahasiswa::with('ruangan')->where(function ($query) use ($mahasiswa) {
-            $query->where('ruangan_id', $mahasiswa->ruangan_id)
-                ->where('tahun_masuk', $mahasiswa->tahun_masuk)
-                ->where('id', '!=', $mahasiswa->id);
-        })
-            ->orWhere('tahun_masuk', $mahasiswa->tahun_masuk)
-            ->with('user')
+        $temanKelas = Mahasiswa::with(['ruangan', 'user'])
+            ->where('ket', 'mhs')
+            ->where(function ($query) use ($mahasiswa) {
+                $query->where(function ($q) use ($mahasiswa) {
+                    $q->where('ruangan_id', $mahasiswa->ruangan_id)
+                        ->where('tahun_masuk', $mahasiswa->tahun_masuk)
+                        ->where('id', '!=', $mahasiswa->id);
+                })
+                    ->orWhere('tahun_masuk', $mahasiswa->tahun_masuk);
+            })
             ->aktif()
             ->get();
 
@@ -131,7 +133,7 @@ class HakAksesMahasiswaController extends Controller
             ->where('ruangan_id', $validated['ruangan_id'])
             ->get();
 
-        $penjagaRuangan->filter(fn ($data) => $data->user && $data->user->email_notifikasi)
+        $penjagaRuangan->filter(fn($data) => $data->user && $data->user->email_notifikasi)
             ->each(function ($data) use ($hakAkses) {
                 SendEmailToAdminJob::dispatch($data->user, $hakAkses->load('ruangan', 'mahasiswas'));
             });
