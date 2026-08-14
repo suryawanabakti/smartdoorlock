@@ -325,6 +325,19 @@ class MahasiswaController extends Controller
             ->with('success', "Data berhasil {$status}.");
     }
 
+    public function lowercaseIdTag()
+    {
+        $count = Mahasiswa::whereNotNull('id_tag')
+            ->whereRaw('BINARY id_tag <> LOWER(id_tag)')
+            ->get()
+            ->each(function ($mahasiswa) {
+                $mahasiswa->update(['id_tag' => strtolower($mahasiswa->id_tag)]);
+            })
+            ->count();
+
+        return redirect()->back()->with('success', "{$count} id_tag berhasil diubah menjadi huruf kecil.");
+    }
+
     public function import(Request $request)
     {
         $request->validate([
