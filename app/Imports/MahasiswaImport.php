@@ -48,7 +48,7 @@ class MahasiswaImport implements ToModel, WithHeadingRow, WithValidation
             ['nim' => $nim], // pencarian
             [
                 'nama'        => $row['nama'],
-                'id_tag'      => $row['id_tag'] ?? null,
+                'id_tag'      => $row['id_tag'] ? strtolower($row['id_tag']) : null,
                 'tahun_masuk' => $row['tahun_masuk']
                     ?? $row['angkatan']
                     ?? $row['tahun_gabung']

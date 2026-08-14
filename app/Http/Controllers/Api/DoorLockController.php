@@ -70,10 +70,10 @@ class DoorLockController extends Controller
             if (! $this->hasAccess($mahasiswa, $ruangan, $currentTime, $currentDate)) {
                 $this->createHistoriAndBroadcast($mahasiswa, $request->id, $request->kode, 3, $ruangan);
                 echo json_encode(['noid'], JSON_UNESCAPED_UNICODE);
-
                 return;
             }
         }
+
 
         // Validasi akses dosen
         if ($mahasiswa && $mahasiswa->ket === 'dsn' && $ruangan->type !== 'umum') {
@@ -102,7 +102,6 @@ class DoorLockController extends Controller
 
             if ($mahasiswa->status == 0) {
                 echo json_encode(['noid'], JSON_UNESCAPED_UNICODE);
-
                 return;
             }
 
@@ -111,7 +110,7 @@ class DoorLockController extends Controller
                 // if (env('APP_REALTIME') == 'true') {
                 //     broadcast(new StoreHistoryEvent($histori->load('user', 'scanner.ruangan'), $ruangan));
                 // }
-                echo json_encode([$mahasiswa->id_tag], JSON_UNESCAPED_UNICODE);
+                echo json_encode([strtolower($mahasiswa->id_tag)], JSON_UNESCAPED_UNICODE);
 
                 return;
             }
