@@ -8,12 +8,6 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import {
     Select,
@@ -38,12 +32,11 @@ import { Head, Link, router } from '@inertiajs/react';
 import {
     Building,
     Calendar,
+    Check,
     Clock,
     Edit,
-    ExternalLink,
     Eye,
     GraduationCap,
-    Menu,
     Plus,
     Search,
     Trash2,
@@ -143,7 +136,7 @@ export default function HakAksesMahasiswaIndex({
 
             <div className="space-y-6 p-4">
                 {/* Header */}
-                <div className="flex items-center justify-between">
+                <div>
                     <div>
                         <h1 className="flex items-center gap-2 text-3xl font-bold tracking-tight">
                             <GraduationCap className="h-8 w-8" />
@@ -153,54 +146,24 @@ export default function HakAksesMahasiswaIndex({
                             Kelola permohonan hak akses ruangan yang Anda ajukan
                         </p>
                     </div>
-                    <div className="flex gap-2">
-                        <div className="hidden gap-2 md:flex">
-                            <Link href="/mahasiswa/hak-akses/available">
-                                <Button variant="outline">
-                                    <ExternalLink className="mr-2 h-4 w-4" />
-                                    Hak Akses Tersedia
-                                </Button>
-                            </Link>
-                            <Link href="/mahasiswa/hak-akses/create">
-                                <Button>
-                                    <Plus className="mr-2 h-4 w-4" />
-                                    Ajukan Hak Akses
-                                </Button>
-                            </Link>
-                        </div>
-                        <div className="md:hidden">
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="outline" size="icon">
-                                        <Menu className="h-5 w-5" />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    align="end"
-                                    className="w-56"
-                                >
-                                    <DropdownMenuItem asChild>
-                                        <Link
-                                            href="/mahasiswa/hak-akses/available"
-                                            className="flex w-full cursor-pointer items-center"
-                                        >
-                                            <ExternalLink className="mr-2 h-4 w-4" />
-                                            Hak Akses Tersedia
-                                        </Link>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem asChild>
-                                        <Link
-                                            href="/mahasiswa/hak-akses/create"
-                                            className="flex w-full cursor-pointer items-center"
-                                        >
-                                            <Plus className="mr-2 h-4 w-4" />
-                                            Ajukan Hak Akses
-                                        </Link>
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </div>
-                    </div>
+                    <Link
+                        href="/mahasiswa/hak-akses/create"
+                        className="mt-4 inline-block"
+                    >
+                        <Button>
+                            <Plus className="mr-2 h-4 w-4" />
+                            Ajukan Hak Akses
+                        </Button>
+                    </Link>
+                    <Link
+                        href="/mahasiswa/hak-akses/available"
+                        className="mt-4 inline-block"
+                    >
+                        <Button>
+                            <Check className="mr-2 h-4 w-4" />
+                            Hak Akses Yang Tersedia
+                        </Button>
+                    </Link>
                 </div>
 
                 {/* Filters */}

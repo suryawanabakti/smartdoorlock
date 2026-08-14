@@ -1,3 +1,4 @@
+import { Pagination } from '@/components/pagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -28,7 +29,6 @@ import { PaginatedResponse, type BreadcrumbItem } from '@/types';
 import { type HakAkses } from '@/types/hak-akses';
 import { type Ruangan } from '@/types/ruangan';
 import { Head, Link, router } from '@inertiajs/react';
-import { Pagination } from '@/components/pagination';
 import {
     Building,
     Calendar,
@@ -270,7 +270,7 @@ export default function HakAksesPenjagaIndex({
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="rounded-md border w-full overflow-x-auto">
+                        <div className="w-full overflow-x-auto rounded-md border">
                             <Table>
                                 <TableHeader>
                                     <TableRow>
@@ -289,7 +289,7 @@ export default function HakAksesPenjagaIndex({
                                             key={item.id}
                                             className={
                                                 isToday(item.tanggal)
-                                                    ? 'bg-blue-50'
+                                                    ? 'bg-blue-50 dark:bg-blue-500/10'
                                                     : ''
                                             }
                                         >
@@ -362,17 +362,19 @@ export default function HakAksesPenjagaIndex({
                                                             <Eye className="h-4 w-4" />
                                                         </Button>
                                                     </Link>
-                                                    <Link
-                                                        href={`/penjaga/hak-akses/${item.id}/edit`}
-                                                    >
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            title="Edit"
+                                                    {!item.is_approve && (
+                                                        <Link
+                                                            href={`/penjaga/hak-akses/${item.id}/edit`}
                                                         >
-                                                            <Edit className="h-4 w-4" />
-                                                        </Button>
-                                                    </Link>
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                title="Edit"
+                                                            >
+                                                                <Edit className="h-4 w-4" />
+                                                            </Button>
+                                                        </Link>
+                                                    )}
                                                     {!item.is_approve && (
                                                         <Button
                                                             variant="default"
@@ -444,7 +446,11 @@ export default function HakAksesPenjagaIndex({
                         {/* Pagination */}
                         <Pagination
                             links={hakAkses.links}
-                            meta={{ from: hakAkses.from, to: hakAkses.to, total: hakAkses.total }}
+                            meta={{
+                                from: hakAkses.from,
+                                to: hakAkses.to,
+                                total: hakAkses.total,
+                            }}
                         />
                     </CardContent>
                 </Card>

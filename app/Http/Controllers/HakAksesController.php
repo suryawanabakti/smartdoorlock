@@ -145,6 +145,10 @@ class HakAksesController extends Controller
 
     public function edit(HakAkses $hakAkses)
     {
+        if ($hakAkses->is_approve) {
+            abort(403, 'Tidak dapat mengedit hak akses yang sudah disetujui.');
+        }
+
         $ruangans = Ruangan::whereNot('type', 'umum')->get();
         $mahasiswas = Mahasiswa::aktif()->with('user')->get();
         $hakAkses->load('mahasiswas');
@@ -159,6 +163,10 @@ class HakAksesController extends Controller
 
     public function update(Request $request, HakAkses $hakAkses)
     {
+        if ($hakAkses->is_approve) {
+            abort(403, 'Tidak dapat mengedit hak akses yang sudah disetujui.');
+        }
+
         $validated = $request->validate([
             'ruangan_id' => 'required|exists:ruangans,id',
             'tanggal' => 'required|date|after_or_equal:today',

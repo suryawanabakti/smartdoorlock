@@ -133,6 +133,10 @@ class HakAksesPenjagaController extends Controller
         $user = auth()->user();
         $this->authorizeAccess($hakAkses, $user);
 
+        if ($hakAkses->is_approve) {
+            abort(403, 'Tidak dapat mengedit hak akses yang sudah disetujui.');
+        }
+
         $ruanganDijaga = $user->ruangans;
         $mahasiswas = Mahasiswa::aktif()->with('user')->get();
         $hakAkses->load('mahasiswas');
@@ -149,6 +153,10 @@ class HakAksesPenjagaController extends Controller
     {
         $user = auth()->user();
         $this->authorizeAccess($hakAkses, $user);
+
+        if ($hakAkses->is_approve) {
+            abort(403, 'Tidak dapat mengedit hak akses yang sudah disetujui.');
+        }
 
         $ruanganIds = $user->ruangans->pluck('id');
 

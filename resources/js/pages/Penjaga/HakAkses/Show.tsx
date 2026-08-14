@@ -126,12 +126,16 @@ export default function HakAksesPenjagaShow({ hakAkses }: Props) {
                                 </Button>
                             </>
                         )}
-                        <Link href={`/penjaga/hak-akses/${hakAkses.id}/edit`}>
-                            <Button>
-                                <Edit className="mr-2 h-4 w-4" />
-                                Edit
-                            </Button>
-                        </Link>
+                        {!hakAkses.is_approve && (
+                            <Link
+                                href={`/penjaga/hak-akses/${hakAkses.id}/edit`}
+                            >
+                                <Button>
+                                    <Edit className="mr-2 h-4 w-4" />
+                                    Edit
+                                </Button>
+                            </Link>
+                        )}
                     </div>
                 </div>
 

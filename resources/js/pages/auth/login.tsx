@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import AuthenticatedSessionController from '@/actions/App/Http/Controllers/Auth/AuthenticatedSessionController';
+import { useState } from 'react';
 
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
@@ -10,16 +10,19 @@ import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
 import { request } from '@/routes/password';
 import { Form, Head } from '@inertiajs/react';
-import { LoaderCircle, Eye, EyeOff } from 'lucide-react';
-
+import { Eye, EyeOff, LoaderCircle } from 'lucide-react';
 
 interface LoginProps {
     status?: string;
     canResetPassword: boolean;
 }
 
-export default function Login({ status, canResetPassword = false }: LoginProps) {
+export default function Login({
+    status,
+    canResetPassword = false,
+}: LoginProps) {
     const [showPassword, setShowPassword] = useState(false);
+    const [remember, setRemember] = useState(false);
 
     return (
         <AuthLayout
@@ -43,7 +46,10 @@ export default function Login({ status, canResetPassword = false }: LoginProps) 
                     <>
                         <div className="grid gap-5">
                             <div className="grid gap-2">
-                                <Label htmlFor="username" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <Label
+                                    htmlFor="username"
+                                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                                >
                                     NIM / Username
                                 </Label>
                                 <Input
@@ -62,7 +68,10 @@ export default function Login({ status, canResetPassword = false }: LoginProps) 
 
                             <div className="grid gap-2">
                                 <div className="flex items-center justify-between">
-                                    <Label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    <Label
+                                        htmlFor="password"
+                                        className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                                    >
                                         Password
                                     </Label>
                                     {!canResetPassword && (
@@ -78,7 +87,9 @@ export default function Login({ status, canResetPassword = false }: LoginProps) 
                                 <div className="relative">
                                     <Input
                                         id="password"
-                                        type={showPassword ? 'text' : 'password'}
+                                        type={
+                                            showPassword ? 'text' : 'password'
+                                        }
                                         name="password"
                                         required
                                         tabIndex={2}
@@ -88,8 +99,10 @@ export default function Login({ status, canResetPassword = false }: LoginProps) 
                                     />
                                     <button
                                         type="button"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors hover:text-gray-600 focus:outline-none dark:text-gray-500 dark:hover:text-gray-300"
+                                        onClick={() =>
+                                            setShowPassword(!showPassword)
+                                        }
+                                        className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 transition-colors hover:text-gray-600 focus:outline-none dark:text-gray-500 dark:hover:text-gray-300"
                                         tabIndex={-1}
                                     >
                                         {showPassword ? (
@@ -104,25 +117,35 @@ export default function Login({ status, canResetPassword = false }: LoginProps) 
                             </div>
 
                             <div className="flex items-center space-x-3">
+                                <input
+                                    type="hidden"
+                                    name="remember"
+                                    value={remember ? '1' : '0'}
+                                />
                                 <Checkbox
                                     id="remember"
-                                    name="remember"
+                                    checked={remember}
+                                    onCheckedChange={(checked) =>
+                                        setRemember(checked === true)
+                                    }
                                     tabIndex={3}
                                 />
-                                <Label htmlFor="remember" className="text-sm text-gray-600 dark:text-gray-400">
+                                <Label
+                                    htmlFor="remember"
+                                    className="text-sm text-gray-600 dark:text-gray-400"
+                                >
                                     Ingat saya
                                 </Label>
                             </div>
 
                             <Button
                                 type="submit"
-                                className="mt-2 h-11 w-full rounded-lg  font-semibold text-white shadow-lg  transition-all  hover:shadow-xl  active:scale-[0.98] "
                                 tabIndex={4}
                                 disabled={processing}
                                 data-test="login-button"
                             >
                                 {processing && (
-                                    <LoaderCircle className="h-4 w-4 animate-spin mr-2" />
+                                    <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
                                 )}
                                 Masuk
                             </Button>

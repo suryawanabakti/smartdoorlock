@@ -47,13 +47,22 @@ export default function HakAksesPenjagaForm({
     const [tahunFilter, setTahunFilter] = useState<string>('all');
     const [searchMahasiswa, setSearchMahasiswa] = useState<string>('');
 
+    const normalizeDate = (value?: string) => {
+        if (!value) return new Date().toISOString().split('T')[0];
+        return value.slice(0, 10);
+    };
+
+    const normalizeTime = (value?: string) => {
+        if (!value) return '08:00';
+        return value.slice(0, 5);
+    };
+
     const { data, setData, errors, processing, post, put } =
         useForm<HakAksesFormData>({
             ruangan_id: hakAkses?.ruangan_id || ruanganDijaga[0]?.id || 0,
-            tanggal:
-                hakAkses?.tanggal || new Date().toISOString().split('T')[0],
-            jam_masuk: hakAkses?.jam_masuk || '08:00',
-            jam_keluar: hakAkses?.jam_keluar || '10:00',
+            tanggal: normalizeDate(hakAkses?.tanggal),
+            jam_masuk: normalizeTime(hakAkses?.jam_masuk),
+            jam_keluar: normalizeTime(hakAkses?.jam_keluar),
             tujuan: hakAkses?.tujuan || '',
             skill: hakAkses?.skill || '',
             additional_participant: hakAkses?.additional_participant || '',

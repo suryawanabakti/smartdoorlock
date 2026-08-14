@@ -141,12 +141,14 @@ export default function HakAksesShow({ hakAkses }: Props) {
                                 </Button>
                             </>
                         )}
-                        <Link href={`/hak-akses/${hakAkses.id}/edit`}>
-                            <Button>
-                                <Edit className="mr-2 h-4 w-4" />
-                                Edit
-                            </Button>
-                        </Link>
+                        {!hakAkses.is_approve && (
+                            <Link href={`/hak-akses/${hakAkses.id}/edit`}>
+                                <Button>
+                                    <Edit className="mr-2 h-4 w-4" />
+                                    Edit
+                                </Button>
+                            </Link>
+                        )}
                     </div>
                 </div>
 

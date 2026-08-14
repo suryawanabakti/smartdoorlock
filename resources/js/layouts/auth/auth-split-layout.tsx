@@ -30,8 +30,8 @@ export default function AuthSplitLayout({
 
                 {/* Text overlay */}
                 <div className="absolute bottom-12 left-0 right-0 z-10 text-center text-white">
-                    <h2 className="text-2xl font-bold">Smart Door Lock System</h2>
-                    <p className="mt-2 text-sm">Sistem Keamanan Pintu Cerdas untuk Kampus</p>
+                    <h2 className="text-2xl font-bold">{name}</h2>
+                    <p className="mt-2 text-sm">Fakultas Kedokteran</p>
                 </div>
             </div>
             {/* Right Side - Login Form */}

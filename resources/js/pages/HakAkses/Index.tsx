@@ -361,17 +361,19 @@ export default function HakAksesIndex({
                                                             <Eye className="h-4 w-4" />
                                                         </Button>
                                                     </Link>
-                                                    <Link
-                                                        href={`/hak-akses/${item.id}/edit`}
-                                                    >
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            title="Edit"
+                                                    {!item.is_approve && (
+                                                        <Link
+                                                            href={`/hak-akses/${item.id}/edit`}
                                                         >
-                                                            <Edit className="h-4 w-4" />
-                                                        </Button>
-                                                    </Link>
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                title="Edit"
+                                                            >
+                                                                <Edit className="h-4 w-4" />
+                                                            </Button>
+                                                        </Link>
+                                                    )}
                                                     <Button
                                                         variant="destructive"
                                                         size="sm"
