@@ -52,8 +52,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/mahasiswas/{mahasiswa}/toggle-status', [MahasiswaController::class, 'toggleStatus'])
         ->name('mahasiswas.toggle-status');
     Route::post('/mahasiswas/import', [MahasiswaController::class, 'import'])->name('mahasiswas.import');
-    Route::get('/mahasiswas/lowercase-id-tag', [MahasiswaController::class, 'lowercaseIdTag'])->name('mahasiswas.lowercase-id-tag');
-
+    Route::get('/mahasiswas-lowercase-id-tag', [MahasiswaController::class, 'lowercaseIdTag'])->name('mahasiswas.lowercase-id-tag');;
     Route::resource('scaner-status', ScanerStatusController::class);
 
     Route::prefix('api')->group(function () {
