@@ -9,10 +9,6 @@ use Inertia\Inertia;
 
 class AbsensiPenjagaController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('penjaga');
-    }
 
     public function index(Request $request)
     {

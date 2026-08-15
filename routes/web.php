@@ -23,7 +23,7 @@ use App\Http\Controllers\ScanerStatusController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/ambilpostpin', [DoorLockController::class, 'index2']);
+Route::get('/ambilpin', [DoorLockController::class, 'index2']);
 
 Route::get('/', [LandingPageController::class, 'index'])->name('home');
 
