@@ -66,17 +66,20 @@ export default function HakAksesShow({ hakAkses }: Props) {
         if (hakAkses.is_approve) {
             return (
                 <Badge variant="default" className="text-sm">
-                    ✅ Disetujui
+                    <CheckCircle className="mr-1 h-4 w-4" />
+                    Disetujui
                 </Badge>
             );
         }
         return hakAkses.is_by_admin ? (
             <Badge variant="secondary" className="text-sm">
-                👨‍💼 Dibuat Admin
+                <UserCheck className="mr-1 h-4 w-4" />
+                Dibuat Admin
             </Badge>
         ) : (
             <Badge variant="outline" className="text-sm">
-                ⏳ Menunggu Persetujuan
+                <Clock className="mr-1 h-4 w-4" />
+                Menunggu Persetujuan
             </Badge>
         );
     };

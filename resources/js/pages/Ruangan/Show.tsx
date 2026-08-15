@@ -78,12 +78,12 @@ export default function RuanganShow({ ruangan, statistics }: Props) {
 
     const getStatusBadge = (status: number) => {
         const variant = getStatusBadgeVariant(status);
-        const icon = getStatusIcon(status);
+        const Icon = getStatusIcon(status);
         const label = getStatusLabel(status);
 
         return (
             <Badge variant={variant}>
-                <span className="mr-1">{icon}</span>
+                <Icon className="mr-1 h-4 w-4" />
                 {label}
             </Badge>
         );

@@ -35,12 +35,16 @@ import {
 import { Head, router } from '@inertiajs/react';
 import { Pagination } from '@/components/pagination';
 import {
+    Ban,
     BarChart3,
     Building,
     Calendar,
+    CircleCheck,
+    CircleHelp,
     Clock,
     Download,
     Filter,
+    OctagonX,
     RefreshCw,
     Scan,
     Search,
@@ -149,12 +153,12 @@ export default function HistoriIndex({
 
     const getStatusBadge = (status: number) => {
         const variant = getStatusBadgeVariant(status);
-        const icon = getStatusIcon(status);
+        const Icon = getStatusIcon(status);
         const label = getStatusLabel(status);
 
         return (
             <Badge variant={variant}>
-                <span className="mr-1">{icon}</span>
+                <Icon className="mr-1 h-4 w-4" />
                 {label}
             </Badge>
         );
@@ -239,7 +243,8 @@ export default function HistoriIndex({
                                     {statistics.terbuka}
                                 </div>
                                 <div className="text-sm text-green-800">
-                                    ✅ Terbuka
+                                    <CircleCheck className="mr-1 inline h-4 w-4" />
+                                    Terbuka
                                 </div>
                             </div>
                         </CardContent>
@@ -251,7 +256,8 @@ export default function HistoriIndex({
                                     {statistics.blok}
                                 </div>
                                 <div className="text-sm text-red-800">
-                                    🚫 Blok
+                                    <Ban className="mr-1 inline h-4 w-4" />
+                                    Blok
                                 </div>
                             </div>
                         </CardContent>
@@ -263,7 +269,8 @@ export default function HistoriIndex({
                                     {statistics.tidak_terdaftar}
                                 </div>
                                 <div className="text-sm text-yellow-800">
-                                    ❓ Tidak Terdaftar
+                                    <CircleHelp className="mr-1 inline h-4 w-4" />
+                                    Tidak Terdaftar
                                 </div>
                             </div>
                         </CardContent>
@@ -275,7 +282,8 @@ export default function HistoriIndex({
                                     {statistics.no_akses}
                                 </div>
                                 <div className="text-sm text-gray-800">
-                                    ⛔ No Akses
+                                    <OctagonX className="mr-1 inline h-4 w-4" />
+                                    No Akses
                                 </div>
                             </div>
                         </CardContent>

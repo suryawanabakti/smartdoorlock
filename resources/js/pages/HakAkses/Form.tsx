@@ -63,7 +63,6 @@ export default function HakAksesForm({
             tujuan: hakAkses?.tujuan || '',
             skill: hakAkses?.skill || '',
             additional_participant: hakAkses?.additional_participant || '',
-            max_register: hakAkses?.max_register || 10,
             mahasiswa_ids: selectedMahasiswaIds,
         });
 
@@ -132,7 +131,11 @@ export default function HakAksesForm({
         return data.mahasiswa_ids?.includes(mahasiswaId) || false;
     };
 
-    const kuotaTersedia = data.max_register - (data.mahasiswa_ids?.length || 0);
+    const selectedRuangan = ruangans.find(
+        (r) => r.id === data.ruangan_id,
+    );
+    const kuota = selectedRuangan?.max_register || 0;
+    const kuotaTersedia = kuota - (data.mahasiswa_ids?.length || 0);
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -227,30 +230,6 @@ export default function HakAksesForm({
                             {errors.jam_keluar && (
                                 <p className="text-sm text-red-600">
                                     {errors.jam_keluar}
-                                </p>
-                            )}
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="max_register">
-                                Kuota Maksimal *
-                            </Label>
-                            <Input
-                                id="max_register"
-                                type="number"
-                                min="1"
-                                max="100"
-                                value={data.max_register}
-                                onChange={(e) =>
-                                    setData(
-                                        'max_register',
-                                        parseInt(e.target.value),
-                                    )
-                                }
-                            />
-                            {errors.max_register && (
-                                <p className="text-sm text-red-600">
-                                    {errors.max_register}
                                 </p>
                             )}
                         </div>
@@ -384,7 +363,7 @@ export default function HakAksesForm({
                                 }
                             >
                                 {data.mahasiswa_ids?.length || 0} /{' '}
-                                {data.max_register} terpilih
+                                {kuota} terpilih
                             </Badge>
                             {kuotaTersedia >= 0 ? (
                                 <span className="text-green-600">

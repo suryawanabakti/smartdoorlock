@@ -211,7 +211,8 @@ export default function HakAksesPenjagaShow({ hakAkses }: Props) {
                                                     variant="outline"
                                                     className="text-sm"
                                                 >
-                                                    ⏳ Menunggu Persetujuan
+                                                    <Clock className="mr-1 h-3 w-3" />
+                                                    Menunggu Persetujuan
                                                 </Badge>
                                             )}
                                         </div>

@@ -33,6 +33,8 @@ class Ruangan extends Model
         'penanggung_jawab' => 'array',
     ];
 
+    protected $appends = ['kode'];
+
 
     public function scanner()
     {
@@ -99,6 +101,13 @@ class Ruangan extends Model
     public function hakAkses()
     {
         return $this->hasMany(HakAkses::class);
+    }
+
+    public function getKodeAttribute()
+    {
+        $scanner = $this->scanerStatuses->first();
+
+        return $scanner ? substr($scanner->kode, 0, 3) : null;
     }
 
     public function absensis()

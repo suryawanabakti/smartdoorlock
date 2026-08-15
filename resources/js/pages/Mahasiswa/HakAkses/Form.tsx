@@ -24,6 +24,7 @@ import { useForm } from '@inertiajs/react';
 import {
     Box,
     Building,
+    Clock,
     Filter,
     GraduationCap,
     UserCheck,
@@ -62,7 +63,6 @@ export default function HakAksesMahasiswaForm({
             tujuan: hakAkses?.tujuan || '',
             skill: hakAkses?.skill || '',
             additional_participant: hakAkses?.additional_participant || '',
-            max_register: hakAkses?.max_register || 10,
             mahasiswa_ids: selectedMahasiswaIds,
             is_approve: false,
             is_by_admin: false,
@@ -139,8 +139,10 @@ export default function HakAksesMahasiswaForm({
         return data.mahasiswa_ids?.includes(mahasiswaId) || false;
     };
 
+    const selectedRuangan = ruangans.find((r) => r.id === data.ruangan_id);
+    const kuota = selectedRuangan?.max_register || 0;
     const kuotaTersedia =
-        data.max_register - (data.mahasiswa_ids?.length || 0) - 1; // -1 untuk diri sendiri
+        kuota - (data.mahasiswa_ids?.length || 0) - 1; // -1 untuk diri sendiri
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -569,7 +571,8 @@ export default function HakAksesMahasiswaForm({
                             <div className="flex justify-between">
                                 <span className="font-medium">Status:</span>
                                 <Badge variant="outline">
-                                    ⏳ Menunggu Persetujuan
+                                    <Clock className="mr-1 h-4 w-4" />
+                                    Menunggu Persetujuan
                                 </Badge>
                             </div>
                             <div className="flex justify-between">

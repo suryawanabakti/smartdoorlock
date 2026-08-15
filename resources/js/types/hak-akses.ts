@@ -29,7 +29,6 @@ export interface HakAksesFormData {
     tujuan: string;
     skill?: string;
     additional_participant?: string;
-    max_register: number;
     mahasiswa_ids?: number[];
 }
 

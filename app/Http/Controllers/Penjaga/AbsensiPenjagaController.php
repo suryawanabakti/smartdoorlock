@@ -23,6 +23,14 @@ class AbsensiPenjagaController extends Controller
             ->whereIn('ruangan_id', $ruanganIds)
             ->latest('waktu_masuk');
 
+        // Ruangan filter (hanya ruangan yang dijaga)
+        if ($request->filled('ruangan_id') && $request->ruangan_id !== 'all') {
+            $requestedRuangan = $request->ruangan_id;
+            if ($ruanganIds->contains((int) $requestedRuangan)) {
+                $query->where('ruangan_id', $requestedRuangan);
+            }
+        }
+
         // Search filter
         if ($request->has('search') && $request->search) {
             $query->where(function ($q) use ($request) {
@@ -62,7 +70,7 @@ class AbsensiPenjagaController extends Controller
 
         return Inertia::render('Penjaga/Absensi/Index', [
             'absensis' => $absensis,
-            'filters' => $request->only(['search', 'tanggal', 'status']),
+            'filters' => $request->only(['search', 'ruangan_id', 'tanggal', 'status']),
             'statistics' => $statistics,
             'ruanganDijaga' => $user->ruangans,
         ]);

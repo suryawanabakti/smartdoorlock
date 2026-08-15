@@ -29,7 +29,11 @@ import {
     Calendar,
     Edit,
     History,
+    Lock,
+    LockKeyhole,
     Scan,
+    Unlock,
+    X,
 } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -98,9 +102,19 @@ export default function RuanganPenjagaShow({
 
     const getStatusBadge = () => {
         if (ruangan.open_api) {
-            return <Badge variant="default">🟢 Terbuka</Badge>;
+            return (
+                <Badge variant="default">
+                    <Unlock className="mr-1 h-4 w-4" />
+                    Terbuka
+                </Badge>
+            );
         }
-        return <Badge variant="secondary">🔒 Tertutup</Badge>;
+        return (
+            <Badge variant="secondary">
+                <Lock className="mr-1 h-4 w-4" />
+                Tertutup
+            </Badge>
+        );
     };
 
     const getRuanganTypeBadge = () => {
@@ -257,9 +271,17 @@ export default function RuanganPenjagaShow({
                                         PIN
                                     </label>
                                     <p className="font-semibold">
-                                        {ruangan.pin_active
-                                            ? '🔐 Active'
-                                            : '❌ Nonaktif'}
+                                        {ruangan.pin_active ? (
+                                            <span className="flex items-center gap-1">
+                                                <LockKeyhole className="h-4 w-4" />
+                                                Active
+                                            </span>
+                                        ) : (
+                                            <span className="flex items-center gap-1">
+                                                <X className="h-4 w-4" />
+                                                Nonaktif
+                                            </span>
+                                        )}
                                     </p>
                                 </div>
                                 <div>

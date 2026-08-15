@@ -32,6 +32,7 @@ import { Head, Link, router } from '@inertiajs/react';
 import {
     Building,
     Calendar,
+    CheckCircle,
     Clock,
     Edit,
     Eye,
@@ -106,9 +107,19 @@ export default function HakAksesMahasiswaIndex({
 
     const getStatusBadge = (hakAkses: HakAkses) => {
         if (hakAkses.is_approve) {
-            return <Badge variant="default">✅ Disetujui</Badge>;
+            return (
+                <Badge variant="default">
+                    <CheckCircle className="mr-1 h-4 w-4" />
+                    Disetujui
+                </Badge>
+            );
         }
-        return <Badge variant="outline">⏳ Menunggu Persetujuan</Badge>;
+        return (
+            <Badge variant="outline">
+                <Clock className="mr-1 h-4 w-4" />
+                Menunggu Persetujuan
+            </Badge>
+        );
     };
 
     const formatDate = (dateString: string) => {

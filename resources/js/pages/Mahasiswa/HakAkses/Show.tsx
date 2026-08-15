@@ -18,6 +18,7 @@ import { Head, Link, router } from '@inertiajs/react';
 import {
     Building,
     Calendar,
+    CheckCircle,
     Clock,
     Edit,
     GraduationCap,
@@ -70,7 +71,8 @@ export default function HakAksesMahasiswaShow({ hakAkses, mahasiswa }: Props) {
         if (hakAkses.is_approve) {
             return (
                 <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-                    ✅ Disetujui
+                    <CheckCircle className="mr-1 h-4 w-4" />
+                    Disetujui
                 </Badge>
             );
         }
@@ -79,7 +81,8 @@ export default function HakAksesMahasiswaShow({ hakAkses, mahasiswa }: Props) {
                 variant="outline"
                 className="border-yellow-200 bg-yellow-50 text-yellow-800"
             >
-                ⏳ Menunggu Persetujuan
+                <Clock className="mr-1 h-4 w-4" />
+                Menunggu Persetujuan
             </Badge>
         );
     };

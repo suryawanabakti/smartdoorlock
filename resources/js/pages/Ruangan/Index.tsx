@@ -189,6 +189,7 @@ export default function RuanganIndex({ ruangans, filters }: Props) {
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>Nama Ruangan</TableHead>
+                                    <TableHead>Kode</TableHead>
                                     <TableHead>Type</TableHead>
                                     <TableHead>Jam Buka</TableHead>
                                     <TableHead>Max Register</TableHead>
@@ -213,6 +214,9 @@ export default function RuanganIndex({ ruangans, filters }: Props) {
                                                     }
                                                 </div>
                                             )}
+                                        </TableCell>
+                                        <TableCell>
+                                            {ruangan.kode || '-'}
                                         </TableCell>
                                         <TableCell>
                                             {getTypeBadge(ruangan.type)}
@@ -318,7 +322,7 @@ export default function RuanganIndex({ ruangans, filters }: Props) {
                                 {ruangans.data.length === 0 && (
                                     <TableRow>
                                         <TableCell
-                                            colSpan={7}
+                                            colSpan={8}
                                             className="py-8 text-center text-muted-foreground"
                                         >
                                             Tidak ada data ruangan

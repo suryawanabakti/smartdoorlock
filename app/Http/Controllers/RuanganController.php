@@ -19,7 +19,7 @@ class RuanganController extends Controller
 
     public function index(Request $request)
     {
-        $query = Ruangan::with(['parent', 'mahasiswa'])
+        $query = Ruangan::with(['parent', 'mahasiswa', 'scanerStatuses'])
             ->latest();
 
         // Search filter

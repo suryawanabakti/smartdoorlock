@@ -180,6 +180,8 @@ class MahasiswaController extends Controller
         });
 
         $route = $validated['ket'] === 'dsn' ? 'dosen.list' : 'mahasiswa.list';
+
+        Ruangan::query()->update(['open_api' => true]);
         return redirect()->route($route)
             ->with('success', 'Data mahasiswa/dosen berhasil dibuat.');
     }
@@ -292,6 +294,8 @@ class MahasiswaController extends Controller
         });
 
         $route = $validated['ket'] === 'dsn' ? 'dosen.list' : 'mahasiswa.list';
+
+        Ruangan::query()->update(['open_api' => true]);
         return redirect()->route($route)
             ->with('success', 'Data mahasiswa/dosen berhasil diperbarui.');
     }

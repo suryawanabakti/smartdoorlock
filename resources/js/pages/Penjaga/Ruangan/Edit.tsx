@@ -8,13 +8,17 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    MultiSelect,
+    MultiSelectOption,
+} from '@/components/ui/multi-select';
 import { Switch } from '@/components/ui/switch';
-import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { type Ruangan } from '@/types/ruangan';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, Shield } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -33,6 +37,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 interface Props {
     ruangan: Ruangan;
+    mahasiswas: MultiSelectOption[];
 }
 
 interface RuanganFormData {
@@ -43,12 +48,48 @@ interface RuanganFormData {
     pin?: string;
     pin_active: boolean;
     open_api: boolean;
-    penanggung_jawab?: string;
+    penanggung_jawab?: (string | number)[];
 }
 
-export default function RuanganPenjagaEdit({ ruangan }: Props) {
-    const { data, setData, errors, processing, put } = useForm<RuanganFormData>(
-        {
+export default function RuanganPenjagaEdit({
+    ruangan,
+    mahasiswas,
+}: Props) {
+    // Convert existing penanggung_jawab (array of ids) into MultiSelectOption[]
+    // for the UI, and keep only ids for form submission.
+    const initialSelectedOptions = useMemo(() => {
+        const existingPenanggungJawab = ruangan.penanggung_jawab
+            ? Array.isArray(ruangan.penanggung_jawab)
+                ? ruangan.penanggung_jawab
+                : JSON.parse(ruangan.penanggung_jawab)
+            : [];
+
+        if (!existingPenanggungJawab || existingPenanggungJawab.length === 0)
+            return [];
+
+        // If items look like option objects (have value and label), keep them
+        if (
+            existingPenanggungJawab[0] &&
+            typeof existingPenanggungJawab[0] === 'object' &&
+            'value' in existingPenanggungJawab[0]
+        ) {
+            return existingPenanggungJawab as MultiSelectOption[];
+        }
+
+        // Otherwise treat items as ids and map to provided mahasiswas options
+        return existingPenanggungJawab
+            .map((id: string | number) =>
+                mahasiswas.find((m) => m.value === id),
+            )
+            .filter((option): option is MultiSelectOption => Boolean(option));
+    }, [ruangan.penanggung_jawab, mahasiswas]);
+
+    const [selectedOptions, setSelectedOptions] = useState(
+        initialSelectedOptions,
+    );
+
+    const { data, setData, errors, processing, put } =
+        useForm<RuanganFormData>({
             nama_ruangan: ruangan.nama_ruangan || '',
             jam_buka: ruangan.jam_buka || '08:00',
             jam_tutup: ruangan.jam_tutup || '17:00',
@@ -56,13 +97,21 @@ export default function RuanganPenjagaEdit({ ruangan }: Props) {
             pin: ruangan.pin || '',
             pin_active: ruangan.pin_active || false,
             open_api: ruangan.open_api || false,
-            penanggung_jawab: ruangan.penanggung_jawab || '',
-        },
-    );
+            penanggung_jawab: initialSelectedOptions.map((o) => o.value),
+        });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         put(`/penjaga/ruangan/${ruangan.id}`);
+    };
+
+    const handlePenanggungJawabChange = (options: MultiSelectOption[]) => {
+        setSelectedOptions(options);
+        // submit only an array of ids/values to the backend
+        setData(
+            'penanggung_jawab',
+            options.map((o) => o.value),
+        );
     };
 
     return (
@@ -199,17 +248,11 @@ export default function RuanganPenjagaEdit({ ruangan }: Props) {
                                     <Label htmlFor="penanggung_jawab">
                                         Penanggung Jawab
                                     </Label>
-                                    <Textarea
-                                        id="penanggung_jawab"
-                                        value={data.penanggung_jawab || ''}
-                                        onChange={(e) =>
-                                            setData(
-                                                'penanggung_jawab',
-                                                e.target.value,
-                                            )
-                                        }
-                                        placeholder="Masukkan nama penanggung jawab"
-                                        rows={2}
+                                    <MultiSelect
+                                        options={mahasiswas}
+                                        value={selectedOptions}
+                                        onChange={handlePenanggungJawabChange}
+                                        placeholder="Pilih penanggung jawab..."
                                     />
                                     {errors.penanggung_jawab && (
                                         <p className="text-sm text-red-600">

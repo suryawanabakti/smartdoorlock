@@ -32,28 +32,22 @@ import { Pagination } from '@/components/pagination';
 import {
     Activity,
     Building,
-    Calendar,
-    CheckCircle,
-    Circle,
     Clock,
-    Download,
     Eye,
-    Filter,
     Search,
-    Trash2,
+    Shield,
     User,
-    Users,
 } from 'lucide-react';
 import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Dashboard',
-        href: '/dashboard',
+        title: 'Dashboard Penjaga',
+        href: '/penjaga/dashboard',
     },
     {
-        title: 'Data Absensi',
-        href: '/absensi',
+        title: 'Absensi',
+        href: '/penjaga/absensi',
     },
 ];
 
@@ -62,53 +56,36 @@ interface Props {
     filters: {
         search?: string;
         ruangan_id?: string;
-        tahun?: string;
+        tanggal?: string;
         status?: string;
-        tanggal_mulai?: string;
-        tanggal_selesai?: string;
-        hari_ini?: boolean;
     };
     statistics: {
-        total: number;
         hari_ini: number;
         sedang_akses: number;
+        total_ruangan: number;
     };
-    ruangans: Ruangan[];
-    statusOptions: { value: string; label: string }[];
-    tahunOptions: string[];
+    ruanganDijaga: Ruangan[];
 }
 
-export default function AbsensiIndex({
+export default function AbsensiPenjagaIndex({
     absensis,
     filters,
     statistics,
-    ruangans,
-    statusOptions,
+    ruanganDijaga,
 }: Props) {
     const [search, setSearch] = useState(filters.search || '');
     const [ruanganId, setRuanganId] = useState(filters.ruangan_id || '');
-    const [tahun, setTahun] = useState(filters.tahun || '');
+    const [tanggal, setTanggal] = useState(filters.tanggal || '');
     const [status, setStatus] = useState(filters.status || '');
-    const [tanggalMulai, setTanggalMulai] = useState(
-        filters.tanggal_mulai || '',
-    );
-    const [tanggalSelesai, setTanggalSelesai] = useState(
-        filters.tanggal_selesai || '',
-    );
-    const [hariIni, setHariIni] = useState(filters.hari_ini || false);
-    const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
     const handleFilter = () => {
-        const filterParams: any = {};
+        const filterParams: Record<string, string> = {};
         if (search) filterParams.search = search;
-        if (ruanganId) filterParams.ruangan_id = ruanganId;
-        if (tahun) filterParams.tahun = tahun;
-        if (status) filterParams.status = status;
-        if (tanggalMulai) filterParams.tanggal_mulai = tanggalMulai;
-        if (tanggalSelesai) filterParams.tanggal_selesai = tanggalSelesai;
-        if (hariIni) filterParams.hari_ini = true;
+        if (ruanganId && ruanganId !== 'all') filterParams.ruangan_id = ruanganId;
+        if (tanggal) filterParams.tanggal = tanggal;
+        if (status && status !== 'all') filterParams.status = status;
 
-        router.get('/absensi', filterParams, {
+        router.get('/penjaga/absensi', filterParams, {
             preserveState: true,
             replace: true,
         });
@@ -117,32 +94,9 @@ export default function AbsensiIndex({
     const clearFilters = () => {
         setSearch('');
         setRuanganId('');
-        setTahun('');
+        setTanggal('');
         setStatus('');
-        setTanggalMulai('');
-        setTanggalSelesai('');
-        setHariIni(false);
-        router.get('/absensi');
-    };
-
-    const deleteAbsensi = (absensi: Absensi) => {
-        if (
-            confirm(
-                `Apakah Anda yakin ingin menghapus data absensi ${absensi.nama || absensi.nim}?`,
-            )
-        ) {
-            router.delete(`/absensi/${absensi.id}`);
-        }
-    };
-
-    const exportData = () => {
-        const filterParams: any = {};
-        if (search) filterParams.search = search;
-        if (ruanganId) filterParams.ruangan_id = ruanganId;
-        if (tanggalMulai) filterParams.tanggal_mulai = tanggalMulai;
-        if (tanggalSelesai) filterParams.tanggal_selesai = tanggalSelesai;
-
-        router.get('/absensi/export', filterParams);
+        router.get('/penjaga/absensi');
     };
 
     const formatDateTime = (dateString: string | null) => {
@@ -168,26 +122,11 @@ export default function AbsensiIndex({
 
     const getStatusBadge = (absensi: Absensi) => {
         if (absensi.waktu_masuk && absensi.waktu_keluar) {
-            return (
-                <Badge variant="default">
-                    <CheckCircle className="mr-1 h-4 w-4" />
-                    Selesai
-                </Badge>
-            );
+            return <Badge variant="default">Selesai</Badge>;
         } else if (absensi.waktu_masuk) {
-            return (
-                <Badge variant="secondary">
-                    <Clock className="mr-1 h-4 w-4" />
-                    Masuk
-                </Badge>
-            );
+            return <Badge variant="secondary">Masuk</Badge>;
         }
-        return (
-            <Badge variant="outline">
-                <Circle className="mr-1 h-4 w-4" />
-                Tidak Valid
-            </Badge>
-        );
+        return <Badge variant="outline">Tidak Valid</Badge>;
     };
 
     const getDurasi = (absensi: Absensi) => {
@@ -205,77 +144,51 @@ export default function AbsensiIndex({
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Data Absensi" />
+            <Head title="Absensi - Penjaga" />
 
-            <div className="flex flex-col gap-6 p-4">
+            <div className="space-y-6 p-4">
                 {/* Header */}
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">
+                        <h1 className="flex items-center gap-2 text-3xl font-bold tracking-tight">
+                            <Shield className="h-8 w-8" />
                             Data Absensi
                         </h1>
                         <p className="text-muted-foreground">
-                            Rekap data kehadiran dan akses ruangan
+                            Rekap kehadiran untuk ruangan yang Anda jaga
                         </p>
-                    </div>
-                    <div className="flex gap-2">
-                        <Button variant="outline" onClick={exportData}>
-                            <Download className="mr-2 h-4 w-4" />
-                            Export
-                        </Button>
                     </div>
                 </div>
 
                 {/* Statistics */}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <Card>
-                        <CardContent className="p-6">
-                            <div className="flex items-center gap-4">
-                                <div className="rounded-full bg-blue-100 p-3">
-                                    <Users className="h-6 w-6 text-blue-600" />
-                                </div>
-                                <div>
-                                    <p className="text-2xl font-bold text-blue-600">
-                                        {statistics.total}
-                                    </p>
-                                    <p className="text-sm text-blue-800">
-                                        Total Absensi
-                                    </p>
-                                </div>
+                        <CardContent className="p-4 text-center">
+                            <div className="text-2xl font-bold text-blue-600">
+                                {statistics.total_ruangan}
+                            </div>
+                            <div className="text-sm text-blue-800">
+                                Ruangan Dijaga
                             </div>
                         </CardContent>
                     </Card>
                     <Card>
-                        <CardContent className="p-6">
-                            <div className="flex items-center gap-4">
-                                <div className="rounded-full bg-green-100 p-3">
-                                    <Calendar className="h-6 w-6 text-green-600" />
-                                </div>
-                                <div>
-                                    <p className="text-2xl font-bold text-green-600">
-                                        {statistics.hari_ini}
-                                    </p>
-                                    <p className="text-sm text-green-800">
-                                        Absensi Hari Ini
-                                    </p>
-                                </div>
+                        <CardContent className="p-4 text-center">
+                            <div className="text-2xl font-bold text-green-600">
+                                {statistics.hari_ini}
+                            </div>
+                            <div className="text-sm text-green-800">
+                                Absensi Hari Ini
                             </div>
                         </CardContent>
                     </Card>
                     <Card>
-                        <CardContent className="p-6">
-                            <div className="flex items-center gap-4">
-                                <div className="rounded-full bg-orange-100 p-3">
-                                    <Activity className="h-6 w-6 text-orange-600" />
-                                </div>
-                                <div>
-                                    <p className="text-2xl font-bold text-orange-600">
-                                        {statistics.sedang_akses}
-                                    </p>
-                                    <p className="text-sm text-orange-800">
-                                        Sedang Mengakses
-                                    </p>
-                                </div>
+                        <CardContent className="p-4 text-center">
+                            <div className="text-2xl font-bold text-orange-600">
+                                {statistics.sedang_akses}
+                            </div>
+                            <div className="text-sm text-orange-800">
+                                Sedang Mengakses
                             </div>
                         </CardContent>
                     </Card>
@@ -284,8 +197,8 @@ export default function AbsensiIndex({
                 {/* Filters */}
                 <Card>
                     <CardContent className="pt-6">
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-                            <div className="md:col-span-2">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
+                            <div className="lg:col-span-2">
                                 <Input
                                     placeholder="Cari berdasarkan nama, NIM, atau ID Tag..."
                                     value={search}
@@ -295,10 +208,7 @@ export default function AbsensiIndex({
                                     }
                                 />
                             </div>
-                            <Select
-                                value={ruanganId}
-                                onValueChange={setRuanganId}
-                            >
+                            <Select value={ruanganId} onValueChange={setRuanganId}>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Semua Ruangan" />
                                 </SelectTrigger>
@@ -306,7 +216,7 @@ export default function AbsensiIndex({
                                     <SelectItem value="all">
                                         Semua Ruangan
                                     </SelectItem>
-                                    {ruangans.map((ruangan) => (
+                                    {ruanganDijaga.map((ruangan) => (
                                         <SelectItem
                                             key={ruangan.id}
                                             value={ruangan.id.toString()}
@@ -316,101 +226,39 @@ export default function AbsensiIndex({
                                     ))}
                                 </SelectContent>
                             </Select>
+                            <Input
+                                type="date"
+                                value={tanggal}
+                                onChange={(e) => setTanggal(e.target.value)}
+                            />
+                            <Select value={status} onValueChange={setStatus}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Semua Status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">
+                                        Semua Status
+                                    </SelectItem>
+                                    <SelectItem value="masuk">
+                                        Masuk
+                                    </SelectItem>
+                                    <SelectItem value="keluar">
+                                        Selesai
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="mt-4 flex justify-end gap-2">
+                            <Button
+                                variant="outline"
+                                onClick={clearFilters}
+                            >
+                                Reset
+                            </Button>
                             <Button onClick={handleFilter}>
                                 <Search className="mr-2 h-4 w-4" />
-                                Cari
+                                Filter
                             </Button>
-                        </div>
-
-                        {/* Advanced Filters */}
-                        <div className="mt-4">
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() =>
-                                    setShowAdvancedFilters(!showAdvancedFilters)
-                                }
-                                className="flex items-center gap-2"
-                            >
-                                <Filter className="h-4 w-4" />
-                                Filter Lanjutan
-                                {showAdvancedFilters ? ' ↑' : ' ↓'}
-                            </Button>
-
-                            {showAdvancedFilters && (
-                                <div className="mt-4 grid grid-cols-1 gap-4 rounded-lg bg-muted p-4 md:grid-cols-4">
-                                    <Select
-                                        value={status}
-                                        onValueChange={setStatus}
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Status Absensi" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {statusOptions.map((option) => (
-                                                <SelectItem
-                                                    key={option.value}
-                                                    value={option.value}
-                                                >
-                                                    {option.label}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-
-                                    <Input
-                                        type="date"
-                                        value={tanggalMulai}
-                                        onChange={(e) =>
-                                            setTanggalMulai(e.target.value)
-                                        }
-                                        placeholder="Tanggal Mulai"
-                                    />
-
-                                    <Input
-                                        type="date"
-                                        value={tanggalSelesai}
-                                        onChange={(e) =>
-                                            setTanggalSelesai(e.target.value)
-                                        }
-                                        placeholder="Tanggal Selesai"
-                                    />
-
-                                    <div className="flex items-center gap-2">
-                                        <input
-                                            type="checkbox"
-                                            id="hari_ini"
-                                            checked={hariIni}
-                                            onChange={(e) =>
-                                                setHariIni(e.target.checked)
-                                            }
-                                            className="rounded border-gray-300"
-                                        />
-                                        <label
-                                            htmlFor="hari_ini"
-                                            className="text-sm"
-                                        >
-                                            Hari Ini Saja
-                                        </label>
-                                    </div>
-
-                                    <div className="flex gap-2">
-                                        <Button
-                                            size="sm"
-                                            onClick={handleFilter}
-                                        >
-                                            Terapkan Filter
-                                        </Button>
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={clearFilters}
-                                        >
-                                            Reset
-                                        </Button>
-                                    </div>
-                                </div>
-                            )}
                         </div>
                     </CardContent>
                 </Card>
@@ -424,7 +272,7 @@ export default function AbsensiIndex({
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="rounded-md border w-full overflow-x-auto">
+                        <div className="w-full overflow-x-auto rounded-md border">
                             <Table>
                                 <TableHeader>
                                     <TableRow>
@@ -434,29 +282,29 @@ export default function AbsensiIndex({
                                         <TableHead>Waktu Keluar</TableHead>
                                         <TableHead>Durasi</TableHead>
                                         <TableHead>Status</TableHead>
-                                        <TableHead className="w-[120px] text-right">
+                                        <TableHead className="w-[80px] text-right">
                                             Aksi
                                         </TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {absensis.data.map((absensi: any) => (
+                                    {absensis.data.map((absensi) => (
                                         <TableRow key={absensi.id}>
                                             <TableCell>
                                                 <div className="space-y-1">
                                                     <div className="flex items-center gap-2">
                                                         <User className="h-4 w-4 text-blue-600" />
                                                         <span className="font-medium">
-                                                            {absensi.user
-                                                                ?.nama ||
+                                                            {absensi.nama ||
                                                                 'Tidak Diketahui'}
                                                         </span>
                                                     </div>
-                                                    <div className="text-sm text-muted-foreground">
-                                                        NIM:{' '}
-                                                        {absensi.user?.nim ||
-                                                            '-'}
-                                                    </div>
+                                                    {absensi.nim && (
+                                                        <div className="text-sm text-muted-foreground">
+                                                            NIM:{' '}
+                                                            {absensi.nim}
+                                                        </div>
+                                                    )}
                                                     <div className="font-mono text-xs text-muted-foreground">
                                                         Tag: {absensi.id_tag}
                                                     </div>
@@ -467,10 +315,10 @@ export default function AbsensiIndex({
                                                     ?.nama_ruangan ? (
                                                     <div className="flex items-center gap-2">
                                                         <Building className="h-4 w-4 text-gray-500" />
-                                                        {String(
+                                                        {
                                                             absensi.ruangan
-                                                                .nama_ruangan,
-                                                        )}
+                                                                .nama_ruangan
+                                                        }
                                                     </div>
                                                 ) : (
                                                     <span className="text-muted-foreground">
@@ -513,9 +361,9 @@ export default function AbsensiIndex({
                                                 {getStatusBadge(absensi)}
                                             </TableCell>
                                             <TableCell>
-                                                <div className="flex justify-end gap-2">
+                                                <div className="flex justify-end">
                                                     <Link
-                                                        href={`/absensi/${absensi.id}`}
+                                                        href={`/penjaga/absensi/${absensi.id}`}
                                                     >
                                                         <Button
                                                             variant="outline"
@@ -525,18 +373,6 @@ export default function AbsensiIndex({
                                                             <Eye className="h-4 w-4" />
                                                         </Button>
                                                     </Link>
-                                                    <Button
-                                                        variant="destructive"
-                                                        size="sm"
-                                                        onClick={() =>
-                                                            deleteAbsensi(
-                                                                absensi,
-                                                            )
-                                                        }
-                                                        title="Hapus"
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
                                                 </div>
                                             </TableCell>
                                         </TableRow>
@@ -548,7 +384,7 @@ export default function AbsensiIndex({
                                                 className="py-8 text-center text-muted-foreground"
                                             >
                                                 <div className="flex flex-col items-center gap-2">
-                                                    <Search className="h-8 w-8" />
+                                                    <Activity className="h-8 w-8" />
                                                     <div>
                                                         <p className="font-medium">
                                                             Tidak ada data

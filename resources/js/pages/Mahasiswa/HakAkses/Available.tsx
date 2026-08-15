@@ -237,14 +237,16 @@ export default function HakAksesMahasiswaAvailable({
                                                 </TableCell>
                                                 <TableCell>
                                                     <Badge variant="default">
-                                                        ✅ Tersedia
+                                                        <CheckCircle className="mr-1 h-4 w-4" />
+                                                        Tersedia
                                                     </Badge>
                                                     {sudahBergabung && (
                                                         <Badge
                                                             variant="secondary"
                                                             className="mt-1"
                                                         >
-                                                            ✓ Sudah Bergabung
+                                                            <CheckCircle className="mr-1 h-3 w-3" />
+                                                            Sudah Bergabung
                                                         </Badge>
                                                     )}
                                                 </TableCell>

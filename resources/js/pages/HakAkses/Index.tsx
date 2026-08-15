@@ -33,12 +33,14 @@ import { Pagination } from '@/components/pagination';
 import {
     Building,
     Calendar,
+    CheckCircle,
     Clock,
     Edit,
     Eye,
     Plus,
     Search,
     Trash2,
+    UserCheck,
     Users,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -116,12 +118,23 @@ export default function HakAksesIndex({
 
     const getStatusBadge = (hakAkses: HakAkses) => {
         if (hakAkses.is_approve) {
-            return <Badge variant="default">✅ Disetujui</Badge>;
+            return (
+                <Badge variant="default">
+                    <CheckCircle className="mr-1 h-4 w-4" />
+                    Disetujui
+                </Badge>
+            );
         }
         return hakAkses.is_by_admin ? (
-            <Badge variant="secondary">👨‍💼 Dibuat Admin</Badge>
+            <Badge variant="secondary">
+                <UserCheck className="mr-1 h-4 w-4" />
+                Dibuat Admin
+            </Badge>
         ) : (
-            <Badge variant="outline">⏳ Menunggu</Badge>
+            <Badge variant="outline">
+                <Clock className="mr-1 h-4 w-4" />
+                Menunggu
+            </Badge>
         );
     };
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Penjaga;
 
 use App\Http\Controllers\Controller;
+use App\Models\Mahasiswa;
 use App\Models\Ruangan;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -66,8 +67,19 @@ class RuanganPenjagaController extends Controller
         $user = auth()->user();
         $this->authorizeAccess($ruangan, $user);
 
+        $mahasiswas = Mahasiswa::with('user')
+            ->where('ket', 'dsn')
+            ->get()
+            ->map(function ($mahasiswa) {
+                return [
+                    'value' => $mahasiswa->id,
+                    'label' => $mahasiswa->nama.' ('.$mahasiswa->nim.')',
+                ];
+            });
+
         return Inertia::render('Penjaga/Ruangan/Edit', [
             'ruangan' => $ruangan,
+            'mahasiswas' => $mahasiswas,
         ]);
     }
 
@@ -84,7 +96,7 @@ class RuanganPenjagaController extends Controller
             'pin' => 'nullable|string|max:255',
             'pin_active' => 'boolean',
             'open_api' => 'boolean',
-            'penanggung_jawab' => 'nullable|string|max:1000',
+            'penanggung_jawab' => 'nullable|array',
         ]);
 
         $ruangan->update($validated);

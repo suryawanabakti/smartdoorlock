@@ -45,9 +45,28 @@ const Calendar: React.FC<CalendarProps> = ({
     };
 
     const getHakAksesText = (approved: number, pending: number) => {
-        if (approved > 0 && pending > 0) return `${approved}✓ ${pending}⏳`;
-        if (approved > 0) return `${approved}✓`;
-        if (pending > 0) return `${pending}⏳`;
+        if (approved > 0 && pending > 0) {
+            return (
+                <span className="inline-flex items-center gap-0.5">
+                    {approved} <CheckCircle2 className="h-3 w-3" />
+                    {pending} <Clock className="h-3 w-3" />
+                </span>
+            );
+        }
+        if (approved > 0) {
+            return (
+                <span className="inline-flex items-center gap-0.5">
+                    {approved} <CheckCircle2 className="h-3 w-3" />
+                </span>
+            );
+        }
+        if (pending > 0) {
+            return (
+                <span className="inline-flex items-center gap-0.5">
+                    {pending} <Clock className="h-3 w-3" />
+                </span>
+            );
+        }
         return '';
     };
 

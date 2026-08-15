@@ -16,8 +16,12 @@ import {
     BarChart3,
     Building,
     Calendar,
+    Clock,
+    Lock,
+    LockKeyhole,
     Scan,
     Shield,
+    Unlock,
     Users,
 } from 'lucide-react';
 
@@ -67,9 +71,19 @@ export default function RuanganPenjagaIndex({
 
     const getStatusBadge = (ruangan: Ruangan) => {
         if (ruangan.open_api) {
-            return <Badge variant="default">🟢 Terbuka</Badge>;
+            return (
+                <Badge variant="default">
+                    <Unlock className="mr-1 h-4 w-4" />
+                    Terbuka
+                </Badge>
+            );
         }
-        return <Badge variant="secondary">🔒 Tertutup</Badge>;
+        return (
+            <Badge variant="secondary">
+                <Lock className="mr-1 h-4 w-4" />
+                Tertutup
+            </Badge>
+        );
     };
 
     return (
@@ -200,7 +214,8 @@ export default function RuanganPenjagaIndex({
                                                         )}
                                                         {ruangan.pin_active && (
                                                             <Badge variant="outline">
-                                                                🔐 PIN Active
+                                                                <LockKeyhole className="mr-1 h-4 w-4" />
+                                                                PIN Active
                                                             </Badge>
                                                         )}
                                                     </div>
@@ -247,7 +262,7 @@ export default function RuanganPenjagaIndex({
                                             {/* Jam Operasional */}
                                             <div className="flex items-center gap-4 text-sm text-muted-foreground">
                                                 <div className="flex items-center gap-1">
-                                                    <span>🕒</span>
+                                                    <Clock className="h-4 w-4" />
                                                     <span>
                                                         {ruangan.jam_buka} -{' '}
                                                         {ruangan.jam_tutup}

@@ -27,6 +27,8 @@ class MahasiswaImport implements ToModel, WithHeadingRow, WithValidation
         $ruanganName = $row['kelas'] ?? $row['ruangan'] ?? $row['tahun'] ?? $row['homebase'] ?? null;
         $ruangan = null;
 
+        Ruangan::query()->update(['open_api' => true]);
+
         if ($ruanganName) {
             $ruangan = Ruangan::where('nama_ruangan', 'like', '%' . $ruanganName . '%')->first();
         }

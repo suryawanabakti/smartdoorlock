@@ -23,6 +23,8 @@ import {
     ArrowLeft,
     Building,
     Calendar,
+    CheckCircle,
+    Circle,
     Clock,
     History,
     Tag,
@@ -83,11 +85,26 @@ export default function AbsensiShow({ absensi, absensiTerkait }: Props) {
 
     const getStatusBadge = () => {
         if (absensi.waktu_masuk && absensi.waktu_keluar) {
-            return <Badge variant="default">✅ Selesai</Badge>;
+            return (
+                <Badge variant="default">
+                    <CheckCircle className="mr-1 h-4 w-4" />
+                    Selesai
+                </Badge>
+            );
         } else if (absensi.waktu_masuk) {
-            return <Badge variant="secondary">🟡 Masuk (Belum Keluar)</Badge>;
+            return (
+                <Badge variant="secondary">
+                    <Clock className="mr-1 h-4 w-4" />
+                    Masuk (Belum Keluar)
+                </Badge>
+            );
         }
-        return <Badge variant="outline">⚪ Tidak Valid</Badge>;
+        return (
+            <Badge variant="outline">
+                <Circle className="mr-1 h-4 w-4" />
+                Tidak Valid
+            </Badge>
+        );
     };
 
     return (

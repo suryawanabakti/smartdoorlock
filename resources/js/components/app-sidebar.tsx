@@ -99,6 +99,11 @@ const penjagaNavItems: NavItem[] = [
         icon: Building,
     },
     {
+        title: 'Absensi',
+        href: '/penjaga/absensi',
+        icon: ClipboardCheck,
+    },
+    {
         title: 'Riwayat',
         href: '/penjaga/histori',
         icon: History,

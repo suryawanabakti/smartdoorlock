@@ -1,3 +1,5 @@
+import { Ban, CircleCheck, CircleHelp, OctagonX, type LucideIcon } from 'lucide-react';
+
 export interface Histori {
     id: number;
     kode: string;
@@ -39,17 +41,17 @@ export const getStatusBadgeVariant = (status: number): "destructive" | "default"
 };
 
 // Helper function untuk mendapatkan icon berdasarkan status
-export const getStatusIcon = (status: number): string => {
+export const getStatusIcon = (status: number): LucideIcon => {
     switch (status) {
         case 0: // Blok
-            return "🚫";
+            return Ban;
         case 1: // Terbuka
-            return "✅";
+            return CircleCheck;
         case 2: // Tidak Terdaftar
-            return "❓";
+            return CircleHelp;
         case 3: // No Akses
-            return "⛔";
+            return OctagonX;
         default:
-            return "❓";
+            return CircleHelp;
     }
 };

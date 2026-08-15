@@ -6,6 +6,7 @@ export interface Ruangan {
     nama_ruangan: string | null;
     type: 'umum' | 'kelas' | 'lab';
     open_api: boolean;
+    kode: string | null;
     pin: string | null;
     pin_active: boolean;
     parent_id: number | null;

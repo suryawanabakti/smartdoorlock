@@ -116,10 +116,12 @@ class HakAksesController extends Controller
             'tujuan' => 'required|string|max:1000',
             'skill' => 'nullable|string|max:1000',
             'additional_participant' => 'nullable|string|max:1000',
-            'max_register' => 'required|integer|min:1|max:100',
             'mahasiswa_ids' => 'nullable|array',
             'mahasiswa_ids.*' => 'exists:mahasiswas,id',
         ]);
+
+        // Kuota otomatis mengikuti kapasitas ruangan
+        $validated['max_register'] = Ruangan::findOrFail($validated['ruangan_id'])->max_register;
 
         DB::transaction(function () use ($validated) {
             $hakAkses = HakAkses::create($validated);
@@ -177,10 +179,12 @@ class HakAksesController extends Controller
             'tujuan' => 'required|string|max:1000',
             'skill' => 'nullable|string|max:1000',
             'additional_participant' => 'nullable|string|max:1000',
-            'max_register' => 'required|integer|min:1|max:100',
             'mahasiswa_ids' => 'nullable|array',
             'mahasiswa_ids.*' => 'exists:mahasiswas,id',
         ]);
+
+        // Kuota otomatis mengikuti kapasitas ruangan
+        $validated['max_register'] = Ruangan::findOrFail($validated['ruangan_id'])->max_register;
 
         DB::transaction(function () use ($hakAkses, $validated) {
             $hakAkses->update($validated);

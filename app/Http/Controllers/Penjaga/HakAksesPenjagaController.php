@@ -95,7 +95,6 @@ class HakAksesPenjagaController extends Controller
             'tujuan' => 'required|string|max:1000',
             'skill' => 'nullable|string|max:1000',
             'additional_participant' => 'nullable|string|max:1000',
-            'max_register' => 'required|integer|min:1|max:50',
             'mahasiswa_ids' => 'nullable|array',
             'mahasiswa_ids.*' => 'exists:mahasiswa,id',
         ]);
@@ -103,6 +102,9 @@ class HakAksesPenjagaController extends Controller
         // Penjaga otomatis approve hak akses yang mereka buat
         $validated['is_approve'] = true;
         $validated['is_by_admin'] = false;
+
+        // Kuota otomatis mengikuti kapasitas ruangan
+        $validated['max_register'] = Ruangan::findOrFail($validated['ruangan_id'])->max_register;
 
         DB::transaction(function () use ($validated) {
             $hakAkses = HakAkses::create($validated);
@@ -172,10 +174,12 @@ class HakAksesPenjagaController extends Controller
             'tujuan' => 'required|string|max:1000',
             'skill' => 'nullable|string|max:1000',
             'additional_participant' => 'nullable|string|max:1000',
-            'max_register' => 'required|integer|min:1|max:50',
             'mahasiswa_ids' => 'nullable|array',
             'mahasiswa_ids.*' => 'exists:mahasiswa,id',
         ]);
+
+        // Kuota otomatis mengikuti kapasitas ruangan
+        $validated['max_register'] = Ruangan::findOrFail($validated['ruangan_id'])->max_register;
 
         DB::transaction(function () use ($hakAkses, $validated) {
             $hakAkses->update($validated);
