@@ -1,3 +1,6 @@
+import type { Mahasiswa } from './mahasiswa';
+import type { Ruangan } from './ruangan';
+
 export interface Absensi {
     id: number;
     id_tag: string;
@@ -10,6 +13,7 @@ export interface Absensi {
     created_at: string;
     updated_at: string;
     ruangan?: Ruangan;
+    user?: Mahasiswa;
     status?: string;
     durasi?: string;
     lama_akses_menit?: number;

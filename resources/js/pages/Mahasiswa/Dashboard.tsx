@@ -22,6 +22,7 @@ import {
     Clock,
     DoorOpen,
     History,
+    KeyRound,
     User,
     Zap,
 } from 'lucide-react';
@@ -142,6 +143,22 @@ const MahasiswaDashboard = ({
                                         </div>
                                         <div className="text-sm text-muted-foreground">
                                             Aktivitas scan Anda
+                                        </div>
+                                    </div>
+                                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                                </div>
+                            </Link>
+                            <Link href="/mahasiswa/hak-akses" className="group">
+                                <div className="flex items-center gap-3 rounded-lg border p-4 transition-colors hover:bg-muted">
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100 dark:bg-purple-900/40">
+                                        <KeyRound className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="font-medium">
+                                            Hak Akses
+                                        </div>
+                                        <div className="text-sm text-muted-foreground">
+                                            Kelola permohonan akses ruangan
                                         </div>
                                     </div>
                                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

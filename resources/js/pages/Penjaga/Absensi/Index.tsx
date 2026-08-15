@@ -295,14 +295,15 @@ export default function AbsensiPenjagaIndex({
                                                     <div className="flex items-center gap-2">
                                                         <User className="h-4 w-4 text-blue-600" />
                                                         <span className="font-medium">
-                                                            {absensi.nama ||
+                                                            {absensi.user
+                                                                ?.nama ||
                                                                 'Tidak Diketahui'}
                                                         </span>
                                                     </div>
-                                                    {absensi.nim && (
+                                                    {absensi.user?.nim && (
                                                         <div className="text-sm text-muted-foreground">
                                                             NIM:{' '}
-                                                            {absensi.nim}
+                                                            {absensi.user.nim}
                                                         </div>
                                                     )}
                                                     <div className="font-mono text-xs text-muted-foreground">

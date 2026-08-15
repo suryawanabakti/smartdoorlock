@@ -83,7 +83,7 @@ export default function AbsensiPenjagaShow({ absensi }: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head
-                title={`Detail Absensi - ${absensi.nama || absensi.nim || absensi.id_tag}`}
+                title={`Detail Absensi - ${absensi.user?.nama || absensi.user?.nim || absensi.id_tag}`}
             />
 
             <div className="space-y-6 p-4">
@@ -125,7 +125,8 @@ export default function AbsensiPenjagaShow({ absensi }: Props) {
                                         Nama
                                     </label>
                                     <p className="font-semibold">
-                                        {absensi.nama || 'Tidak Diketahui'}
+                                        {absensi.user?.nama ||
+                                            'Tidak Diketahui'}
                                     </p>
                                 </div>
                                 <div>
@@ -133,7 +134,7 @@ export default function AbsensiPenjagaShow({ absensi }: Props) {
                                         NIM
                                     </label>
                                     <p className="font-semibold">
-                                        {absensi.nim || '-'}
+                                        {absensi.user?.nim || '-'}
                                     </p>
                                 </div>
                                 <div>

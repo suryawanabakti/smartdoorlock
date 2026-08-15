@@ -1,3 +1,5 @@
+import { ConfirmDialog } from '@/components/confirm-dialog';
+import { Pagination } from '@/components/pagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,11 +29,8 @@ import AppLayout from '@/layouts/app-layout';
 import { PaginatedResponse, type BreadcrumbItem } from '@/types';
 import { type Ruangan } from '@/types/ruangan';
 import { Head, Link, router } from '@inertiajs/react';
-import { Pagination } from '@/components/pagination';
 import { Edit, Eye, Plus, RefreshCcw, Search, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { ConfirmDialog } from '@/components/confirm-dialog';
-
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -58,7 +57,6 @@ export default function RuanganIndex({ ruangans, filters }: Props) {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [idToDelete, setIdToDelete] = useState<number | null>(null);
 
-
     const handleFilter = () => {
         const filters: any = {};
 
@@ -82,7 +80,6 @@ export default function RuanganIndex({ ruangans, filters }: Props) {
             setIdToDelete(null);
         }
     };
-
 
     const getTypeBadge = (type: string) => {
         const variants = {
@@ -113,7 +110,6 @@ export default function RuanganIndex({ ruangans, filters }: Props) {
                 variant="destructive"
                 confirmText="Hapus"
             />
-
 
             <div className="flex flex-col gap-6 p-4">
                 <div className="flex items-center justify-between">
@@ -188,8 +184,8 @@ export default function RuanganIndex({ ruangans, filters }: Props) {
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Nama Ruangan</TableHead>
                                     <TableHead>Kode</TableHead>
+                                    <TableHead>Nama Ruangan</TableHead>
                                     <TableHead>Type</TableHead>
                                     <TableHead>Jam Buka</TableHead>
                                     <TableHead>Max Register</TableHead>
@@ -203,6 +199,9 @@ export default function RuanganIndex({ ruangans, filters }: Props) {
                             <TableBody>
                                 {ruangans.data.map((ruangan) => (
                                     <TableRow key={ruangan.id}>
+                                        <TableCell>
+                                            {ruangan.kode || '-'}
+                                        </TableCell>
                                         <TableCell className="font-medium">
                                             {ruangan.nama_ruangan}
                                             {ruangan.parent && (
@@ -215,9 +214,7 @@ export default function RuanganIndex({ ruangans, filters }: Props) {
                                                 </div>
                                             )}
                                         </TableCell>
-                                        <TableCell>
-                                            {ruangan.kode || '-'}
-                                        </TableCell>
+
                                         <TableCell>
                                             {getTypeBadge(ruangan.type)}
                                         </TableCell>
@@ -335,7 +332,11 @@ export default function RuanganIndex({ ruangans, filters }: Props) {
                         {/* Pagination */}
                         <Pagination
                             links={ruangans.links}
-                            meta={{ from: ruangans.from, to: ruangans.to, total: ruangans.total }}
+                            meta={{
+                                from: ruangans.from,
+                                to: ruangans.to,
+                                total: ruangans.total,
+                            }}
                         />
                     </CardContent>
                 </Card>

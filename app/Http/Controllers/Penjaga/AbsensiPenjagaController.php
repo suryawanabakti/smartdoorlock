@@ -15,7 +15,7 @@ class AbsensiPenjagaController extends Controller
         $user = auth()->user();
         $ruanganIds = $user->ruangans->pluck('id');
 
-        $query = Absensi::with(['ruangan'])
+        $query = Absensi::with(['ruangan', 'user'])
             ->whereIn('ruangan_id', $ruanganIds)
             ->latest('waktu_masuk');
 
@@ -81,7 +81,7 @@ class AbsensiPenjagaController extends Controller
             abort(403, 'Anda tidak memiliki akses ke absensi ini.');
         }
 
-        $absensi->load(['ruangan']);
+        $absensi->load(['ruangan', 'user']);
 
         return Inertia::render('Penjaga/Absensi/Show', [
             'absensi' => $absensi,
