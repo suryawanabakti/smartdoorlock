@@ -18,7 +18,7 @@ export default function AuthSplitLayout({
 
     return (
         <div className="relative grid min-h-dvh lg:grid-cols-2">
-            <div className="relative hidden lg:block lg:col-span-1">
+            <div className="relative hidden lg:col-span-1 lg:block">
                 <img
                     src="/herologin.png"
                     alt="Smart Door Lock"
@@ -29,13 +29,13 @@ export default function AuthSplitLayout({
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
 
                 {/* Text overlay */}
-                <div className="absolute bottom-12 left-0 right-0 z-10 text-center text-white">
+                <div className="absolute right-0 bottom-12 left-0 z-10 text-center text-white">
                     <h2 className="text-2xl font-bold">{name}</h2>
                     <p className="mt-2 text-sm">Fakultas Kedokteran</p>
                 </div>
             </div>
             {/* Right Side - Login Form */}
-            <div className="flex flex-col items-center justify-center bg-white px-6 py-12 dark:bg-zinc-950 sm:px-12 lg:px-16">
+            <div className="flex flex-col items-center justify-center bg-white px-6 py-12 sm:px-12 lg:px-16 dark:bg-zinc-950">
                 <div className="w-full max-w-md">
                     {/* Logo */}
                     <Link
@@ -45,7 +45,9 @@ export default function AuthSplitLayout({
                         <div className="flex h-12 w-12 items-center justify-center">
                             <AppLogoIcon className="size-12 fill-current text-black dark:text-white" />
                         </div>
-                        <span className="text-xl font-bold text-gray-900 dark:text-white">{name}</span>
+                        <span className="text-xl font-bold text-gray-900 dark:text-white">
+                            {name}
+                        </span>
                     </Link>
 
                     {/* Title Section */}
@@ -64,8 +66,12 @@ export default function AuthSplitLayout({
             </div>
 
             {/* Mobile Hero - shown on small screens */}
-            <div className="fixed inset-x-0 top-0 -z-10 h-48 lg:hidden"
-                style={{ background: 'linear-gradient(135deg, #f0f2f5 0%, #e8edf2 100%)' }}
+            <div
+                className="fixed inset-x-0 top-0 -z-10 h-48 lg:hidden"
+                style={{
+                    background:
+                        'linear-gradient(135deg, #f0f2f5 0%, #e8edf2 100%)',
+                }}
             />
         </div>
     );
