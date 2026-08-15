@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\Api\DoorLockController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DosenController;
@@ -21,6 +22,8 @@ use App\Http\Controllers\RuanganController;
 use App\Http\Controllers\ScanerStatusController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/ambilpostpin', [DoorLockController::class, 'index2']);
 
 Route::get('/', [LandingPageController::class, 'index'])->name('home');
 
