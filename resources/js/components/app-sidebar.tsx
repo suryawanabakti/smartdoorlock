@@ -126,6 +126,16 @@ const mahasiswaNavItems: NavItem[] = [
         href: '/mahasiswa/hak-akses',
         icon: Key,
     },
+    {
+        title: 'Absensi',
+        href: '/mahasiswa/absensi',
+        icon: ClipboardCheck,
+    },
+    {
+        title: 'Riwayat',
+        href: '/mahasiswa/histori',
+        icon: History,
+    },
 ];
 
 const footerNavItems: NavItem[] = [];

@@ -9,6 +9,8 @@ use App\Http\Controllers\HistoriController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\Mahasiswa\DashboardController as MahasiswaDashboardController;
 use App\Http\Controllers\Mahasiswa\HakAksesMahasiswaController;
+use App\Http\Controllers\Mahasiswa\HistoriController as MahasiswaHistoriController;
+use App\Http\Controllers\Mahasiswa\AbsensiController as MahasiswaAbsensiController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\Penjaga\AbsensiPenjagaController;
 use App\Http\Controllers\Penjaga\DashboardController as PenjagaDashboardController;
@@ -123,6 +125,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/hak-akses/{hakAkses}/edit', [HakAksesMahasiswaController::class, 'edit'])->name('mahasiswa.hak-akses.edit');
         Route::put('/hak-akses/{hakAkses}', [HakAksesMahasiswaController::class, 'update'])->name('mahasiswa.hak-akses.update');
         Route::delete('/hak-akses/{hakAkses}', [HakAksesMahasiswaController::class, 'destroy'])->name('mahasiswa.hak-akses.destroy');
+
+        // Absensi Routes
+        Route::get('/absensi', [MahasiswaAbsensiController::class, 'index'])->name('mahasiswa.absensi.index');
+
+        // Histori Routes
+        Route::get('/histori', [MahasiswaHistoriController::class, 'index'])->name('mahasiswa.histori.index');
 
         // Available Hak Akses
 

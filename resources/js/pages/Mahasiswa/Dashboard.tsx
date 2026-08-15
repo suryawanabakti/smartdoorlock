@@ -1,3 +1,4 @@
+import { CollapsibleCard } from '@/components/collapsible-card';
 import { StatCard } from '@/components/StatCard';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -14,11 +15,15 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import {
     AlertCircle,
     AlertTriangle,
+    ArrowRight,
     Calendar,
     CheckCircle,
+    ClipboardCheck,
     Clock,
     DoorOpen,
+    History,
     User,
+    Zap,
 } from 'lucide-react';
 
 interface Props {
@@ -99,6 +104,53 @@ const MahasiswaDashboard = ({
                     </Alert>
                 )}
 
+                {/* Akses Cepat */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Zap className="h-5 w-5" />
+                            Akses Cepat
+                        </CardTitle>
+                        <CardDescription>Menu riwayat Anda</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            <Link href="/mahasiswa/absensi" className="group">
+                                <div className="flex items-center gap-3 rounded-lg border p-4 transition-colors hover:bg-muted">
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/40">
+                                        <ClipboardCheck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="font-medium">
+                                            Absensi
+                                        </div>
+                                        <div className="text-sm text-muted-foreground">
+                                            Rekap kehadiran Anda
+                                        </div>
+                                    </div>
+                                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                                </div>
+                            </Link>
+                            <Link href="/mahasiswa/histori" className="group">
+                                <div className="flex items-center gap-3 rounded-lg border p-4 transition-colors hover:bg-muted">
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100 dark:bg-green-900/40">
+                                        <History className="h-5 w-5 text-green-600 dark:text-green-400" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="font-medium">
+                                            Riwayat
+                                        </div>
+                                        <div className="text-sm text-muted-foreground">
+                                            Aktivitas scan Anda
+                                        </div>
+                                    </div>
+                                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                                </div>
+                            </Link>
+                        </div>
+                    </CardContent>
+                </Card>
+
                 {/* Statistics Grid */}
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <StatCard
@@ -133,18 +185,12 @@ const MahasiswaDashboard = ({
 
                 <div className="grid gap-6 md:grid-cols-2">
                     {/* Hak Akses yang Disetujui */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Calendar className="h-5 w-5" />
-                                Hak Akses Mendatang
-                            </CardTitle>
-                            <CardDescription>
-                                Daftar akses ruangan yang sudah disetujui
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            {hakAksesDisetujui.length === 0 ? (
+                    <CollapsibleCard
+                        title="Hak Akses Mendatang"
+                        description="Daftar akses ruangan yang sudah disetujui"
+                        icon={<Calendar className="h-5 w-5" />}
+                    >
+                        {hakAksesDisetujui.length === 0 ? (
                                 <div className="py-6 text-center text-muted-foreground">
                                     <Calendar className="mx-auto mb-2 h-12 w-12 opacity-50" />
                                     <p>Tidak ada hak akses yang disetujui</p>
@@ -185,22 +231,15 @@ const MahasiswaDashboard = ({
                                     ))}
                                 </div>
                             )}
-                        </CardContent>
-                    </Card>
+                    </CollapsibleCard>
 
                     {/* Aktivitas Terkini */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Clock className="h-5 w-5" />
-                                Aktivitas Terkini
-                            </CardTitle>
-                            <CardDescription>
-                                Riwayat absensi terbaru
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            {aktivitasTerkini.length === 0 ? (
+                    <CollapsibleCard
+                        title="Aktivitas Terkini"
+                        description="Riwayat absensi terbaru"
+                        icon={<Clock className="h-5 w-5" />}
+                    >
+                        {aktivitasTerkini.length === 0 ? (
                                 <div className="py-6 text-center text-muted-foreground">
                                     <DoorOpen className="mx-auto mb-2 h-12 w-12 opacity-50" />
                                     <p>Belum ada riwayat absensi</p>
@@ -260,8 +299,7 @@ const MahasiswaDashboard = ({
                                     ))}
                                 </div>
                             )}
-                        </CardContent>
-                    </Card>
+                    </CollapsibleCard>
                 </div>
             </div>
         </AppLayout>
