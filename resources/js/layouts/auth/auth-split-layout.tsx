@@ -45,9 +45,14 @@ export default function AuthSplitLayout({
                         <div className="flex h-12 w-12 items-center justify-center">
                             <AppLogoIcon className="size-12 fill-current text-black dark:text-white" />
                         </div>
-                        <span className="text-xl font-bold text-gray-900 dark:text-white">
-                            {name}
-                        </span>
+                        <div className="text-left">
+                            <span className="block text-xl leading-tight font-bold text-gray-900 dark:text-white">
+                                {name}
+                            </span>
+                            <span className="block text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+                                Fakultas Kedokteran
+                            </span>
+                        </div>
                     </Link>
 
                     {/* Title Section */}
