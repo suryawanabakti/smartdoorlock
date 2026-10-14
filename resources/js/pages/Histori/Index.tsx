@@ -1,3 +1,4 @@
+import { Pagination } from '@/components/pagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -33,18 +34,13 @@ import {
     getStatusLabel,
 } from '@/types/scaner-status';
 import { Head, router } from '@inertiajs/react';
-import { Pagination } from '@/components/pagination';
 import {
-    Ban,
     BarChart3,
     Building,
     Calendar,
-    CircleCheck,
-    CircleHelp,
     Clock,
     Download,
     Filter,
-    OctagonX,
     RefreshCw,
     Scan,
     Search,
@@ -150,7 +146,6 @@ export default function HistoriIndex({
         window.location.href = `/histori/export?${queryString}`;
     };
 
-
     const getStatusBadge = (status: number) => {
         const variant = getStatusBadgeVariant(status);
         const Icon = getStatusIcon(status);
@@ -212,82 +207,19 @@ export default function HistoriIndex({
                             className={showFilters ? 'bg-secondary' : ''}
                         >
                             <Filter className="mr-2 h-4 w-4" />
-                            {showFilters ? 'Sembunyikan Filter' : 'Tampilkan Filter'}
+                            {showFilters
+                                ? 'Sembunyikan Filter'
+                                : 'Tampilkan Filter'}
                         </Button>
-                        <Button variant="default" onClick={exportData} className="bg-green-600 hover:bg-green-700">
+                        <Button
+                            variant="default"
+                            onClick={exportData}
+                            className="bg-green-600 hover:bg-green-700"
+                        >
                             <Download className="mr-2 h-4 w-4" />
                             Export Excel
                         </Button>
                     </div>
-                </div>
-
-
-                {/* Statistics */}
-                <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
-                    <Card>
-                        <CardContent className="p-4">
-                            <div className="text-center">
-                                <div className="text-2xl font-bold text-blue-600">
-                                    {statistics.total}
-                                </div>
-                                <div className="text-sm text-blue-800">
-                                    Total Scan
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardContent className="p-4">
-                            <div className="text-center">
-                                <div className="text-2xl font-bold text-green-600">
-                                    {statistics.terbuka}
-                                </div>
-                                <div className="text-sm text-green-800">
-                                    <CircleCheck className="mr-1 inline h-4 w-4" />
-                                    Terbuka
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardContent className="p-4">
-                            <div className="text-center">
-                                <div className="text-2xl font-bold text-red-600">
-                                    {statistics.blok}
-                                </div>
-                                <div className="text-sm text-red-800">
-                                    <Ban className="mr-1 inline h-4 w-4" />
-                                    Blok
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardContent className="p-4">
-                            <div className="text-center">
-                                <div className="text-2xl font-bold text-yellow-600">
-                                    {statistics.tidak_terdaftar}
-                                </div>
-                                <div className="text-sm text-yellow-800">
-                                    <CircleHelp className="mr-1 inline h-4 w-4" />
-                                    Tidak Terdaftar
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardContent className="p-4">
-                            <div className="text-center">
-                                <div className="text-2xl font-bold text-gray-600">
-                                    {statistics.no_akses}
-                                </div>
-                                <div className="text-sm text-gray-800">
-                                    <OctagonX className="mr-1 inline h-4 w-4" />
-                                    No Akses
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
                 </div>
 
                 {/* Filters */}
@@ -310,10 +242,14 @@ export default function HistoriIndex({
                                     <Input
                                         placeholder="Nama, NIM, atau ID Tag..."
                                         value={search}
-                                        onChange={(e) => setSearch(e.target.value)}
+                                        onChange={(e) =>
+                                            setSearch(e.target.value)
+                                        }
                                         className="bg-background"
                                     />
-                                    <p className="text-[10px] text-muted-foreground">Cari berdasarkan nama, nim atau id tag</p>
+                                    <p className="text-[10px] text-muted-foreground">
+                                        Cari berdasarkan nama, nim atau id tag
+                                    </p>
                                 </div>
 
                                 {/* Status Section */}
@@ -322,14 +258,22 @@ export default function HistoriIndex({
                                         <RefreshCw className="h-3.5 w-3.5" />
                                         Status Scan
                                     </label>
-                                    <Select value={status} onValueChange={setStatus}>
+                                    <Select
+                                        value={status}
+                                        onValueChange={setStatus}
+                                    >
                                         <SelectTrigger className="bg-background">
                                             <SelectValue placeholder="Semua Status" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="all">Semua Status</SelectItem>
+                                            <SelectItem value="all">
+                                                Semua Status
+                                            </SelectItem>
                                             {statusOptions.map((option) => (
-                                                <SelectItem key={option.value} value={option.value}>
+                                                <SelectItem
+                                                    key={option.value}
+                                                    value={option.value}
+                                                >
                                                     {option.label}
                                                 </SelectItem>
                                             ))}
@@ -343,14 +287,22 @@ export default function HistoriIndex({
                                         <Building className="h-3.5 w-3.5" />
                                         Filter Ruangan
                                     </label>
-                                    <Select value={ruanganId} onValueChange={setRuanganId}>
+                                    <Select
+                                        value={ruanganId}
+                                        onValueChange={setRuanganId}
+                                    >
                                         <SelectTrigger className="bg-background">
                                             <SelectValue placeholder="Semua Ruangan" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="all">Semua Ruangan</SelectItem>
+                                            <SelectItem value="all">
+                                                Semua Ruangan
+                                            </SelectItem>
                                             {ruangans.map((ruangan) => (
-                                                <SelectItem key={ruangan.id} value={ruangan.id.toString()}>
+                                                <SelectItem
+                                                    key={ruangan.id}
+                                                    value={ruangan.id.toString()}
+                                                >
                                                     {ruangan.nama_ruangan}
                                                 </SelectItem>
                                             ))}
@@ -364,13 +316,19 @@ export default function HistoriIndex({
                                         <Scan className="h-3.5 w-3.5" />
                                         Posisi Scanner
                                     </label>
-                                    <Select value={type} onValueChange={setType}>
+                                    <Select
+                                        value={type}
+                                        onValueChange={setType}
+                                    >
                                         <SelectTrigger className="bg-background">
                                             <SelectValue placeholder="Semua Posisi" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             {typeOptions.map((option) => (
-                                                <SelectItem key={option.value} value={option.value}>
+                                                <SelectItem
+                                                    key={option.value}
+                                                    value={option.value}
+                                                >
                                                     {option.label}
                                                 </SelectItem>
                                             ))}
@@ -390,14 +348,22 @@ export default function HistoriIndex({
                                         <Input
                                             type="date"
                                             value={tanggalMulai}
-                                            onChange={(e) => setTanggalMulai(e.target.value)}
+                                            onChange={(e) =>
+                                                setTanggalMulai(e.target.value)
+                                            }
                                             className="bg-background"
                                         />
-                                        <span className="text-muted-foreground">s/d</span>
+                                        <span className="text-muted-foreground">
+                                            s/d
+                                        </span>
                                         <Input
                                             type="date"
                                             value={tanggalSelesai}
-                                            onChange={(e) => setTanggalSelesai(e.target.value)}
+                                            onChange={(e) =>
+                                                setTanggalSelesai(
+                                                    e.target.value,
+                                                )
+                                            }
                                             className="bg-background"
                                         />
                                     </div>
@@ -413,14 +379,20 @@ export default function HistoriIndex({
                                         <Input
                                             type="time"
                                             value={jamMulai}
-                                            onChange={(e) => setJamMulai(e.target.value)}
+                                            onChange={(e) =>
+                                                setJamMulai(e.target.value)
+                                            }
                                             className="bg-background"
                                         />
-                                        <span className="text-muted-foreground">s/d</span>
+                                        <span className="text-muted-foreground">
+                                            s/d
+                                        </span>
                                         <Input
                                             type="time"
                                             value={jamSelesai}
-                                            onChange={(e) => setJamSelesai(e.target.value)}
+                                            onChange={(e) =>
+                                                setJamSelesai(e.target.value)
+                                            }
                                             className="bg-background"
                                         />
                                     </div>
@@ -433,14 +405,22 @@ export default function HistoriIndex({
                                         <Building className="h-3.5 w-3.5" />
                                         Filter Kelas
                                     </label>
-                                    <Select value={kelas} onValueChange={setKelas}>
+                                    <Select
+                                        value={kelas}
+                                        onValueChange={setKelas}
+                                    >
                                         <SelectTrigger className="bg-background">
                                             <SelectValue placeholder="Semua Kelas" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="all">Semua Kelas</SelectItem>
+                                            <SelectItem value="all">
+                                                Semua Kelas
+                                            </SelectItem>
                                             {kelasOptions.map((kelas) => (
-                                                <SelectItem key={kelas.id} value={kelas.id.toString()}>
+                                                <SelectItem
+                                                    key={kelas.id}
+                                                    value={kelas.id.toString()}
+                                                >
                                                     {kelas.nama_ruangan}
                                                 </SelectItem>
                                             ))}
@@ -452,14 +432,22 @@ export default function HistoriIndex({
                                         <Calendar className="h-3.5 w-3.5" />
                                         Tahun Masuk
                                     </label>
-                                    <Select value={tahunMasuk} onValueChange={setTahunMasuk}>
+                                    <Select
+                                        value={tahunMasuk}
+                                        onValueChange={setTahunMasuk}
+                                    >
                                         <SelectTrigger className="bg-background">
                                             <SelectValue placeholder="Semua Angkatan" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="all">Semua Angkatan</SelectItem>
+                                            <SelectItem value="all">
+                                                Semua Angkatan
+                                            </SelectItem>
                                             {tahunOptions.map((tahun) => (
-                                                <SelectItem key={tahun} value={tahun.toString()}>
+                                                <SelectItem
+                                                    key={tahun}
+                                                    value={tahun.toString()}
+                                                >
                                                     {tahun}
                                                 </SelectItem>
                                             ))}
@@ -489,7 +477,6 @@ export default function HistoriIndex({
                     </Card>
                 )}
 
-
                 {/* Table */}
                 <Card>
                     <CardHeader>
@@ -500,7 +487,7 @@ export default function HistoriIndex({
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="rounded-md border w-full overflow-x-auto">
+                        <div className="w-full overflow-x-auto rounded-md border">
                             <Table>
                                 <TableHeader>
                                     <TableRow>
@@ -578,7 +565,7 @@ export default function HistoriIndex({
                                                 </div>
                                             </TableCell>
                                             <TableCell>
-                                                <div className="rounded bg-gray-100 px-2 py-1 font-mono text-sm">
+                                                <div className="rounded bg-gray-100 px-2 py-1 font-mono text-sm dark:bg-gray-800">
                                                     {histori.id_tag}
                                                 </div>
                                             </TableCell>
@@ -593,7 +580,6 @@ export default function HistoriIndex({
                                                         </div>
                                                         {histori.nim && (
                                                             <div className="font-mono text-sm text-muted-foreground">
-                                                                NIM:{' '}
                                                                 {histori.nim}
                                                             </div>
                                                         )}
@@ -651,7 +637,11 @@ export default function HistoriIndex({
                         {/* Pagination */}
                         <Pagination
                             links={historis.links}
-                            meta={{ from: historis.from, to: historis.to, total: historis.total }}
+                            meta={{
+                                from: historis.from,
+                                to: historis.to,
+                                total: historis.total,
+                            }}
                         />
                     </CardContent>
                 </Card>

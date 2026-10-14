@@ -18,6 +18,7 @@ import {
     Building,
     Calendar,
     ClipboardCheck,
+    CreditCard,
     DoorOpen,
     GraduationCap,
     History,
@@ -59,6 +60,11 @@ const adminNavItems: NavItem[] = [
         title: 'Scanner',
         href: '/scaner-status',
         icon: ScanLine,
+    },
+    {
+        title: 'ID Card',
+        href: '/id-cards',
+        icon: CreditCard,
     },
     {
         title: 'Hak Akses',

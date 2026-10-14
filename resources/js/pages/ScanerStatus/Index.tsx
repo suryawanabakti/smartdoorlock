@@ -298,12 +298,24 @@ export default function ScanerStatusIndex({
                                             <TableCell>
                                                 <Badge
                                                     variant={
-                                                        scanerStatus.last
+                                                        scanerStatus.last &&
+                                                        (new Date().getTime() -
+                                                            new Date(
+                                                                scanerStatus.last,
+                                                            ).getTime()) /
+                                                            60000 <
+                                                            60
                                                             ? 'default'
                                                             : 'secondary'
                                                     }
                                                 >
-                                                    {scanerStatus.last
+                                                    {scanerStatus.last &&
+                                                    (new Date().getTime() -
+                                                        new Date(
+                                                            scanerStatus.last,
+                                                        ).getTime()) /
+                                                        60000 <
+                                                        60
                                                         ? 'Aktif'
                                                         : 'Tidak Aktif'}
                                                 </Badge>

@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DosenController;
 use App\Http\Controllers\HakAksesController;
 use App\Http\Controllers\HistoriController;
+use App\Http\Controllers\IdCardController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\Mahasiswa\DashboardController as MahasiswaDashboardController;
 use App\Http\Controllers\Mahasiswa\HakAksesMahasiswaController;
@@ -75,6 +76,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/histori', [HistoriController::class, 'index'])->name('histori.index');
     Route::get('/histori/export', [HistoriController::class, 'export'])->name('histori.export');
     Route::get('/histori/statistics', [HistoriController::class, 'statistics'])->name('histori.statistics');
+
+    Route::get('/id-cards', [IdCardController::class, 'index'])->name('id-cards.index');
 
     Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
     Route::get('/absensi/{absensi}', [AbsensiController::class, 'show'])->name('absensi.show');
