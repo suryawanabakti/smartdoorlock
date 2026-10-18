@@ -59,6 +59,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('mahasiswas.toggle-status');
     Route::post('/mahasiswas/import', [MahasiswaController::class, 'import'])->name('mahasiswas.import');
     Route::get('/mahasiswas-lowercase-id-tag', [MahasiswaController::class, 'lowercaseIdTag'])->name('mahasiswas.lowercase-id-tag');;
+    // Terbaru
     Route::get('/mahasiswas/export/id-tag', [MahasiswaController::class, 'exportIdTag'])->name('mahasiswas.export.id-tag');
     Route::resource('scaner-status', ScanerStatusController::class);
 
