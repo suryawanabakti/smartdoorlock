@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
+use App\Exports\MahasiswaIdTagExport;
 use App\Imports\MahasiswaImport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -365,5 +366,10 @@ class MahasiswaController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan saat import: ' . $e->getMessage());
         }
+    }
+
+    public function exportIdTag()
+    {
+        return Excel::download(new MahasiswaIdTagExport, 'id-tag-mahasiswa.xlsx');
     }
 }
