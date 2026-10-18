@@ -50,7 +50,7 @@ export default function Login({
                                     htmlFor="username"
                                     className="text-sm font-medium text-gray-700 dark:text-gray-300"
                                 >
-                                    NIM / Username
+                                    NIM
                                 </Label>
                                 <Input
                                     id="username"
