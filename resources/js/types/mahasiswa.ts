@@ -16,6 +16,7 @@ export interface Mahasiswa {
     updated_at: string;
     user?: User;
     ruangan?: Ruangan;
+    penanggung_jawab_ruangans?: { id: number; nama_ruangan: string; type: string }[];
 }
 
 export interface Mahasiswa {

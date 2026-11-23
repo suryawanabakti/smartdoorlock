@@ -8,6 +8,7 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
     Select,
     SelectContent,
@@ -32,6 +33,8 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
+import { Checkbox } from '@/components/ui/checkbox';
+import { MultiSelect, MultiSelectOption } from '@/components/ui/multi-select';
 import AppLayout from '@/layouts/app-layout';
 import { PaginatedResponse, type BreadcrumbItem } from '@/types';
 import { type Mahasiswa } from '@/types/mahasiswa';
@@ -39,6 +42,7 @@ import { Head, Link, router, useForm } from '@inertiajs/react';
 import { Pagination } from '@/components/pagination';
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import {
+    Building2,
     Edit,
     FileUp,
     Plus,
@@ -48,10 +52,17 @@ import {
     Trash2,
     User,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+
+interface RuanganItem {
+    id: number;
+    nama_ruangan: string;
+    type: string;
+}
 
 interface Props {
     mahasiswas: PaginatedResponse<Mahasiswa>;
+    ruangans?: RuanganItem[];
     filters: {
         search?: string;
         status?: string;
@@ -65,6 +76,7 @@ interface Props {
 
 export default function DosenIndex({
     mahasiswas,
+    ruangans = [],
     filters,
     statusOptions,
     tahunOptions,
@@ -75,6 +87,67 @@ export default function DosenIndex({
     const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [dosenToDelete, setDosenToDelete] = useState<Mahasiswa | null>(null);
+
+    // Bulk selection state
+    const [selectedDosenIds, setSelectedDosenIds] = useState<number[]>([]);
+    const [isBulkDialogOpen, setIsBulkDialogOpen] = useState(false);
+    const [bulkRuanganOptions, setBulkRuanganOptions] = useState<MultiSelectOption[]>([]);
+    const [bulkMode, setBulkMode] = useState<'add' | 'set' | 'remove'>('add');
+    const [isSubmittingBulk, setIsSubmittingBulk] = useState(false);
+
+    const allRuanganOptions: MultiSelectOption[] = useMemo(() => {
+        return (ruangans || []).map((r) => ({
+            value: r.id,
+            label: `${r.nama_ruangan} (${r.type})`,
+        }));
+    }, [ruangans]);
+
+    const allIdsOnPage = mahasiswas.data.map((d) => d.id);
+    const isAllSelected =
+        allIdsOnPage.length > 0 &&
+        allIdsOnPage.every((id) => selectedDosenIds.includes(id));
+
+    const toggleSelectAll = () => {
+        if (isAllSelected) {
+            setSelectedDosenIds((prev) =>
+                prev.filter((id) => !allIdsOnPage.includes(id)),
+            );
+        } else {
+            setSelectedDosenIds((prev) =>
+                Array.from(new Set([...prev, ...allIdsOnPage])),
+            );
+        }
+    };
+
+    const toggleSelectOne = (id: number) => {
+        setSelectedDosenIds((prev) =>
+            prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
+        );
+    };
+
+    const handleBulkSubmit = () => {
+        if (selectedDosenIds.length === 0 || bulkRuanganOptions.length === 0) return;
+
+        setIsSubmittingBulk(true);
+        router.post(
+            '/dosen/bulk-penanggung-jawab',
+            {
+                dosen_ids: selectedDosenIds,
+                ruangan_ids: bulkRuanganOptions.map((o) => o.value),
+                mode: bulkMode,
+            },
+            {
+                onSuccess: () => {
+                    setIsBulkDialogOpen(false);
+                    setSelectedDosenIds([]);
+                    setBulkRuanganOptions([]);
+                },
+                onFinish: () => {
+                    setIsSubmittingBulk(false);
+                },
+            },
+        );
+    };
 
     const { data, setData, post, processing, reset, errors } = useForm({
         file: null as File | null,
@@ -297,11 +370,50 @@ export default function DosenIndex({
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
+                        {/* Bulk Action Bar */}
+                        {selectedDosenIds.length > 0 && (
+                            <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-primary/20 bg-primary/5 p-3 dark:bg-primary/10">
+                                <div className="flex items-center gap-2">
+                                    <Badge variant="default" className="text-sm font-medium">
+                                        {selectedDosenIds.length} Dosen Dipilih
+                                    </Badge>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-8 text-xs text-muted-foreground hover:text-destructive"
+                                        onClick={() => setSelectedDosenIds([])}
+                                    >
+                                        Batal Pilih
+                                    </Button>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Button
+                                        size="sm"
+                                        onClick={() => {
+                                            setBulkRuanganOptions([]);
+                                            setIsBulkDialogOpen(true);
+                                        }}
+                                    >
+                                        <Building2 className="mr-2 h-4 w-4" />
+                                        Atur Penanggung Jawab Ruangan ({selectedDosenIds.length})
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
+
                         <div className="rounded-md border w-full overflow-x-auto">
                             <Table>
                                 <TableHeader>
                                     <TableRow>
+                                        <TableHead className="w-[40px]">
+                                            <Checkbox
+                                                checked={isAllSelected}
+                                                onCheckedChange={toggleSelectAll}
+                                                aria-label="Pilih semua dosen"
+                                            />
+                                        </TableHead>
                                         <TableHead>Dosen / Staff</TableHead>
+                                        <TableHead>Penanggung Jawab Ruangan</TableHead>
                                         <TableHead>Status</TableHead>
                                         <TableHead>Tahun Gabung</TableHead>
                                         <TableHead className="w-[120px] text-right">
@@ -310,89 +422,121 @@ export default function DosenIndex({
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {mahasiswas.data.map((dosen) => (
-                                        <TableRow key={dosen.id}>
-                                            <TableCell>
-                                                <div className="flex items-center gap-3">
-                                                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 dark:bg-neutral-800">
-                                                        <User className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                                                    </div>
-                                                    <div>
-                                                        <div className="font-medium">
-                                                            {dosen.nama}
+                                    {mahasiswas.data.map((dosen) => {
+                                        const isSelected = selectedDosenIds.includes(dosen.id);
+                                        return (
+                                            <TableRow
+                                                key={dosen.id}
+                                                data-state={isSelected ? 'selected' : undefined}
+                                            >
+                                                <TableCell>
+                                                    <Checkbox
+                                                        checked={isSelected}
+                                                        onCheckedChange={() => toggleSelectOne(dosen.id)}
+                                                        aria-label={`Pilih ${dosen.nama}`}
+                                                    />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 dark:bg-neutral-800">
+                                                            <User className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                                                         </div>
-                                                        <div className="text-sm text-muted-foreground">
-                                                            {dosen.id_tag ||
-                                                                'No Tag'}
+                                                        <div>
+                                                            <div className="font-medium">
+                                                                {dosen.nama}
+                                                            </div>
+                                                            <div className="text-sm text-muted-foreground">
+                                                                {dosen.id_tag ||
+                                                                    'No Tag'}
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                {getStatusBadge(
-                                                    dosen.status,
-                                                )}
-                                            </TableCell>
+                                                </TableCell>
+                                                <TableCell>
+                                                    {dosen.penanggung_jawab_ruangans && dosen.penanggung_jawab_ruangans.length > 0 ? (
+                                                        <div className="flex flex-wrap gap-1 max-w-[280px]">
+                                                            {dosen.penanggung_jawab_ruangans.map((r) => (
+                                                                <Badge
+                                                                    key={r.id}
+                                                                    variant="outline"
+                                                                    className="text-xs bg-muted/40 font-normal"
+                                                                >
+                                                                    {r.nama_ruangan}
+                                                                </Badge>
+                                                            ))}
+                                                        </div>
+                                                    ) : (
+                                                        <span className="text-xs text-muted-foreground italic">
+                                                            Belum ada
+                                                        </span>
+                                                    )}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {getStatusBadge(
+                                                        dosen.status,
+                                                    )}
+                                                </TableCell>
 
-                                            <TableCell>
-                                                <Badge variant="outline">
-                                                    {dosen.tahun_masuk}
-                                                </Badge>
-                                            </TableCell>
+                                                <TableCell>
+                                                    <Badge variant="outline">
+                                                        {dosen.tahun_masuk}
+                                                    </Badge>
+                                                </TableCell>
 
-                                            <TableCell>
-                                                <div className="flex justify-end gap-2">
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={() =>
-                                                            toggleStatus(
-                                                                dosen,
-                                                            )
-                                                        }
-                                                        title={
-                                                            dosen.status
-                                                                ? 'Nonaktifkan'
-                                                                : 'Aktifkan'
-                                                        }
-                                                    >
-                                                        {dosen.status ? (
-                                                            <ToggleRight className="h-4 w-4" />
-                                                        ) : (
-                                                            <ToggleLeft className="h-4 w-4" />
-                                                        )}
-                                                    </Button>
-                                                    <Link
-                                                        href={`/mahasiswas/${dosen.id}/edit`}
-                                                    >
+                                                <TableCell>
+                                                    <div className="flex justify-end gap-2">
                                                         <Button
                                                             variant="outline"
                                                             size="sm"
-                                                            title="Edit"
+                                                            onClick={() =>
+                                                                toggleStatus(
+                                                                    dosen,
+                                                                )
+                                                            }
+                                                            title={
+                                                                dosen.status
+                                                                    ? 'Nonaktifkan'
+                                                                    : 'Aktifkan'
+                                                            }
                                                         >
-                                                            <Edit className="h-4 w-4" />
+                                                            {dosen.status ? (
+                                                                <ToggleRight className="h-4 w-4" />
+                                                            ) : (
+                                                                <ToggleLeft className="h-4 w-4" />
+                                                            )}
                                                         </Button>
-                                                    </Link>
-                                                    <Button
-                                                        variant="destructive"
-                                                        size="sm"
-                                                        onClick={() =>
-                                                            deleteDosen(
-                                                                dosen,
-                                                            )
-                                                        }
-                                                        title="Hapus"
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
+                                                        <Link
+                                                            href={`/dosen/${dosen.id}/edit`}
+                                                        >
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                title="Edit"
+                                                            >
+                                                                <Edit className="h-4 w-4" />
+                                                            </Button>
+                                                        </Link>
+                                                        <Button
+                                                            variant="destructive"
+                                                            size="sm"
+                                                            onClick={() =>
+                                                                deleteDosen(
+                                                                    dosen,
+                                                                )
+                                                            }
+                                                            title="Hapus"
+                                                        >
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </Button>
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
                                     {mahasiswas.data.length === 0 && (
                                         <TableRow>
                                             <TableCell
-                                                colSpan={4}
+                                                colSpan={6}
                                                 className="py-8 text-center text-muted-foreground"
                                             >
                                                 <div className="flex flex-col items-center gap-2">
@@ -422,6 +566,118 @@ export default function DosenIndex({
                         />
                     </CardContent>
                 </Card>
+
+                {/* Dialog Bulk Penanggung Jawab */}
+                <Dialog open={isBulkDialogOpen} onOpenChange={setIsBulkDialogOpen}>
+                    <DialogContent className="max-w-md">
+                        <DialogHeader>
+                            <DialogTitle>Atur Penanggung Jawab Ruangan</DialogTitle>
+                            <DialogDescription>
+                                Tentukan ruangan untuk {selectedDosenIds.length} dosen terpilih.
+                            </DialogDescription>
+                        </DialogHeader>
+
+                        <div className="space-y-4 py-2">
+                            {/* Mode Selection */}
+                            <div className="space-y-2">
+                                <Label>Mode Aksi</Label>
+                                <Select
+                                    value={bulkMode}
+                                    onValueChange={(val: any) => setBulkMode(val)}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="add">
+                                            Tambahkan ke Ruangan
+                                        </SelectItem>
+                                        <SelectItem value="set">
+                                            Tetapkan / Ganti Ruangan
+                                        </SelectItem>
+                                        <SelectItem value="remove">
+                                            Cabut dari Ruangan
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <p className="text-xs text-muted-foreground">
+                                    {bulkMode === 'add' &&
+                                        'Menambahkan ruangan terpilih ke dosen tanpa menghapus ruangan yang sudah dipegang sebelumnya.'}
+                                    {bulkMode === 'set' &&
+                                        'Mengganti daftar ruangan penanggung jawab dosen dengan ruangan yang dipilih.'}
+                                    {bulkMode === 'remove' &&
+                                        'Mencabut hak akses penanggung jawab dosen dari ruangan yang dipilih.'}
+                                </p>
+                            </div>
+
+                            {/* Ruangan MultiSelect */}
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <Label>Pilih Ruangan</Label>
+                                    <div className="flex items-center gap-2 text-xs">
+                                        <button
+                                            type="button"
+                                            onClick={() => setBulkRuanganOptions(allRuanganOptions)}
+                                            className="font-medium text-primary hover:underline"
+                                        >
+                                            Pilih Semua
+                                        </button>
+                                        {bulkRuanganOptions.length > 0 && (
+                                            <>
+                                                <span className="text-muted-foreground">•</span>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setBulkRuanganOptions([])}
+                                                    className="text-muted-foreground hover:text-destructive hover:underline"
+                                                >
+                                                    Batal Semua
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                                <MultiSelect
+                                    options={allRuanganOptions}
+                                    value={bulkRuanganOptions}
+                                    onChange={setBulkRuanganOptions}
+                                    placeholder="Pilih ruangan..."
+                                    selectAllText="Pilih Semua Ruangan"
+                                />
+                            </div>
+
+                            {/* Summary */}
+                            <div className="rounded-md bg-muted/60 p-3 text-xs space-y-1">
+                                <p className="font-semibold text-foreground">
+                                    Dosen yang dipilih ({selectedDosenIds.length}):
+                                </p>
+                                <p className="text-muted-foreground line-clamp-3">
+                                    {mahasiswas.data
+                                        .filter((d) => selectedDosenIds.includes(d.id))
+                                        .map((d) => d.nama)
+                                        .join(', ')}
+                                </p>
+                            </div>
+                        </div>
+
+                        <DialogFooter>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => setIsBulkDialogOpen(false)}
+                                disabled={isSubmittingBulk}
+                            >
+                                Batal
+                            </Button>
+                            <Button
+                                type="button"
+                                onClick={handleBulkSubmit}
+                                disabled={isSubmittingBulk || bulkRuanganOptions.length === 0}
+                            >
+                                {isSubmittingBulk ? 'Menyimpan...' : 'Simpan Penugasan'}
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
         </AppLayout>
     );

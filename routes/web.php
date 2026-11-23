@@ -57,6 +57,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('/mahasiswas/{mahasiswa}/toggle-status', [MahasiswaController::class, 'toggleStatus'])
         ->name('mahasiswas.toggle-status');
+    Route::post('/dosen/bulk-penanggung-jawab', [DosenController::class, 'bulkPenanggungJawab'])
+        ->name('dosen.bulk-penanggung-jawab');
     Route::post('/mahasiswas/import', [MahasiswaController::class, 'import'])->name('mahasiswas.import');
     Route::get('/mahasiswas-lowercase-id-tag', [MahasiswaController::class, 'lowercaseIdTag'])->name('mahasiswas.lowercase-id-tag');;
     // Terbaru
