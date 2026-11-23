@@ -11,11 +11,14 @@
     "require": {
         "php": "^8.2",
         "inertiajs/inertia-laravel": "^2.0",
+        "kstmostofa/laravel-whatsapp": "^1.2",
         "laravel/fortify": "^1.30",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
         "laravel/wayfinder": "^0.1.9",
+        "livewire/flux": "^2.21",
+        "livewire/livewire": "^4.4",
         "maatwebsite/excel": "^3.1",
         "opcodesio/log-viewer": "^3.19",
         "spatie/laravel-backup": "^9.3"

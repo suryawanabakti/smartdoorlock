@@ -245,14 +245,38 @@ export default function RuanganPenjagaEdit({
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="penanggung_jawab">
-                                        Penanggung Jawab
-                                    </Label>
+                                    <div className="flex items-center justify-between">
+                                        <Label htmlFor="penanggung_jawab">
+                                            Penanggung Jawab
+                                        </Label>
+                                        <div className="flex items-center gap-2 text-xs">
+                                            <button
+                                                type="button"
+                                                onClick={() => handlePenanggungJawabChange(mahasiswas)}
+                                                className="font-medium text-primary hover:underline"
+                                            >
+                                                Pilih Semua
+                                            </button>
+                                            {selectedOptions.length > 0 && (
+                                                <>
+                                                    <span className="text-muted-foreground">•</span>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handlePenanggungJawabChange([])}
+                                                        className="text-muted-foreground hover:text-destructive hover:underline"
+                                                    >
+                                                        Batal Semua
+                                                    </button>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
                                     <MultiSelect
                                         options={mahasiswas}
                                         value={selectedOptions}
                                         onChange={handlePenanggungJawabChange}
                                         placeholder="Pilih penanggung jawab..."
+                                        selectAllText="Pilih Semua Dosen"
                                     />
                                     {errors.penanggung_jawab && (
                                         <p className="text-sm text-red-600">

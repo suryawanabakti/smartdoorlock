@@ -27,13 +27,14 @@ class DosenController extends Controller
             'filters' => ['ket' => 'dsn'],
             'defaultKet' => 'dsn',
             'hideKet' => true,
+            'assignedRuanganPjIds' => [],
         ]);
     }
 
     // Show edit form for dosen (delegates to MahasiswaController)
     public function edit(Mahasiswa $mahasiswa)
     {
-        $ruangans = Ruangan::where('type', 'kelas')->get();
+        $ruangans = Ruangan::all();
         $users = User::where('role', 'mahasiswa')->orWhere('role', 'dosen')->get();
 
         return Inertia::render('Mahasiswa/Edit', [
@@ -47,6 +48,7 @@ class DosenController extends Controller
             'tahunOptions' => range(date('Y'), date('Y') - 10, -1),
             'defaultKet' => 'dsn',
             'hideKet' => true,
+            'assignedRuanganPjIds' => $mahasiswa->getPenanggungJawabRuanganIds(),
         ]);
     }
 

@@ -16,15 +16,23 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { type MahasiswaFormData } from '@/types/mahasiswa';
+import { MultiSelect, MultiSelectOption } from '@/components/ui/multi-select';
+import { type Mahasiswa, type MahasiswaFormData } from '@/types/mahasiswa';
+import { type Ruangan } from '@/types/ruangan';
+import { type User } from '@/types/user';
 import { useForm } from '@inertiajs/react';
 import { BookOpen, GraduationCap, User2, User2Icon } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
 interface Props {
+    mahasiswa?: Mahasiswa;
+    ruangans: Ruangan[];
+    users: User[];
     ketOptions: { value: string; label: string }[];
     tahunOptions: number[];
     defaultKet?: string;
     hideKet?: boolean;
+    assignedRuanganPjIds?: number[];
 }
 
 export default function MahasiswaForm({
@@ -35,7 +43,27 @@ export default function MahasiswaForm({
     tahunOptions,
     defaultKet,
     hideKet,
+    assignedRuanganPjIds,
 }: Props) {
+    const ruanganPjOptions: MultiSelectOption[] = useMemo(() => {
+        return (ruangans || []).map((r) => ({
+            value: r.id,
+            label: `${r.nama_ruangan} (${r.type})`,
+        }));
+    }, [ruangans]);
+
+    const initialPjOptions = useMemo(() => {
+        const ids = assignedRuanganPjIds || [];
+        return (ruangans || [])
+            .filter((r) => ids.includes(r.id))
+            .map((r) => ({
+                value: r.id,
+                label: `${r.nama_ruangan} (${r.type})`,
+            }));
+    }, [assignedRuanganPjIds, ruangans]);
+
+    const [selectedRuanganPj, setSelectedRuanganPj] = useState<MultiSelectOption[]>(initialPjOptions);
+
     const { data, setData, errors, processing, post, put, reset } =
         useForm<MahasiswaFormData>({
             user_id: mahasiswa?.user_id || null,
@@ -44,6 +72,7 @@ export default function MahasiswaForm({
             nim: mahasiswa?.nim || '',
             pin: mahasiswa?.pin || '',
             ruangan_id: mahasiswa?.ruangan_id || null,
+            ruangan_pj_ids: assignedRuanganPjIds || [],
             ket: mahasiswa?.ket || (defaultKet as any) || 'mhs',
             status: mahasiswa ? Boolean(mahasiswa.status) : true,
             tahun_masuk: mahasiswa?.tahun_masuk || new Date().getFullYear(),
@@ -51,6 +80,11 @@ export default function MahasiswaForm({
             email: '',
             password: '',
         });
+
+    const handleRuanganPjChange = (options: MultiSelectOption[]) => {
+        setSelectedRuanganPj(options);
+        setData('ruangan_pj_ids', options.map((o) => Number(o.value)));
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -380,6 +414,93 @@ export default function MahasiswaForm({
                                 </div>
                             )}
                         </div>
+
+                        {data.ket === 'dsn' ? (
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <div className="flex items-center justify-between">
+                                        <Label htmlFor="ruangan_pj">
+                                            Penanggung Jawab Ruangan
+                                        </Label>
+                                        <div className="flex items-center gap-2 text-xs">
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRuanganPjChange(ruanganPjOptions)}
+                                                className="font-medium text-primary hover:underline"
+                                            >
+                                                Pilih Semua
+                                            </button>
+                                            {selectedRuanganPj.length > 0 && (
+                                                <>
+                                                    <span className="text-muted-foreground">•</span>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleRuanganPjChange([])}
+                                                        className="text-muted-foreground hover:text-destructive hover:underline"
+                                                    >
+                                                        Batal Semua
+                                                    </button>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <MultiSelect
+                                        options={ruanganPjOptions}
+                                        value={selectedRuanganPj}
+                                        onChange={handleRuanganPjChange}
+                                        placeholder="Pilih ruangan yang menjadi tanggung jawab..."
+                                        selectAllText="Pilih Semua Ruangan"
+                                    />
+                                    <p className="text-xs text-muted-foreground">
+                                        Dosen memiliki akses membuka kunci pintu untuk ruangan-ruangan yang dipilih.
+                                    </p>
+                                    {errors.ruangan_pj_ids && (
+                                        <p className="text-sm text-red-600">
+                                            {errors.ruangan_pj_ids}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="ruangan_id">Ruangan Kelas (Home Base)</Label>
+                                    <Select
+                                        value={data.ruangan_id?.toString() || ''}
+                                        onValueChange={(val) =>
+                                            setData(
+                                                'ruangan_id',
+                                                val && val !== '-'
+                                                    ? parseInt(val)
+                                                    : null,
+                                            )
+                                        }
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Pilih ruangan kelas (opsional)" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="-">
+                                                Tidak ada ruangan
+                                            </SelectItem>
+                                            {filteredRuangans.map((ruangan) => (
+                                                <SelectItem
+                                                    key={ruangan.id}
+                                                    value={ruangan.id.toString()}
+                                                >
+                                                    {ruangan.nama_ruangan} ({ruangan.type})
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    {errors.ruangan_id && (
+                                        <p className="text-sm text-red-600">
+                                            {errors.ruangan_id}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </CardContent>
             </Card>

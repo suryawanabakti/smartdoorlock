@@ -20,24 +20,36 @@ export function NavMain({
         <SidebarGroup className="px-2 py-0">
             <SidebarGroupLabel>{title}</SidebarGroupLabel>
             <SidebarMenu>
-                {items.map((item) => (
-                    <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton
-                            asChild
-                            isActive={page.url.startsWith(
-                                typeof item.href === 'string'
-                                    ? item.href
-                                    : item.href.url,
-                            )}
-                            tooltip={{ children: item.title }}
-                        >
-                            <Link href={item.href}>
-                                {item.icon && <item.icon />}
-                                <span>{item.title}</span>
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                ))}
+                {items.map((item) => {
+                    const hrefStr =
+                        typeof item.href === 'string'
+                            ? item.href
+                            : item.href.url;
+                    const isExternal =
+                        item.external || hrefStr.startsWith('/whatsapp');
+
+                    return (
+                        <SidebarMenuItem key={item.title}>
+                            <SidebarMenuButton
+                                asChild
+                                isActive={page.url.startsWith(hrefStr)}
+                                tooltip={{ children: item.title }}
+                            >
+                                {isExternal ? (
+                                    <a href={hrefStr}>
+                                        {item.icon && <item.icon />}
+                                        <span>{item.title}</span>
+                                    </a>
+                                ) : (
+                                    <Link href={item.href}>
+                                        {item.icon && <item.icon />}
+                                        <span>{item.title}</span>
+                                    </Link>
+                                )}
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    );
+                })}
             </SidebarMenu>
         </SidebarGroup>
     );

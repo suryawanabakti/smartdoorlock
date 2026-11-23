@@ -77,6 +77,34 @@ class Ruangan extends Model
         return $this->belongsTo(Mahasiswa::class);
     }
 
+    public function isPenanggungJawab($mahasiswa): bool
+    {
+        $id = $mahasiswa instanceof Mahasiswa ? $mahasiswa->id : $mahasiswa;
+
+        if (! $id) {
+            return false;
+        }
+
+        if ($this->mahasiswa_id == $id) {
+            return true;
+        }
+
+        $pj = $this->penanggung_jawab;
+        if (is_string($pj)) {
+            $pj = json_decode($pj, true);
+        }
+
+        if (is_array($pj)) {
+            $ids = array_map(function ($item) {
+                return is_array($item) ? ($item['value'] ?? null) : (is_object($item) ? ($item->value ?? null) : $item);
+            }, $pj);
+
+            return in_array($id, $ids) || in_array((string) $id, $ids);
+        }
+
+        return false;
+    }
+
     // Scopes
     public function scopeUmum($query)
     {

@@ -49,6 +49,16 @@ class Mahasiswa extends Model
         return $this->belongsTo(Ruangan::class);
     }
 
+    /**
+     * Dapatkan ID semua ruangan di mana dosen/mahasiswa ini menjadi penanggung jawab.
+     */
+    public function getPenanggungJawabRuanganIds(): array
+    {
+        return Ruangan::all()->filter(function ($ruangan) {
+            return $ruangan->isPenanggungJawab($this);
+        })->pluck('id')->values()->all();
+    }
+
     // Scopes
     public function scopeAktif($query)
     {

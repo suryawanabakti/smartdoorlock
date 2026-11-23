@@ -98,6 +98,7 @@ class MahasiswaController extends Controller
             ],
             'tahunOptions' => range(date('Y'), date('Y') - 10, -1),
             'filters' => $request->only(['ket']),
+            'assignedRuanganPjIds' => [],
         ]);
     }
 
@@ -118,6 +119,7 @@ class MahasiswaController extends Controller
             'filters' => ['ket' => 'mhs'],
             'defaultKet' => 'mhs',
             'hideKet' => true,
+            'assignedRuanganPjIds' => [],
         ]);
     }
 
@@ -138,6 +140,7 @@ class MahasiswaController extends Controller
             'filters' => ['ket' => 'dsn'],
             'defaultKet' => 'dsn',
             'hideKet' => true,
+            'assignedRuanganPjIds' => [],
         ]);
     }
 
@@ -153,12 +156,14 @@ class MahasiswaController extends Controller
             'nim' => 'required|string|unique:mahasiswa,nim',
             'pin' => 'nullable|string|unique:mahasiswa,pin',
             'ruangan_id' => 'nullable|exists:ruangans,id',
+            'ruangan_pj_ids' => 'nullable|array',
+            'ruangan_pj_ids.*' => 'exists:ruangans,id',
             'ket' => 'required|in:mhs,dsn',
             'status' => 'required|boolean',
             'tahun_masuk' => 'required|integer|min:2000|max:' . (date('Y') + 1),
         ]);
 
-        DB::transaction(function () use ($validated) {
+        DB::transaction(function () use ($validated, $request) {
             if (!empty($validated['create_user']) && $validated['create_user']) {
                 $user = User::create([
                     'name' => $validated['nama'],
@@ -170,6 +175,11 @@ class MahasiswaController extends Controller
             }
 
             $mahasiswa = Mahasiswa::create($validated);
+
+            // Sync penanggung jawab ruangan jika ket === 'dsn'
+            if ($validated['ket'] === 'dsn' && $request->has('ruangan_pj_ids')) {
+                $this->syncPenanggungJawabRuangan($mahasiswa, $request->input('ruangan_pj_ids', []));
+            }
 
             // Jika ada user_id, update role user sesuai dengan ket
             if ($validated['user_id']) {
@@ -189,7 +199,7 @@ class MahasiswaController extends Controller
 
     public function edit(Mahasiswa $mahasiswa)
     {
-        $ruangans = Ruangan::where('type', 'kelas')->get();
+        $ruangans = Ruangan::all();
         $users = User::where('role', 'mahasiswa')->orWhere('role', 'dosen')->get();
 
         return Inertia::render('Mahasiswa/Edit', [
@@ -201,6 +211,7 @@ class MahasiswaController extends Controller
                 ['value' => 'dsn', 'label' => 'Dosen'],
             ],
             'tahunOptions' => range(date('Y'), date('Y') - 10, -1),
+            'assignedRuanganPjIds' => $mahasiswa->getPenanggungJawabRuanganIds(),
         ]);
     }
 
@@ -221,13 +232,14 @@ class MahasiswaController extends Controller
             'tahunOptions' => range(date('Y'), date('Y') - 10, -1),
             'defaultKet' => 'mhs',
             'hideKet' => true,
+            'assignedRuanganPjIds' => [],
         ]);
     }
 
     // Edit page for Dosen (hide ket field)
     public function editDosen(Mahasiswa $mahasiswa)
     {
-        $ruangans = Ruangan::where('type', 'kelas')->get();
+        $ruangans = Ruangan::all();
         $users = User::where('role', 'mahasiswa')->orWhere('role', 'dosen')->get();
 
         return Inertia::render('Mahasiswa/Edit', [
@@ -241,6 +253,7 @@ class MahasiswaController extends Controller
             'tahunOptions' => range(date('Y'), date('Y') - 10, -1),
             'defaultKet' => 'dsn',
             'hideKet' => true,
+            'assignedRuanganPjIds' => $mahasiswa->getPenanggungJawabRuanganIds(),
         ]);
     }
 
@@ -256,12 +269,14 @@ class MahasiswaController extends Controller
             'nim' => 'required|string|unique:mahasiswa,nim,' . $mahasiswa->id,
             'pin' => 'nullable|string|unique:mahasiswa,pin,' . $mahasiswa->id,
             'ruangan_id' => 'nullable|exists:ruangans,id',
+            'ruangan_pj_ids' => 'nullable|array',
+            'ruangan_pj_ids.*' => 'exists:ruangans,id',
             'ket' => 'required|in:mhs,dsn',
             'status' => 'required|boolean',
             'tahun_masuk' => 'required|integer|min:2000|max:' . (date('Y') + 1),
         ]);
 
-        DB::transaction(function () use ($mahasiswa, $validated) {
+        DB::transaction(function () use ($mahasiswa, $validated, $request) {
             if (!empty($validated['create_user']) && $validated['create_user']) {
                 $user = User::create([
                     'name' => $validated['nama'],
@@ -276,6 +291,11 @@ class MahasiswaController extends Controller
             $oldKet = $mahasiswa->ket;
 
             $mahasiswa->update($validated);
+
+            // Sync penanggung jawab ruangan jika ket === 'dsn'
+            if ($mahasiswa->ket === 'dsn' && $request->has('ruangan_pj_ids')) {
+                $this->syncPenanggungJawabRuangan($mahasiswa, $request->input('ruangan_pj_ids', []));
+            }
 
             // Update user role jika ket berubah atau user_id berubah
             if ($validated['user_id']) {
@@ -371,5 +391,53 @@ class MahasiswaController extends Controller
     public function exportIdTag()
     {
         return Excel::download(new MahasiswaIdTagExport, 'id-tag-mahasiswa.xlsx');
+    }
+
+    /**
+     * Sinkronisasi penanggung jawab ruangan untuk dosen.
+     */
+    private function syncPenanggungJawabRuangan(Mahasiswa $mahasiswa, array $selectedRuanganIds): void
+    {
+        $selectedIds = array_map('intval', $selectedRuanganIds);
+        $allRuangans = Ruangan::all();
+
+        foreach ($allRuangans as $ruangan) {
+            $pj = $ruangan->penanggung_jawab;
+            if (is_string($pj)) {
+                $pj = json_decode($pj, true);
+            }
+            if (! is_array($pj)) {
+                $pj = [];
+            }
+
+            $currentIds = [];
+            foreach ($pj as $item) {
+                if (is_array($item) && isset($item['value'])) {
+                    $currentIds[] = (int) $item['value'];
+                } elseif (is_numeric($item)) {
+                    $currentIds[] = (int) $item;
+                }
+            }
+            $currentIds = array_values(array_unique(array_filter($currentIds)));
+
+            $isCurrentlyPj = in_array((int) $mahasiswa->id, $currentIds, true) || ((int) $ruangan->mahasiswa_id === (int) $mahasiswa->id);
+            $shouldBePj = in_array((int) $ruangan->id, $selectedIds, true);
+
+            if ($shouldBePj && ! $isCurrentlyPj) {
+                $currentIds[] = (int) $mahasiswa->id;
+                $ruangan->update([
+                    'penanggung_jawab' => array_values(array_unique($currentIds)),
+                ]);
+            } elseif (! $shouldBePj && $isCurrentlyPj) {
+                $newIds = array_values(array_diff($currentIds, [(int) $mahasiswa->id]));
+                $updateData = [
+                    'penanggung_jawab' => count($newIds) > 0 ? $newIds : null,
+                ];
+                if ((int) $ruangan->mahasiswa_id === (int) $mahasiswa->id) {
+                    $updateData['mahasiswa_id'] = null;
+                }
+                $ruangan->update($updateData);
+            }
+        }
     }
 }

@@ -17,6 +17,7 @@ interface Props {
     };
     defaultKet?: string;
     hideKet?: boolean;
+    assignedRuanganPjIds?: number[];
 }
 
 export default function MahasiswaCreate({
@@ -27,6 +28,7 @@ export default function MahasiswaCreate({
     filters,
     defaultKet,
     hideKet,
+    assignedRuanganPjIds,
 }: Props) {
     const isMahasiswa = filters?.ket === 'mhs';
     const isDosen = filters?.ket === 'dsn';
@@ -85,6 +87,7 @@ export default function MahasiswaCreate({
                     tahunOptions={tahunOptions}
                     defaultKet={defaultKet ?? filters?.ket}
                     hideKet={hideKet ?? Boolean(filters?.ket)}
+                    assignedRuanganPjIds={assignedRuanganPjIds}
                 />
             </div>
         </AppLayout>

@@ -24,6 +24,7 @@ import {
     History,
     Key,
     LayoutDashboard,
+    MessageSquare,
     ScanLine,
     Users,
 } from 'lucide-react';
@@ -85,6 +86,12 @@ const adminNavItems: NavItem[] = [
         title: 'Kalender',
         href: '/calendar',
         icon: Calendar,
+    },
+    {
+        title: 'WhatsApp',
+        href: '/whatsapp',
+        icon: MessageSquare,
+        external: true,
     },
 ];
 

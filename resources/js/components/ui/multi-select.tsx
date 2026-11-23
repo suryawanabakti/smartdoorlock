@@ -29,6 +29,9 @@ interface MultiSelectProps {
     onChange: (value: MultiSelectOption[]) => void;
     placeholder?: string;
     className?: string;
+    showSelectAll?: boolean;
+    selectAllText?: string;
+    clearAllText?: string;
 }
 
 export function MultiSelect({
@@ -36,16 +39,33 @@ export function MultiSelect({
     value,
     onChange,
     placeholder = "Pilih opsi...",
-    className
+    className,
+    showSelectAll = true,
+    selectAllText = "Pilih Semua",
+    clearAllText = "Hapus Semua"
 }: MultiSelectProps) {
     const [open, setOpen] = useState(false);
 
+    const isAllSelected = options.length > 0 && value.length === options.length;
+
     const handleSelect = (selectedValue: string | number) => {
         const option = options.find(opt => opt.value === selectedValue);
-        if (option && !value.find(v => v.value === selectedValue)) {
+        if (!option) return;
+
+        const isAlreadySelected = value.some(v => v.value === selectedValue);
+        if (isAlreadySelected) {
+            onChange(value.filter(item => item.value !== selectedValue));
+        } else {
             onChange([...value, option]);
         }
-        setOpen(false);
+    };
+
+    const handleSelectAll = () => {
+        onChange([...options]);
+    };
+
+    const handleClearAll = () => {
+        onChange([]);
     };
 
     const handleRemove = (valueToRemove: string | number) => {
@@ -59,9 +79,9 @@ export function MultiSelect({
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className={cn("w-full justify-between", className)}
+                    className={cn("w-full justify-between min-h-10 h-auto py-2", className)}
                 >
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex flex-wrap gap-1 text-left">
                         {value.length === 0 && (
                             <span className="text-muted-foreground">{placeholder}</span>
                         )}
@@ -83,32 +103,66 @@ export function MultiSelect({
                             </Badge>
                         ))}
                     </div>
-                    <ChevronDown className="h-4 w-4 opacity-50" />
+                    <ChevronDown className="h-4 w-4 shrink-0 opacity-50 ml-2" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-full p-0">
+            <PopoverContent className="w-[--radix-popover-trigger-width] min-w-[280px] p-0" align="start">
                 <Command>
                     <CommandInput placeholder="Cari..." />
+                    {showSelectAll && options.length > 0 && (
+                        <div className="flex items-center justify-between border-b px-3 py-2 text-xs">
+                            <span className="text-muted-foreground">
+                                {value.length} dari {options.length} dipilih
+                            </span>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    type="button"
+                                    onClick={isAllSelected ? handleClearAll : handleSelectAll}
+                                    className="font-medium text-primary hover:underline"
+                                >
+                                    {isAllSelected ? clearAllText : selectAllText}
+                                </button>
+                                {!isAllSelected && value.length > 0 && (
+                                    <>
+                                        <span className="text-muted-foreground">•</span>
+                                        <button
+                                            type="button"
+                                            onClick={handleClearAll}
+                                            className="text-muted-foreground hover:text-destructive hover:underline"
+                                        >
+                                            {clearAllText}
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    )}
                     <CommandList>
                         <CommandEmpty>Opsi tidak ditemukan.</CommandEmpty>
                         <CommandGroup>
-                            {options.map((option) => (
-                                <CommandItem
-                                    key={option.value}
-                                    value={option.label}
-                                    onSelect={() => handleSelect(option.value)}
-                                >
-                                    <Check
-                                        className={cn(
-                                            "mr-2 h-4 w-4",
-                                            value.find(v => v.value === option.value)
-                                                ? "opacity-100"
-                                                : "opacity-0"
-                                        )}
-                                    />
-                                    {option.label}
-                                </CommandItem>
-                            ))}
+                            {options.map((option) => {
+                                const isSelected = value.some(v => v.value === option.value);
+                                return (
+                                    <CommandItem
+                                        key={option.value}
+                                        value={option.label}
+                                        onSelect={() => handleSelect(option.value)}
+                                        className="cursor-pointer"
+                                    >
+                                        <div
+                                            className={cn(
+                                                "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                                                isSelected
+                                                    ? "bg-primary text-primary-foreground"
+                                                    : "opacity-50 [&_svg]:invisible"
+                                            )}
+                                        >
+                                            <Check className="h-3 w-3" />
+                                        </div>
+                                        <span>{option.label}</span>
+                                    </CommandItem>
+                                );
+                            })}
                         </CommandGroup>
                     </CommandList>
                 </Command>

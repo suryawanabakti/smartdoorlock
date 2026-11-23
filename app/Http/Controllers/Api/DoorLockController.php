@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Events\StoreHistoryEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Absensi;
-use App\Models\DosenRuangan;
 use App\Models\HakAksesMahasiswa;
 use App\Models\Histori;
 use App\Models\Mahasiswa;
@@ -28,23 +27,24 @@ class DoorLockController extends Controller
         if (! $mahasiswa) {
             echo json_encode(['noid'], JSON_UNESCAPED_UNICODE);
             Histori::create([
-                'nim' =>  null,
+                'nim' => null,
                 'nama' => null,
                 'id_tag' => $request->id,
                 'kode' => $request->kode,
                 'waktu' => $now,
                 'status' => 2,
             ]);
+
             return;
         }
         $status = $mahasiswa->status ?? 2;
 
         // Validasi ruangan dan waktu operasional
         $ruangan = Ruangan::with('scanerStatuses')
-            ->whereHas('scanerStatuses', fn($query) => $query->where('kode', $request->kode))
+            ->whereHas('scanerStatuses', fn ($query) => $query->where('kode', $request->kode))
             ->first();
 
-        if (!$ruangan) {
+        if (! $ruangan) {
             echo json_encode(['noid'], JSON_UNESCAPED_UNICODE);
 
             return;
@@ -70,20 +70,19 @@ class DoorLockController extends Controller
             if (! $this->hasAccess($mahasiswa, $ruangan, $currentTime, $currentDate)) {
                 $this->createHistoriAndBroadcast($mahasiswa, $request->id, $request->kode, 3, $ruangan);
                 echo json_encode(['noid'], JSON_UNESCAPED_UNICODE);
+
                 return;
             }
         }
 
-
         // Validasi akses dosen
         if ($mahasiswa && $mahasiswa->ket === 'dsn' && $ruangan->type !== 'umum') {
-            // $ruanganAkses = DosenRuangan::where('mahasiswa_id', $mahasiswa->id)->where('ruangan_id', $ruangan->id)->latest()->first();
+            if (! $ruangan->isPenanggungJawab($mahasiswa)) {
+                $this->createHistoriAndBroadcast($mahasiswa, $request->id, $request->kode, 3, $ruangan);
+                echo json_encode(['noid'], JSON_UNESCAPED_UNICODE);
 
-            // if (!$ruanganAkses) {
-            //     $this->createHistoriAndBroadcast($mahasiswa, $mahasiswa->id_tag, $request->kode, 3, $ruangan);
-            //     echo json_encode(["noid"], JSON_UNESCAPED_UNICODE);
-            //     return;
-            // }
+                return;
+            }
         }
 
         // Simpan histori akses
@@ -102,6 +101,7 @@ class DoorLockController extends Controller
 
             if ($mahasiswa->status == 0) {
                 echo json_encode(['noid'], JSON_UNESCAPED_UNICODE);
+
                 return;
             }
 
@@ -142,7 +142,7 @@ class DoorLockController extends Controller
         if (! $ruanganAkses) {
             $ruanganAkses = Ruangan::where('parent_id', $ruangan->id)
                 ->with('hakAksesOne.hakAksesMahasiswaOne')
-                ->whereHas('hakAksesOne.hakAksesMahasiswaOne', fn($query) => $query->where('mahasiswa_id', $mahasiswa->id))
+                ->whereHas('hakAksesOne.hakAksesMahasiswaOne', fn ($query) => $query->where('mahasiswa_id', $mahasiswa->id))
                 ->whereHas('hakAksesOne', function ($query) use ($currentTime, $currentDate) {
                     $query->where('tanggal', $currentDate)
                         ->where('is_approve', 1)
@@ -216,7 +216,7 @@ class DoorLockController extends Controller
 
         // Validasi ruangan dan waktu operasional
         $ruangan = Ruangan::with('scanerStatuses')
-            ->whereHas('scanerStatuses', fn($query) => $query->where('kode', $request->kode))
+            ->whereHas('scanerStatuses', fn ($query) => $query->where('kode', $request->kode))
             ->first();
 
         // if (! $ruangan || $currentTime < $ruangan->jam_buka || $currentTime > $ruangan->jam_tutup) {
@@ -239,13 +239,12 @@ class DoorLockController extends Controller
 
         // Validasi akses dosen
         if ($mahasiswa && $mahasiswa->ket === 'dsn' && $scanner->type == 'luar' && $ruangan->type !== 'umum') {
-            // $ruanganAkses = DosenRuangan::where('mahasiswa_id', $mahasiswa->id)->where('ruangan_id', $ruangan->id)->latest()->first();
+            if (! $ruangan->isPenanggungJawab($mahasiswa)) {
+                $this->createHistoriAndBroadcast($mahasiswa, $mahasiswa->id_tag, $request->kode, 3, $ruangan);
+                echo json_encode(['noid'], JSON_UNESCAPED_UNICODE);
 
-            // if (!$ruanganAkses) {
-            //     $this->createHistoriAndBroadcast($mahasiswa, $mahasiswa->id_tag, $request->kode, 3, $ruangan);
-            //     echo json_encode(["noid"], JSON_UNESCAPED_UNICODE);
-            //     return;
-            // }
+                return;
+            }
         }
 
         // Simpan histori akses

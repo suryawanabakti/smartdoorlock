@@ -79,6 +79,7 @@ export interface MahasiswaFormData {
     nim: string;
     pin?: string;
     ruangan_id?: number | null;
+    ruangan_pj_ids?: number[];
     ket: 'mhs' | 'dsn';
     status: boolean;
     tahun_masuk: number;
